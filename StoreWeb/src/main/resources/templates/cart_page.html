@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>小小书屋-购物车</title>
+    <link href="/style/cart_page.css" rel="stylesheet">
+    <script src="/scripts/cart-page.js" defer></script>
+</head>
+<body>
+<header>
+    <nav>
+        <ul>
+            <li class="logo"><a href="/">小小书屋</a></li>
+            <li><a href="/page/classify">分类</a></li>
+            <li><a href="/page/bill">订单</a></li>
+            <li><a href="/page/cart">购物车</a></li>
+            <li class="account"><a href="/page/profile" th:text="${uid == null ? '登录' : uid }"></a></li>
+            <li class="search">
+                <form action="/page/search" method="get">
+                    <input id="search-input" type="text" placeholder="搜索书籍..." name="info"/>
+                    <input id="search-button" type="submit" value="搜索"/>
+                </form>
+            </li>
+            <li class="manage" th:if="${grade == 'admin'}"><a href="/page/management">管理网站</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <section class="book-list">
+        <h2>购物车</h2>
+
+        <div class="ope-all">
+            <button id="del-un" class="del-ul" th:if="${!#lists.isEmpty(cartbooks)}">清空停售</button>
+            <button id="del-all" class="del-all" th:if="${!#lists.isEmpty(cartbooks)}">全部清空</button>
+            <button id="buy-all" class="buy-all" th:if="${!#lists.isEmpty(cartbooks)}">全部购买</button>
+        </div>
+
+        <div class="book" th:if="${#lists.isEmpty(cartbooks)}">
+            <p>未找到相关书籍</p>
+        </div>
+        <div class="book" th:each="book : ${cartbooks}">
+
+            <img class="book-image" th:src="@{/images/book/{bookname}.png(bookname=${book.bookname})}" th:alt="${book.bookname}">
+            <div class="profile">
+                <h5 th:text="${book.bookname}">Book Title</h5>
+                <p th:text="'作者: ' + ${book.author}">Author Name</p>
+                <p th:text="'库存：'+${book.stock}"></p>
+            </div>
+            <div  class="money">
+                <p  class="single-price" th:text="'单价：￥' + ${book.price/100} + '.' + ${book.price%100}">Price</p>
+                <p>数量：<input type="number" class="booknum" th:value="${book.amount}"/></p>
+                <p class="sum-price" th:text="'总价：￥' + ${book.price*book.amount/100} + '.' + ${book.price*book.amount%100}">Sum Price</p>
+            </div>
+            <button class="update-num" th:data-bookid="${book.bookid}">更新数量</button>
+            <button class="delete" th:data-bookid="${book.bookid}">删除</button>
+            <button class="buy" th:data-bookid="${book.bookid}" th:if="${book.available==1}">购买</button>
+            <button class="buy-unable" th:data-bookid="${book.bookid}" th:if="${book.available==0}" style="background: grey;color: red">停售！</button>
+        </div>
+
+    </section>
+</main>
+
+<footer>
+    <p>&copy; 2024 小小书屋 | 仅供学习测试使用</p>
+</footer>
+
+</body>
+</html>

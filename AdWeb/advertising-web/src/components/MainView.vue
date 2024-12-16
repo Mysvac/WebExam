@@ -3,20 +3,20 @@ import {ref} from "vue";
 import OverView from "./viewComponents/OverView.vue";
 import DataAnalysis from "./viewComponents/DataAnalysis.vue";
 import AdvertisementList from "./viewComponents/AdvertisementList.vue";
-import CreateAdvertisement from "./viewComponents/CreateAdvertisement.vue";
+import YourAdvertisement from "./viewComponents/YourAdvertisement.vue";
 import UserList from "./viewComponents/UserList.vue";
 import UserAdvertisementRequest from "./viewComponents/UserAdvertisementRequest.vue";
 import AboutUs from "./viewComponents/AboutUs.vue";
 
 const avatarUrl = ref('src/assets/avatar.jpg');
-const activeIndex = ref('1-1')
+const activeIndex = ref('2-2')
 const components = {
   '1-1': OverView,
   '1-2': DataAnalysis,
   '2-1': AdvertisementList,
-  '2-2': CreateAdvertisement,
+  '2-2': YourAdvertisement,
+  '2-3': UserAdvertisementRequest,
   '3-1': UserList,
-  '3-2': UserAdvertisementRequest,
   '4-1': AboutUs
 };
 
@@ -61,7 +61,9 @@ function handleMenuClick(index) {
                 <el-menu-item class="menu-item" index="2-1"
                               @click="handleMenuClick('2-1')">广告列表</el-menu-item>
                 <el-menu-item class="menu-item" index="2-2"
-                              @click="handleMenuClick('2-2')">发布广告</el-menu-item>
+                              @click="handleMenuClick('2-2')">你的广告</el-menu-item>
+                <el-menu-item class="menu-item" index="2-3"
+                              @click="handleMenuClick('2-3')">广告申请</el-menu-item>
               </el-menu-item-group>
             </el-sub-menu>
 
@@ -74,10 +76,7 @@ function handleMenuClick(index) {
                 用户管理
               </template>
               <el-menu-item class="menu-item" index="3-1" @click="handleMenuClick('3-1')">
-                用户列表
-              </el-menu-item>
-              <el-menu-item class="menu-item" index="3-2" @click="handleMenuClick('3-2')">
-                用户广告申请
+                用户
               </el-menu-item>
               <!-- 关于 -->
             </el-sub-menu>

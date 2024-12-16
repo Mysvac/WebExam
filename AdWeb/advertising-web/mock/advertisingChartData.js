@@ -3,7 +3,7 @@ import Mock from "mockjs/dist/mock.js";
 export default [
     {
         url: '/api/advertising-chart-data', // 接口 URL
-        method: 'get', // 请求方法
+        method: 'post', // 请求方法
         response: (req) => {
             const fixedTags = [
                 '电子产品',

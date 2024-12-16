@@ -1,7 +1,13 @@
 <script setup>
 import StyleBoard from "../utilsComponents/StyleBoard.vue";
-import { ref } from 'vue'
+import {ref} from 'vue'
+
 const activeName = ref('1')
+const imagItems = ref([
+  {id: 0, title: "轮播图1", url: 'src/assets/collapseImages/【哲风壁纸】下雨-商店-绿色护眼.png'},
+  {id: 1, title: "轮播图2", url: 'src/assets/collapseImages/【哲风壁纸】动漫女孩-夹克-常设.png'},
+  {id: 2, title: "轮播图3", url: 'src/assets/collapseImages/【哲风壁纸】漫画风大草原-绿色护眼.png'}
+])
 </script>
 
 <template>
@@ -41,7 +47,13 @@ const activeName = ref('1')
         </el-collapse-item>
       </el-collapse>
     </div>
-
+    <el-carousel height="400px" motion-blur
+                 style="border-radius: 10px;
+                        margin-top: 20px">
+      <el-carousel-item v-for="item in imagItems" :key="item.id">
+        <img :src="item.url" style="object-fit: cover; height:100%;width:100%;" alt/><span>{{ item.title }}</span>
+      </el-carousel-item>
+    </el-carousel>
   </div>
 </template>
 
@@ -67,7 +79,7 @@ p {
 
 /* 容器样式 */
 .overView-description-container {
-  max-width:100%;
+  max-width: 100%;
   margin: 0 auto;
   padding: 20px;
   background-color: #f9f9f9;

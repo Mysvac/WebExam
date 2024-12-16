@@ -118,9 +118,9 @@ function handleMenuClick(index) {
           <component :is="components[activeIndex]"></component>
         </el-main>
         <div class="float-button">
-          <button type="button" @click="Logout">
+          <el-button type="primary" @click="Logout">
             <i class="fa-solid fa-right-from-bracket"></i>
-          </button>
+          </el-button>
         </div>
       </el-container>
     </el-container>

@@ -4,10 +4,10 @@ import LoginAndRegister from "./components/LoginAndRegister.vue";
 </script>
 
 <template>
-    <main>
-      <RouterView/>
-    </main>
-<!--  <MainView></MainView>-->
+<!--    <main>-->
+<!--      <RouterView/>-->
+<!--    </main>-->
+  <MainView></MainView>
   <!--  <LoginAndRegister></LoginAndRegister>-->
 </template>
 

@@ -1,19 +1,20 @@
 <template>
-  <v-chart class="chart" :option="options" autoresize/>
+  <v-chart class="chart" :option="options" autoresize />
 </template>
 
 <script setup>
-import {use} from 'echarts/core';
-import {CanvasRenderer} from 'echarts/renderers';
-import {PieChart} from 'echarts/charts';
+import { use } from 'echarts/core';
+import { CanvasRenderer } from 'echarts/renderers';
+import { PieChart } from 'echarts/charts';
 import {
   TitleComponent,
   TooltipComponent,
   LegendComponent,
 } from 'echarts/components';
 import VChart from 'vue-echarts';
-import {ref, computed, defineProps} from 'vue';
+import {computed, defineProps} from 'vue';
 
+// 注册 ECharts 组件
 use([
   CanvasRenderer,
   PieChart,
@@ -22,22 +23,23 @@ use([
   LegendComponent,
 ]);
 
+// 定义 props
 const props = defineProps({
-  data: Array,
+  data: {
+    type: Array,
+    required: true,
+  },
   title: {
     type: String,
-    default: ''
-  }
+    default: '',
+  },
 });
 
-const title = ref(props.title);
-
-const data = ref(props.data);
-
+// 使用 computed 监听 props.data 和 props.title 的变化
 const options = computed(() => {
   return {
     title: {
-      text: title.value,
+      text: props.title, // 使用 props.title
       left: 'center',
     },
     tooltip: {
@@ -47,15 +49,15 @@ const options = computed(() => {
     legend: {
       orient: 'vertical',
       left: 'left',
-      data: data.value.map(d => d.name),
+      data: props.data.map(d => d.name), // 使用 props.data
     },
     series: [
       {
-        name: title.value,
+        name: props.title, // 使用 props.title
         type: 'pie',
         radius: '55%',
         center: ['50%', '60%'],
-        data: data.value,
+        data: props.data, // 使用 props.data
         emphasis: {
           itemStyle: {
             shadowBlur: 10,
@@ -65,9 +67,8 @@ const options = computed(() => {
         },
       },
     ],
-  }
-})
-
+  };
+});
 </script>
 
 <style scoped>

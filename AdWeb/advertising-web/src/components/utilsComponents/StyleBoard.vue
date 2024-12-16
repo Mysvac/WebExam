@@ -11,12 +11,11 @@ const fetchData = async () => {
   try {
     const response = await service.get('/api/website-feedback'); // 使用封装的 axios 实例
     const json = response.data;
-    // 更新数据
     dailyActiveUsers.value = json.data.dailyActiveUsers;
     monthlyActiveUsers.value = json.data.monthlyActiveUsers ;
     newTransactionsToday.value = json.data.newTransactionsToday ;
   } catch (error) {
-    console.error('Error fetching data:', error);
+    console.error('Error fetching data:');
   }
 };
 
@@ -31,6 +30,7 @@ watchEffect(() => {
   const interval = setInterval(fetchData, 5000);
   return () => clearInterval(interval); // 清除定时器
 });
+
 </script>
 
 <template>

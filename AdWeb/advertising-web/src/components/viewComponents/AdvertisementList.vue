@@ -6,6 +6,9 @@ import AdvertisingSearch from "../utilsComponents/advertisingSearch.vue";
 
 const tableData = ref([]);
 const filteredTableData = ref([]);
+const pagedTableData = ref([]); // 分页后的数据
+const currentPage = ref(1); // 当前页码
+const pageSize = ref(8); // 每页显示的条数
 
 // 获取表格数据
 async function fetchTableData() {
@@ -18,7 +21,7 @@ async function fetchTableData() {
   }
 }
 
-const filterTableData = (searchText) => {
+const filterTableData = (searchText = "") => {
   if (searchText === "") {
     filteredTableData.value = tableData.value;
   } else {
@@ -26,28 +29,62 @@ const filterTableData = (searchText) => {
       return (
           row.id.toString().includes(searchText) ||
           row.tag.toLowerCase().includes(searchText) || // 根据广告类型搜索
-          row.distributor.toLowerCase().includes(searchText))
+          row.distributor.toLowerCase().includes(searchText)
+      );
     });
   }
+  handlePageChange(); // 过滤后重新分页
+};
+
+// 处理分页逻辑
+const handlePageChange = () => {
+  const start = (currentPage.value - 1) * pageSize.value;
+  const end = start + pageSize.value;
+  pagedTableData.value = filteredTableData.value.slice(start, end);
+};
+
+// 处理页码变化
+const handleCurrentChange = (page) => {
+  currentPage.value = page;
+  handlePageChange();
+};
+
+// 处理每页显示条数变化
+const handleSizeChange = (size) => {
+  pageSize.value = size;
+  handlePageChange();
 };
 
 onMounted(() => {
   fetchTableData();
 });
+
 watchEffect(() => {
   filterTableData();
-})
+});
+
 watchEffect(() => {
   const interval = setInterval(fetchTableData, 10000);
   return () => clearInterval(interval); // 清除定时器
 });
-
 </script>
 
 <template>
   <el-card class="card">
-    <AdvertisingSearch @search="filterTableData"/>
-    <AdvertisingTable :data="filteredTableData"
+    <div class="header-row">
+      <AdvertisingSearch @search="filterTableData"/>
+      <div class="demo-pagination-block">
+        <el-pagination
+            v-model:current-page="currentPage"
+            v-model:page-size="pageSize"
+            layout="prev, pager, next, jumper"
+            :total="filteredTableData.length"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+        />
+      </div>
+    </div>
+    <AdvertisingTable :data="pagedTableData"
                       :operation="false"/>
   </el-card>
 </template>
@@ -59,4 +96,10 @@ watchEffect(() => {
   margin-top: 10px;
 }
 
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
 </style>

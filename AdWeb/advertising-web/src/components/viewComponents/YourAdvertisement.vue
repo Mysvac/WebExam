@@ -3,6 +3,8 @@ import {onMounted, ref} from 'vue';
 import AdvertisingTable from "../utilsComponents/advertisingTable.vue";
 import service from "../../utils/service.js";
 import AdvertisingSearch from "../utilsComponents/advertisingSearch.vue";
+import {InfoFilled} from "@element-plus/icons-vue";
+import AdvertisingCreatedForm from "../utilsComponents/advertisingCreatedForm.vue";
 
 
 const tableData = ref([]);
@@ -10,7 +12,7 @@ const filteredTableData = ref([]);
 
 async function fetchTableData() {
   try {
-    const response = await service.post('/api/advertising-table-data');
+    const response = await service.post('/api/advertising-id-table-data');
     tableData.value = response.data.data;
     filterTableData();
   } catch (e) {
@@ -66,8 +68,10 @@ const filterTableData = (searchText) => {
   }
 };
 
+const showForm = ref(false);
+
 const onAddItem = () => {
-  console.log(1);
+  showForm.value = !showForm.value;
 };
 
 onMounted(() => {
@@ -79,17 +83,34 @@ onMounted(() => {
   <el-card class="card">
     <div class="header-row">
       <AdvertisingSearch @search="filterTableData"/>
-      <el-button class="button" type="primary" @click="onAddItem">
-        <i class="fa-solid fa-plus"></i>
-      </el-button>
-      <el-button class="button" type="primary" @click="deleteRows">
-        shan
-      </el-button>
+      <div class="header-row-button">
+        <el-popconfirm
+            v-if="showForm === false"
+            confirm-button-text="确定"
+            cancel-button-text="取消"
+            :icon="InfoFilled"
+            icon-color="#626AEF"
+            title="确定使用批量删除?"
+            @confirm="deleteRows"
+        >
+          <template #reference>
+            <el-button  class="button" type="danger" size="large">
+              批量删除
+            </el-button>
+          </template>
+        </el-popconfirm>
+        <el-button class="button" type="primary" @click="onAddItem" size="large">
+          <i class="fa-solid fa-plus" v-if="!showForm"/>
+          <i class="fa-solid fa-minus" v-else />
+        </el-button>
+      </div>
     </div>
-    <AdvertisingTable :data="filteredTableData"
-                      :operation="true"
-                      @deleteRow="deleteRow"
-                      @selectionChange="handleSelectionChange"/>
+    <AdvertisingCreatedForm v-if="showForm"/>
+    <AdvertisingTable v-else
+        :data="filteredTableData"
+        :operation="true"
+        @deleteRow="deleteRow"
+        @selectionChange="handleSelectionChange"/>
   </el-card>
 
 </template>
@@ -99,5 +120,12 @@ onMounted(() => {
   border-radius: 20px;
   margin-bottom: 10px;
   margin-top: 10px;
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 </style>

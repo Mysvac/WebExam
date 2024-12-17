@@ -26,6 +26,19 @@ const handleSelectionChange = (selection) => {
   selectedIds.value = selection.map(row => row.id);
   emit('selectIds', selectedIds.value);
 };
+
+const getStatusColor = (status) => {
+  switch (status) {
+    case "未发布":
+      return "gray"; // 未发布为灰色
+    case "已发布":
+      return "green"; // 已发布为绿色
+    case "审核中":
+      return "red"; // 审核中为红色
+    default:
+      return "black"; // 默认颜色为黑色
+  }
+};
 </script>
 
 <template>
@@ -34,8 +47,22 @@ const handleSelectionChange = (selection) => {
             :data="propsTable.data"
             :type="propsTable.operation ? 'selection' : ''"
             @selection-change="handleSelectionChange">
-    <el-table-column v-if="propsTable.operation" type="selection" width="55"/>
+    <el-table-column type="selection" width="55"/>
     <el-table-column class="table-item" prop="id" label="广告序号" width="120px" sortable/>
+    <el-table-column class="table-item" prop="status" label="状态" width="120px"
+                     v-if="propsTable.operation">
+      <template #default="scope">
+        <span
+            :style="{
+            color: getStatusColor(scope.row.status),
+            fontSize:'16px',
+            fontWeight: 'bold',
+          }"
+        >
+          {{ scope.row.status }}
+        </span>
+      </template>
+    </el-table-column>
     <el-table-column class="table-item" prop="tag" label="广告类型" width="100px"
                      :filters="[
                          { text: '电子产品', value: '电子产品' },
@@ -54,7 +81,7 @@ const handleSelectionChange = (selection) => {
     <el-table-column class="table-item" prop="cost" label="广告价格" width="120px" sortable/>
     <el-table-column label="操作" width="100px" v-if="propsTable.operation">
       <template #default="scope">
-        <el-button type="danger" size="small" @click="deleteRow(scope.row.id)">删除</el-button>
+        <el-button type="danger" size="large" @click="deleteRow(scope.row.id)">删除</el-button>
       </template>
     </el-table-column>
   </el-table>

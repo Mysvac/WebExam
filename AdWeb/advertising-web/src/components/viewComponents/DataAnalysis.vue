@@ -59,7 +59,11 @@ watchEffect(() => {
   return () => clearInterval(interval); // 清除定时器
 });
 
-
+const getStatusColor = (isHot) => {
+  if (isHot === '热门')
+    return 'red';
+  return 'gray';
+}
 </script>
 
 <template>
@@ -69,18 +73,22 @@ watchEffect(() => {
       <AdvertisingPie :title="chartTitle" :data="chartData"></AdvertisingPie>
     </el-card>
     <el-card class="card">
-      <el-carousel height="150px" motion-blur >
+      <el-carousel height="150px" motion-blur>
         <el-carousel-item class="advertising-description"
                           v-for="item in advertisingDescriptions" :key="item.id">
           <el-descriptions :title="item.name">
-            <el-descriptions-item label="广告数量">{{item.value}}</el-descriptions-item>
-            <el-descriptions-item label="目前发布数量">{{item.distributed}}</el-descriptions-item>
-            <el-descriptions-item label="发布比例">{{item.distributedRate}}</el-descriptions-item>
+            <el-descriptions-item label="广告数量">{{ item.value }}</el-descriptions-item>
+            <el-descriptions-item label="目前发布数量">{{ item.distributed }}</el-descriptions-item>
+            <el-descriptions-item label="发布比例">{{ item.distributedRate }}</el-descriptions-item>
             <el-descriptions-item label="标记">
-              <el-tag size="small">{{item.isHot}}</el-tag>
+              <el-tag size="large" :style="{
+                background: getStatusColor(item.isHot),
+                color:'white'
+              }">{{ item.isHot }}
+              </el-tag>
             </el-descriptions-item>
             <el-descriptions-item label="基本描述">
-              {{item.description}}
+              {{ item.description }}
             </el-descriptions-item>
           </el-descriptions>
         </el-carousel-item>
@@ -102,7 +110,7 @@ watchEffect(() => {
   gap: 10px;
 }
 
-.card{
+.card {
   border-radius: 20px;
   margin-bottom: 10px;
   margin-top: 10px;

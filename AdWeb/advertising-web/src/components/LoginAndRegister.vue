@@ -24,7 +24,7 @@ async function handleLogin() {
     username: username.value,
     password: password.value
   });
-  if (response.data.code === 200) {
+  if (response.code === 200) {
     alert("登录成功");
     await router.replace('/mainView');
   } else {

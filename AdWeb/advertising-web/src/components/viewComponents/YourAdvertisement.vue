@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref} from 'vue';
+import {onMounted, ref, watch} from 'vue';
 import AdvertisingTable from "../utilsComponents/advertisingTable.vue";
 import service from "../../utils/service.js";
 import AdvertisingSearch from "../utilsComponents/advertisingSearch.vue";
@@ -39,14 +39,12 @@ async function deleteRows() {
 
 async function deleteRow(index) {
   try {
-    console.log(index);
     const response = await service.post('/api/delete-advertising',
         {id: index});
     const json = response.data;
     if (json.code === 200) {
       tableData.value = tableData.value.filter(row => row.id !== index);
       filterTableData();
-      console.log('广告删除成功:', response.data);
     } else {
       console.error('广告删除失败:', response.data.message);
     }
@@ -74,9 +72,18 @@ const onAddItem = () => {
   showForm.value = !showForm.value;
 };
 
+let intervalId = null;
 onMounted(() => {
   fetchTableData();
+  intervalId = setInterval(fetchTableData, 10000); // 每 10 秒拉取一次数据
 });
+
+watch(
+    () => tableData.value,
+    () => {
+      filterTableData();
+    }
+);
 </script>
 
 <template>
@@ -94,23 +101,24 @@ onMounted(() => {
             @confirm="deleteRows"
         >
           <template #reference>
-            <el-button  class="button" type="danger" size="large">
+            <el-button class="button" type="danger" size="large">
               批量删除
             </el-button>
           </template>
         </el-popconfirm>
         <el-button class="button" type="primary" @click="onAddItem" size="large">
           <i class="fa-solid fa-plus" v-if="!showForm"/>
-          <i class="fa-solid fa-minus" v-else />
+          <i class="fa-solid fa-minus" v-else/>
         </el-button>
       </div>
     </div>
     <AdvertisingCreatedForm v-if="showForm"/>
     <AdvertisingTable v-else
-        :data="filteredTableData"
-        :operation="true"
-        @deleteRow="deleteRow"
-        @selectionChange="handleSelectionChange"/>
+                      :data="filteredTableData"
+                      :operation="true"
+                      :is-request="false"
+                      @deleteRow="deleteRow"
+                      @selectionChange="handleSelectionChange"/>
   </el-card>
 
 </template>

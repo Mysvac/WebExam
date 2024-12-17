@@ -9,7 +9,7 @@ import UserAdvertisementRequest from "./viewComponents/UserAdvertisementRequest.
 import AboutUs from "./viewComponents/AboutUs.vue";
 
 const avatarUrl = ref('src/assets/avatar.jpg');
-const activeIndex = ref('2-2')
+const activeIndex = ref('2-3')
 const components = {
   '1-1': OverView,
   '1-2': DataAnalysis,

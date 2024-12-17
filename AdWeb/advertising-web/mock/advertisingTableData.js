@@ -9,6 +9,7 @@ export default [
                 'data|10-20': [ // 生成 5 到 10 条数据
                     {
                         'id|1-1000': 1,
+                        'isRequest':"@pick(['已申请','未申请'])",
                         'tag': '@pick(["电子产品", "家居用品", "服装服饰", "美妆护肤", "食品饮料", "汽车交通", "旅游出行"])', // 随机选择广告类型
                         'description': '@cparagraph(1, 10)', // 随机生成广告描述
                         'distributor': '@cname', // 随机生成发布商名称
@@ -31,7 +32,7 @@ export default [
         response: (req) => {
             // 模拟生成广告数据
             const tableData = Mock.mock({
-                "data|10": [
+                "data|10-20": [
                     {
                         id: "@id", // 随机生成广告 ID
                         status: "@pick(['未发布', '已发布', '审核中'])", // 随机生成广告状态

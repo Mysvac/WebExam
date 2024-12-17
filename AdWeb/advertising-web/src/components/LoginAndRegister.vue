@@ -24,12 +24,15 @@ async function handleLogin() {
     username: username.value,
     password: password.value
   });
-  if (response.code === 200) {
-    alert("登录成功");
+  const json = response.data;
+  if (json.code === 200) {
+    console.log(json.data.role +" "+json.data.username);
+    localStorage.setItem('role', json.data.role);
+    localStorage.setItem('name', json.data.name);
+    localStorage.setItem('cookie', json.data.cookie);
     await router.replace('/mainView');
   } else {
     alert("登录失败");
-    printJsonToConsole(response.data);
   }
 }
 
@@ -47,7 +50,7 @@ async function handleRegister() {
     });
     if (response.data.code === 200) {
       alert("注册成功")
-      printJsonToConsole(response.data)
+      printJsonToConsole(json);
       switchLoginModel();
     } else {
       alert(response.data.message);

@@ -12,37 +12,42 @@
     <!-- 广告类型 -->
     <el-form-item label="广告类型" prop="tag">
       <el-select v-model="ruleForm.tag" placeholder="请选择广告类型">
-        <el-option label="电子产品" value="电子产品" />
-        <el-option label="家居用品" value="家居用品" />
-        <el-option label="服装服饰" value="服装服饰" />
-        <el-option label="美妆护肤" value="美妆护肤" />
-        <el-option label="食品饮料" value="食品饮料" />
-        <el-option label="汽车交通" value="汽车交通" />
-        <el-option label="旅游出行" value="旅游出行" />
+        <el-option label="电子产品" value="电子产品"/>
+        <el-option label="家居用品" value="家居用品"/>
+        <el-option label="服装服饰" value="服装服饰"/>
+        <el-option label="美妆护肤" value="美妆护肤"/>
+        <el-option label="食品饮料" value="食品饮料"/>
+        <el-option label="汽车交通" value="汽车交通"/>
+        <el-option label="旅游出行" value="旅游出行"/>
       </el-select>
     </el-form-item>
 
+    <!-- 发布商 -->
+    <el-form-item label="广告标题" prop="title">
+      <el-input v-model="ruleForm.title"/>
+    </el-form-item>
     <!-- 广告描述 -->
     <el-form-item label="广告描述" prop="description">
-      <el-input v-model="ruleForm.description" type="textarea" />
+      <el-input v-model="ruleForm.description" type="textarea"/>
     </el-form-item>
 
     <!-- 发布商 -->
     <el-form-item label="发布商" prop="distributor">
-      <el-input v-model="ruleForm.distributor" />
+      <el-input v-model="ruleForm.distributor"/>
     </el-form-item>
 
     <!-- 广告价格 -->
     <el-form-item label="广告价格" prop="cost">
-      <el-input v-model="ruleForm.cost" />
+      <el-input v-model="ruleForm.cost"/>
     </el-form-item>
 
     <!-- 文件类型选择 -->
     <el-form-item label="文件类型" prop="fileType">
       <el-select v-model="ruleForm.fileType" placeholder="请选择文件类型">
-        <el-option label="图片" value="image" />
-        <el-option label="视频" value="video" />
-        <el-option label="文档" value="document" />
+        <el-option label="图片" value="image"/>
+        <el-option label="视频" value="video"/>
+        <el-option label="文档" value="document"/>
+        <el-option label="无" value="null"/>
       </el-select>
     </el-form-item>
 
@@ -77,7 +82,7 @@
 </template>
 
 <script setup>
-import {ref, reactive} from 'vue'
+import {reactive, ref} from 'vue'
 import {ElMessage} from "element-plus";
 import service from "../../utils/service.js";
 import printJsonToConsole from "../../utils/printJsonToConsole.js";
@@ -88,6 +93,7 @@ const ruleFormRef = ref()
 // 表单数据
 const ruleForm = reactive({
   tag: '',
+  title:'',
   description: '',
   distributor: '',
   cost: '',
@@ -103,6 +109,9 @@ const rules = {
   tag: [
     {required: true, message: '请选择广告类型', trigger: 'change'},
   ],
+  title: [
+    {required: true, message: '请输入广告标题', trigger: 'blur'},
+  ],
   description: [
     {required: true, message: '请输入广告描述', trigger: 'blur'},
   ],
@@ -113,7 +122,7 @@ const rules = {
     {required: true, message: '请输入广告价格', trigger: 'blur'},
   ],
   fileType: [
-    {required: false, message: '请选择文件类型', trigger: 'change'},
+    {required: true, message: '请选择文件类型', trigger: 'change'},
   ],
   file: [
     {required: false, message: '请上传广告资源', trigger: 'blur'},
@@ -151,13 +160,14 @@ const beforeUpload = (file) => {
 }
 
 // 提交表单
-const submitForm =  () => {
+const submitForm = () => {
   if (!ruleFormRef.value) return
   ruleFormRef.value.validate(async (valid) => {
     if (valid) {
-      try{
-        const response = await service.post('/api/upload-advertising',{
+      try {
+        const response = await service.post('/api/upload-advertising', {
           tag: ruleForm.tag,
+          title:ruleForm.title,
           description: ruleForm.description,
           distributor: ruleForm.distributor,
           cost: ruleForm.cost,
@@ -165,13 +175,13 @@ const submitForm =  () => {
           file: ruleForm.file ? ruleForm.file.name : null, // 只上传文件名
         });
         const jsonData = response.data
-        if(jsonData.code === 200){
+        if (jsonData.code === 200) {
           const json = jsonData.data;
           printJsonToConsole(json);
-        }else{
+        } else {
           console.log('失败');
         }
-      }catch (e){
+      } catch (e) {
         console.log(e.message);
       }
     } else {

@@ -7,22 +7,28 @@ import YourAdvertisement from "./viewComponents/YourAdvertisement.vue";
 import UserList from "./viewComponents/UserList.vue";
 import UserAdvertisementRequest from "./viewComponents/UserAdvertisementRequest.vue";
 import AboutUs from "./viewComponents/AboutUs.vue";
+import router from "../router/index.js";
+import AdvertisingReview from "./viewComponents/AdvertisingReview.vue";
 
+const name = ref(localStorage.getItem('name'));
+const role =  ref(localStorage.getItem('role'));
 const avatarUrl = ref('src/assets/avatar.jpg');
-const activeIndex = ref('2-3')
+const activeIndex = ref('1-1')
 const components = {
   '1-1': OverView,
   '1-2': DataAnalysis,
   '2-1': AdvertisementList,
   '2-2': YourAdvertisement,
   '2-3': UserAdvertisementRequest,
+  '2-4': AdvertisingReview,
   '3-1': UserList,
   '4-1': AboutUs
 };
 
 
-async function Logout(){
-  console.log("Logout")
+async function Logout() {
+  localStorage.clear();
+  await router.replace('/');
 }
 
 // 点击菜单项时更新激活的菜单项
@@ -45,9 +51,11 @@ function handleMenuClick(index) {
               </template>
               <el-menu-item-group>
                 <el-menu-item class="menu-item" index="1-1"
-                              @click="handleMenuClick('1-1')">概览</el-menu-item>
+                              @click="handleMenuClick('1-1')">概览
+                </el-menu-item>
                 <el-menu-item class="menu-item" index="1-2"
-                              @click="handleMenuClick('1-2')">数据分析</el-menu-item>
+                              @click="handleMenuClick('1-2')">数据分析
+                </el-menu-item>
               </el-menu-item-group>
             </el-sub-menu>
 
@@ -59,11 +67,19 @@ function handleMenuClick(index) {
               </template>
               <el-menu-item-group>
                 <el-menu-item class="menu-item" index="2-1"
-                              @click="handleMenuClick('2-1')">广告列表</el-menu-item>
+                              @click="handleMenuClick('2-1')">广告列表
+                </el-menu-item>
                 <el-menu-item class="menu-item" index="2-2"
-                              @click="handleMenuClick('2-2')">你的广告</el-menu-item>
+                              @click="handleMenuClick('2-2')">你的广告
+                </el-menu-item>
                 <el-menu-item class="menu-item" index="2-3"
-                              @click="handleMenuClick('2-3')">广告申请</el-menu-item>
+                              @click="handleMenuClick('2-3')">广告申请
+                </el-menu-item>
+                <el-menu-item v-if="role==='admin'"
+                              class="menu-item" index="2-4"
+                              @click="handleMenuClick('2-4')">广告审核
+                </el-menu-item>
+
               </el-menu-item-group>
             </el-sub-menu>
 
@@ -104,7 +120,7 @@ function handleMenuClick(index) {
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
-            <span>Name</span>
+            <span>{{ name }}</span>
             <div class="block">
               <el-avatar :size="50" :src=avatarUrl
                          style="margin-top: 20px;

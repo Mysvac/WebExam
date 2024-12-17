@@ -84,7 +84,7 @@ const filterTag = (value, row) => {
   >
     <el-table-column type="selection" width="55" :selectable="isRequestSelectable"/>
     <el-table-column class="table-item" prop="id" label="广告序号" width="120px" sortable/>
-    <el-table-column class="table-item" prop="isRequest" label="申请" width="100px" v-if="propsTable.isRequest">
+    <el-table-column class="table-item" prop="isRequest" label="申请" width="80px" v-if="propsTable.isRequest">
       <template #default="scope">
         <span
             :style="{
@@ -123,6 +123,7 @@ const filterTag = (value, row) => {
                      :filter-method="filterTag"
                      filter-placement="bottom-end"
     />
+    <el-table-column class="table-item" prop="title" label="广告标题" width="100px"/>
     <el-table-column class="table-item" prop="description" label="广告描述"/>
     <el-table-column class="table-item" prop="distributor" label="发布商" width="100px"/>
     <el-table-column class="table-item" prop="cost" label="广告价格" width="120px" sortable/>

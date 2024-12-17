@@ -6,7 +6,7 @@ export default [
         method: "post", // 请求方法为 POST
         response: (req) => {
             // 解析请求体中的数据
-            const { tag, description, distributor, cost, fileType, file } = req.body;
+            const { tag,title, description, distributor, cost, fileType, file } = req.body;
 
             // 模拟生成广告 ID
             const id = Mock.Random.guid();
@@ -17,6 +17,7 @@ export default [
                 message: "广告上传成功",
                 data: {
                     id, // 广告 ID
+                    title,
                     tag, // 广告类型
                     description, // 广告描述
                     distributor, // 发布商

@@ -31,13 +31,13 @@ const imagItems = ref([
           <div class="collapse-item">
             发布广告页面提供了广告素材的上传功能，支持多种广告格式（如图片、视频、文字链），并可设置广告的投放时间和目标受众。
           </div>
+          <div class="collapse-item">
+            用户申请广告页面展示了用户提交的广告申请，管理员可以审核申请并决定是否批准广告投放。
+          </div>
         </el-collapse-item>
         <el-collapse-item class="collapse-column" title="用户管理" name="3">
           <div class="collapse-item">
-            用户管理页面用于管理平台用户，包括用户权限设置、用户分组以及用户数据的导出功能。
-          </div>
-          <div class="collapse-item">
-            用户申请广告页面展示了用户提交的广告申请，管理员可以审核申请并决定是否批准广告投放。
+            用户管理页面用于展示用户信息。
           </div>
         </el-collapse-item>
         <el-collapse-item class="collapse-column" title="关于" name="4">

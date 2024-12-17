@@ -46,13 +46,13 @@ export default [
                     message: '用户名或密码错误',
                 };
             }
-
             return {
                 code: 200,
                 message: '登陆成功',
                 data: {
-                    username,
-                    password
+                    name:"Asaki",
+                    cookie:"AS334-1",
+                    role: "admin"
                 },
             };
         },

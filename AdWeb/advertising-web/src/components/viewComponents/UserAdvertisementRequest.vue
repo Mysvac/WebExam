@@ -1,46 +1,155 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import {onMounted, ref} from "vue";
 import service from "../../utils/service.js";
+import {ElMessage} from "element-plus";
 
-const appliedAds = ref([]); // 存储申请到的广告资源
+// 定义广告数据
+const ads = ref([]);
+const errorMessage = ref("");
+const apiUrl = ref("https://your-api-server.com/api/ads"); // 替换为实际的 API URL
+const fetchCode = ref("");
 
-// 获取申请到的广告资源
-async function fetchAppliedAds() {
+// 获取广告数据的方法
+const fetchAds = async () => {
   try {
-    const response = await service.get('/api/applied-id-ads'); // 获取申请到的广告资源
-    appliedAds.value = response.data.data;
-    console.log('申请到的广告资源:', appliedAds.value);
-  } catch (e) {
-    console.error('获取申请到的广告资源失败:', e);
+    const response = await service.post("/api/ads", {
+      userCookie: 123,
+    });
+    if (response.data.code === 200) {
+      ads.value = response.data.data; // 将广告数据赋值给 ads
+    } else {
+      errorMessage.value = response.data.message; // 显示错误信息
+    }
+  } catch (error) {
+    console.error("获取广告数据失败:", error);
+    errorMessage.value = "网络请求失败，请稍后重试";
   }
-}
+};
 
-// 生成 API 接口
-function generateApiUrl(adId) {
-  return `https://your-api-server.com/api/ad/${adId}`; // 替换为实际的 API 服务器地址
-}
+// 生成 fetch 代码
+const generateFetchCode = () => {
+  fetchCode.value = `
+fetch('${apiUrl.value}', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    userCookie: your_user_cookie,
+  }),
+})
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));
+`;
+};
 
+// 复制 fetch 代码到剪贴板
+const copyFetchCode = () => {
+  navigator.clipboard
+      .writeText(fetchCode.value)
+      .then(() => {
+        ElMessage.success("代码已复制到剪贴板！");
+      })
+      .catch(() => {
+        ElMessage.error("复制失败，请手动复制代码。");
+      });
+};
+
+// 下载 fetch 代码
+const downloadFetchCode = () => {
+  const blob = new Blob([fetchCode.value], {type: "text/plain"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "fetch_api_code.txt";
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+// 组件挂载时调用 fetchAds
 onMounted(() => {
-  fetchAppliedAds(); // 初始化时获取申请到的广告资源
+  fetchAds();
+  generateFetchCode();
 });
 </script>
 
 <template>
-  <div>
-    <el-table :data="appliedAds" style="width: 100%">
-      <el-table-column prop="id" label="广告 ID" width="100" />
-      <el-table-column prop="name" label="广告名称" width="200" />
-      <el-table-column prop="description" label="广告描述" width="300" />
-      <el-table-column label="API 接口" width="400">
+  <el-card>
+    <template #header>
+      <div class="card-header">
+        <span>广告申请数据</span>
+        <el-button type="primary" @click="generateFetchCode">
+          生成 API 调用代码
+        </el-button>
+      </div>
+    </template>
+
+    <!-- 错误信息提示 -->
+    <div v-if="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+
+    <!-- 广告数据表格 -->
+    <el-table :data="ads" style="width: 100%">
+      <el-table-column prop="id" label="ID" width="80"/>
+      <el-table-column prop="tag" label="标签" width="80"/>
+      <el-table-column prop="title" label="标题" width="200"/>
+      <el-table-column prop="description" label="描述"/>
+      <el-table-column prop="url" label="广告链接" width="200">
         <template #default="scope">
-          <el-input
-              :value="generateApiUrl(scope.row.id)"
-              readonly
-              placeholder="API 接口"
-          />
+          <a :href="scope.row.url" target="_blank">{{ scope.row.url }}</a>
         </template>
       </el-table-column>
     </el-table>
-  </div>
+
+    <!-- API 调用代码展示 -->
+    <div class="api-code-section">
+      <h3>API 调用代码</h3>
+      <pre>{{ fetchCode }}</pre>
+      <div class="buttons">
+        <el-button type="primary" @click="copyFetchCode">复制代码</el-button>
+        <el-button type="success" @click="downloadFetchCode">下载代码</el-button>
+      </div>
+    </div>
+  </el-card>
 </template>
-<style scoped></style>
+
+<style scoped>
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.api-code-section {
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  background-color: #f9f9f9;
+}
+
+.api-code-section h3 {
+  margin-bottom: 10px;
+}
+
+.api-code-section pre {
+  white-space: pre-wrap;
+  font-family: monospace;
+  background-color: #eee;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.buttons {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+</style>

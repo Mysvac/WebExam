@@ -3,7 +3,8 @@
 import {ref} from "vue";
 import {useRouter} from "vue-router";
 import service from "../utils/service.js";
-import printJsonToConsole from "../utils/printJsonToConsole.js";
+import {errorMessage} from "../utils/notification.js";
+import {ElMessage} from "element-plus";
 
 const router = useRouter()
 
@@ -20,19 +21,22 @@ const switchLoginModel = () => {
 }
 
 async function handleLogin() {
-  const response = await service.post('/api/login', {
-    username: username.value,
-    password: password.value
-  });
-  const json = response.data;
-  if (json.code === 200) {
-    console.log(json.data.role +" "+json.data.username);
-    localStorage.setItem('role', json.data.role);
-    localStorage.setItem('name', json.data.name);
-    localStorage.setItem('cookie', json.data.cookie);
-    await router.replace('/mainView');
-  } else {
-    alert("登录失败");
+  try{
+    const response = await service.post('http://localhost:8080/api/login', {
+      username: username.value,
+      password: password.value
+    });
+    const json = response.data;
+    if (json.code === 200) {
+      localStorage.setItem('role', json.data.role);
+      localStorage.setItem('name', json.data.name);
+      localStorage.setItem('cookie', json.data.cookie);
+      await router.replace('/mainView');
+    }else{
+      alert(json.data.message);
+    }
+  }catch (e){
+    alert("账号或密码错误");
   }
 }
 
@@ -42,22 +46,18 @@ async function handleRegister() {
     return;
   }
   try {
-    const response = await service.post('/api/register', {
+    const response = await service.post('http://localhost:8080/api/register', {
       username: username.value,
       name: name.value,
       password: password.value,
       verifiedPassword: verifiedPassword.value
     });
     if (response.data.code === 200) {
-      alert("注册成功")
-      printJsonToConsole(json);
-      switchLoginModel();
-    } else {
       alert(response.data.message);
+      switchLoginModel();
     }
   } catch (error) {
-    console.error(error);
-    alert("注册失败");
+    console.log(error.message);
   }
 }
 </script>

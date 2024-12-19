@@ -9,6 +9,8 @@ import UserAdvertisementRequest from "./viewComponents/UserAdvertisementRequest.
 import AboutUs from "./viewComponents/AboutUs.vue";
 import router from "../router/index.js";
 import AdvertisingReview from "./viewComponents/AdvertisingReview.vue";
+import service from "../utils/service.js";
+import printJsonToConsole from "../utils/printJsonToConsole.js";
 
 const name = ref(localStorage.getItem('name'));
 const role =  ref(localStorage.getItem('role'));
@@ -27,8 +29,18 @@ const components = {
 
 
 async function Logout() {
-  localStorage.clear();
-  await router.replace('/');
+  try{
+    const response = await service.get('http://localhost:8080/api/exit')
+    if(response.data.code===200){
+      localStorage.clear();
+      alert("exit");
+      await router.replace('/');
+    }else{
+      alert("error");
+    }
+  }catch (e){
+    console.log(e);
+  }
 }
 
 // 点击菜单项时更新激活的菜单项

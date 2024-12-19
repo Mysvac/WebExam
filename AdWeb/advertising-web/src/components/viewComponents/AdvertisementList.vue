@@ -4,18 +4,32 @@ import service from "../../utils/service.js";
 import AdvertisingTable from "../utilsComponents/advertisingTable.vue";
 import AdvertisingSearch from "../utilsComponents/advertisingSearch.vue";
 import {InfoFilled} from "@element-plus/icons-vue";
+import printJsonToConsole from "../../utils/printJsonToConsole.js";
 
 const tableData = ref([]);
 const filteredTableData = ref([]);
 const pagedTableData = ref([]); // 分页后的数据
 const currentPage = ref(1); // 当前页码
 const pageSize = ref(8); // 每页显示的条数
+const adCost = ref(0);
 
+function updateCost(){
+  adCost.value = tableData.value.reduce(
+      (sum, item) => sum +
+          (item.isRequest === '未申请' ? 0 : item.cost), 0);
+}
 // 获取表格数据
 async function fetchTableData() {
   try {
-    const response = await service.post('/api/advertising-table-data');
-    tableData.value = response.data.data;
+    //http://localhost:8080
+    const response = await service.post('http://localhost:8080/api/advertising-table-data');
+    if (Array.isArray(response.data.data)) {
+      tableData.value = response.data.data;
+      updateCost();
+      printJsonToConsole(response.data)
+    } else {
+      console.log("?ss")
+    }
     filterTableData(); // 初始化过滤数据
   } catch (e) {
     console.error('获取表格数据失败:', e);
@@ -41,7 +55,7 @@ async function conveyAdvertisingToRequest() {
 
 async function unRequestRow(index) {
   try {
-    const response = await service.post('/api/unRequest-advertising', {
+    const response = await service.post('http://localhost:8080/api/unRequest-advertising', {
       id: index
     });
     const json = response.data;
@@ -49,24 +63,26 @@ async function unRequestRow(index) {
       const rowIndex = tableData.value.findIndex(row => row.id === index);
       if (rowIndex !== -1) {
         tableData.value[rowIndex].isRequest = '未申请'; // 更新状态
+        updateCost()
       }
     } else {
       console.error('广告解除失败:', response.data.message);
     }
-  }catch (e){
+  } catch (e) {
     console.log(e);
   }
 }
 
 async function requestRow(index) {
   try {
-    const response = await service.post('/api/request-advertising',
+    const response = await service.post('http://localhost:8080/api/request-advertising',
         {id: index});
     const json = response.data;
     if (json.code === 200) {
       const rowIndex = tableData.value.findIndex(row => row.id === index);
       if (rowIndex !== -1) {
         tableData.value[rowIndex].isRequest = '已申请'; // 更新状态
+        updateCost()
       }
     } else {
       console.error('广告申请失败:', response.data.message);
@@ -114,7 +130,7 @@ let intervalId = null;
 
 onMounted(() => {
   fetchTableData(); // 初始化数据
-  // intervalId = setInterval(fetchTableData, 10000); // 每 10 秒拉取一次数据
+  intervalId = setInterval(fetchTableData, 10000); // 每 10 秒拉取一次数据
 });
 
 onUnmounted(() => {
@@ -160,6 +176,7 @@ watch(
         />
       </div>
     </div>
+    <h4>申请金额：{{ adCost }}</h4>
     <AdvertisingTable :data="pagedTableData"
                       :operation="false"
                       :is-request="true"

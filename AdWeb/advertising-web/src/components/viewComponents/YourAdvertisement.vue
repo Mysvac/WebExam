@@ -12,8 +12,14 @@ const filteredTableData = ref([]);
 
 async function fetchTableData() {
   try {
-    const response = await service.post('/api/advertising-id-table-data');
-    tableData.value = response.data.data;
+    //http://localhost:8080
+    const response = await service.post('http://localhost:8080/api/advertising-id-table-data');
+    if (Array.isArray(response.data.data)) {
+      tableData.value = response.data.data;
+    } else {
+      console.log("?") // 如果数据不是数组，则初始化为空数组
+    }
+    //tableData.value = response.data.data;
     filterTableData();
   } catch (e) {
     console.error('获取表格数据失败:', e);
@@ -75,7 +81,7 @@ const onAddItem = () => {
 let intervalId = null;
 onMounted(() => {
   fetchTableData();
-  intervalId = setInterval(fetchTableData, 10000); // 每 10 秒拉取一次数据
+  // intervalId = setInterval(fetchTableData, 10000); // 每 10 秒拉取一次数据
 });
 
 watch(

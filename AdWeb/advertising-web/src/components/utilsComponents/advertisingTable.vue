@@ -44,12 +44,19 @@ function isRequestSelectable(row) {
   return row.isRequest !== '已申请'; // 如果 isRequest 为 "已申请"，则禁用复选框
 }
 
+function isReview(row) {
+  return row.isRequest !== '审核中';
+
+}
+
 const getRequestColor = (isRequest) => {
   switch (isRequest) {
     case "已申请":
       return "green";
     case "未申请":
       return "gray";
+    case "审核中":
+      return "red";
     default:
       return "black";
   }
@@ -90,7 +97,7 @@ const filterTag = (value, row) => {
             :style="{
             color: getRequestColor(scope.row.isRequest),
             fontSize: '16px',
-            fontWeight: 'bold',
+            fontWeight: 'bold'
           }"
         >
           {{ scope.row.isRequest }}
@@ -103,7 +110,7 @@ const filterTag = (value, row) => {
             :style="{
             color: getStatusColor(scope.row.status),
             fontSize: '16px',
-            fontWeight: 'bold',
+            fontWeight: 'bold'
           }"
         >
           {{ scope.row.status }}
@@ -131,7 +138,8 @@ const filterTag = (value, row) => {
       <template v-if="propsTable.operation" #default="scope">
         <el-button type="danger" size="default" @click="deleteRow(scope.row.id)">删除</el-button>
       </template>
-      <template v-if="propsTable.isRequest" #default="scope">
+      <template v-if="propsTable.isRequest " #default="scope">
+        <div v-if="isReview(scope.row)"></div>
         <el-button v-if="isRequestSelectable(scope.row)"
                    type="primary" size="default" @click="requestRow(scope.row.id)">申请
         </el-button>

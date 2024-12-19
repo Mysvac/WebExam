@@ -47,7 +47,6 @@
         <el-option label="图片" value="image"/>
         <el-option label="视频" value="video"/>
         <el-option label="文档" value="document"/>
-        <el-option label="无" value="null"/>
       </el-select>
     </el-form-item>
 
@@ -55,7 +54,7 @@
     <el-form-item label="广告资源" prop="file">
       <el-upload
           class="upload-demo"
-          action="/api/advertising-file-upload"
+          :action="fileUploadedPath"
           :on-success="handleUploadSuccess"
           :on-error="handleUploadError"
           :before-upload="beforeUpload"
@@ -89,7 +88,7 @@ import printJsonToConsole from "../../utils/printJsonToConsole.js";
 
 // 表单引用
 const ruleFormRef = ref()
-
+const fileUploadedPath = ref('http://localhost:8080/api/advertising-file-upload');
 // 表单数据
 const ruleForm = reactive({
   tag: '',
@@ -129,9 +128,13 @@ const rules = {
   ],
 }
 
+const fileId = ref(-1);
 // 上传成功回调
 const handleUploadSuccess = (response, file) => {
-  console.log('文件上传成功:', response)
+  if(response.code === 200){
+    console.log('文件上传成功:');
+    fileId.value = response.data.index;
+  }
   ruleForm.file = file
 }
 
@@ -165,14 +168,13 @@ const submitForm = () => {
   ruleFormRef.value.validate(async (valid) => {
     if (valid) {
       try {
-        const response = await service.post('/api/upload-advertising', {
+        const response = await service.post('http://localhost:8080/api/upload-advertising', {
           tag: ruleForm.tag,
           title:ruleForm.title,
           description: ruleForm.description,
           distributor: ruleForm.distributor,
           cost: ruleForm.cost,
-          fileType: ruleForm.fileType,
-          file: ruleForm.file ? ruleForm.file.name : null, // 只上传文件名
+          fileId: fileId.value // 只上传文件名
         });
         const jsonData = response.data
         if (jsonData.code === 200) {

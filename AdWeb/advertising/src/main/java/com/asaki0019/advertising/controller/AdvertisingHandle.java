@@ -74,4 +74,20 @@ public class AdvertisingHandle {
             return ResponseEntity.status(401).body(Map.of("code", 401, "message", e.getMessage()));
         }
     }
+
+    @PostMapping("/delete-advertising")
+    public ResponseEntity<Map<String, Object>> deleteAd(@RequestBody Map<String, String> body,
+                                                           HttpSession session) {
+        try {
+            if (checkUser(session)) {
+                return ResponseEntity.status(401).body(Map.of("code", 401, "message", "用户未登录"));
+            }
+            var id = body.get("id");
+            var user = (User)session.getAttribute("user");
+            advertisingService.deleteAd(id,user.getId());
+            return ResponseEntity.ok(Map.of("code", 200, "message", "解除广告成功"));
+        }catch (Exception e) {
+            return ResponseEntity.status(401).body(Map.of("code", 401, "message", e.getMessage()));
+        }
+    }
 }

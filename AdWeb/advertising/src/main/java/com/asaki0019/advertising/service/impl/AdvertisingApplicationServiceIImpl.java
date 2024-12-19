@@ -2,11 +2,13 @@ package com.asaki0019.advertising.service.impl;
 
 import com.asaki0019.advertising.mapper.AdApplicationMapper;
 import com.asaki0019.advertising.mapper.AdMapper;
+import com.asaki0019.advertising.model.Ad;
 import com.asaki0019.advertising.model.AdApplication;
 import com.asaki0019.advertising.service.AdvertisingApplicationService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,7 +26,12 @@ public class AdvertisingApplicationServiceIImpl implements AdvertisingApplicatio
     }
 
     @Override
+    @Transactional
     public AdApplication applyForAd(String adId, String applicantId) {
+        Ad ad = adMapper.selectById(adId);
+        var distribution = ad.getDistributed();
+        ad.setDistributed(distribution + 1);
+        adMapper.updateById(ad);
         AdApplication application = new AdApplication();
         application.setAdId(adId);
         application.setApplicantId(applicantId);
@@ -35,6 +42,7 @@ public class AdvertisingApplicationServiceIImpl implements AdvertisingApplicatio
     }
 
     @Override
+    @Transactional
     public AdApplication unApplyForAd(String adId, String applicantId) {
         // 构建删除条件
         QueryWrapper<AdApplication> queryWrapper = new QueryWrapper<>();
@@ -42,9 +50,12 @@ public class AdvertisingApplicationServiceIImpl implements AdvertisingApplicatio
 
         // 删除广告申请记录
         int deleted = adApplicationMapper.delete(queryWrapper);
-
         // 如果删除成功，返回一个空的 AdApplication 对象
         if (deleted > 0) {
+            Ad ad = adMapper.selectById(adId);
+            var distribution = ad.getDistributed();
+            ad.setDistributed(distribution - 1);
+            adMapper.updateById(ad);
             return new AdApplication();
         } else {
             throw new RuntimeException("Failed to delete ad application for adId: " + adId + " and applicantId: " + applicantId);

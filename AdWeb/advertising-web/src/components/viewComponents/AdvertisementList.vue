@@ -4,7 +4,6 @@ import service from "../../utils/service.js";
 import AdvertisingTable from "../utilsComponents/advertisingTable.vue";
 import AdvertisingSearch from "../utilsComponents/advertisingSearch.vue";
 import {InfoFilled} from "@element-plus/icons-vue";
-import printJsonToConsole from "../../utils/printJsonToConsole.js";
 
 const tableData = ref([]);
 const filteredTableData = ref([]);
@@ -26,7 +25,6 @@ async function fetchTableData() {
     if (Array.isArray(response.data.data)) {
       tableData.value = response.data.data;
       updateCost();
-      printJsonToConsole(response.data)
     } else {
       console.log("?ss")
     }

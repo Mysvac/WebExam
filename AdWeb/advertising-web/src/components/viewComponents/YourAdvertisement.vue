@@ -45,7 +45,7 @@ async function deleteRows() {
 
 async function deleteRow(index) {
   try {
-    const response = await service.post('/api/delete-advertising',
+    const response = await service.post('http://localhost:8080/api/delete-advertising',
         {id: index});
     const json = response.data;
     if (json.code === 200) {

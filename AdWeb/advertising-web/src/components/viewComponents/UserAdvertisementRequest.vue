@@ -2,21 +2,24 @@
 import {onMounted, ref} from "vue";
 import service from "../../utils/service.js";
 import {ElMessage} from "element-plus";
+import printJsonToConsole from "../../utils/printJsonToConsole.js";
 
 // 定义广告数据
 const ads = ref([]);
 const errorMessage = ref("");
-const apiUrl = ref("https://your-api-server.com/api/ads"); // 替换为实际的 API URL
+const apiUrl = ref("http://localhost:8080/api/fetch-request-ads"); // 替换为实际的 API URL
 const fetchCode = ref("");
-
+const localUserCookie = ref("");
+localUserCookie.value = localStorage.getItem('cookie') || null;
 // 获取广告数据的方法
 const fetchAds = async () => {
   try {
-    const response = await service.post("/api/ads", {
-      userCookie: 123,
+    const response = await service.post("http://localhost:8080/api/fetch-request-ads", {
+      userCookie: localUserCookie.value,
     });
     if (response.data.code === 200) {
       ads.value = response.data.data; // 将广告数据赋值给 ads
+      printJsonToConsole(response.data);
     } else {
       errorMessage.value = response.data.message; // 显示错误信息
     }
@@ -35,7 +38,7 @@ fetch('${apiUrl.value}', {
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({
-    userCookie: your_user_cookie,
+    userCookie: ${localUserCookie.value},
   }),
 })
   .then(response => response.json())
@@ -93,12 +96,12 @@ onMounted(() => {
     <!-- 广告数据表格 -->
     <el-table :data="ads" style="width: 100%">
       <el-table-column prop="id" label="ID" width="80"/>
-      <el-table-column prop="tag" label="标签" width="80"/>
+      <el-table-column prop="tags" label="标签" width="80"/>
       <el-table-column prop="title" label="标题" width="200"/>
       <el-table-column prop="description" label="描述"/>
-      <el-table-column prop="url" label="广告链接" width="200">
+      <el-table-column prop="fileId" label="广告链接" width="200">
         <template #default="scope">
-          <a :href="scope.row.url" target="_blank">{{ scope.row.url }}</a>
+          <a :href="scope.row.fileId" target="_blank">{{ scope.row.fileId }}</a>
         </template>
       </el-table-column>
     </el-table>

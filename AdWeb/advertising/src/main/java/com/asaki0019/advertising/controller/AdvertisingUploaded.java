@@ -52,6 +52,7 @@ public class AdvertisingUploaded {
             ad.setDescription(description);
             ad.setPrice(cost);
             ad.setTags(adRequest.getTag());
+            ad.setDistributed(0);
             // 调用广告服务创建广告
             Ad createdAd = advertisingService.createAd(ad, nowUser.getId(), fileId);
             // 构建响应

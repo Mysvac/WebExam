@@ -2,7 +2,7 @@ import Mock from "mockjs";
 
 export default [
     {
-        url: "/api/ads", // API 接口路径
+        url: "/api/fetch-request-ads", // API 接口路径
         method: "post", // 请求方法
         response: (req) => {
             const { userCookie } = req.body; // 从请求体中获取 userCookie
@@ -21,7 +21,7 @@ export default [
             });
 
             // 校验 userCookie
-            if (userCookie === 123) {
+            if (userCookie === "null") {
                 return {
                     code: 200, // 状态码
                     message: "获取广告申请数据成功", // 提示信息

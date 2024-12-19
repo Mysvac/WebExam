@@ -11,7 +11,7 @@ const advertisingDescriptions = ref([]);
 
 async function fetchCharData() {
   try {
-    const response = await service.post('/api/advertising-chart-data');
+    const response = await service.post('http://localhost:8080/api/advertising-chart-data');
     chartData.value = response.data.data;
     updateDescriptions();
     advertisingCounts.value = response.data.data.reduce(
@@ -35,14 +35,12 @@ const categoryDescriptions = {
 // 计算每个广告种类的描述信息
 const updateDescriptions = () => {
   advertisingDescriptions.value = chartData.value.map(item => {
-    const distributed = item.distributed; // 假设发布数量为广告数量的 65%
-    const distributedRate = Math.round((distributed / item.value) * 100);
-    const isHot = distributedRate >= 65 ? '热门' : '普通';
+    const distributed = item.distributed;
+    const isHot = distributed > 4 * item.value ? '热门' : '普通';
     return {
       name: item.name,
       value: item.value,
       distributed: distributed,
-      distributedRate: `${distributedRate}%`,
       isHot: isHot,
       description: categoryDescriptions[item.name] || '暂无描述', // 获取静态描述
     };
@@ -79,7 +77,6 @@ const getStatusColor = (isHot) => {
           <el-descriptions :title="item.name">
             <el-descriptions-item label="广告数量">{{ item.value }}</el-descriptions-item>
             <el-descriptions-item label="目前发布数量">{{ item.distributed }}</el-descriptions-item>
-            <el-descriptions-item label="发布比例">{{ item.distributedRate }}</el-descriptions-item>
             <el-descriptions-item label="标记">
               <el-tag size="large" :style="{
                 background: getStatusColor(item.isHot),

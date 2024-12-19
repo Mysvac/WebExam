@@ -56,4 +56,8 @@ public interface AdvertisingService {
     List<Ad> getAllReviewedAdsWithUserAppliedStatus(String userId);
 
     List<Ad> getAllAds();
+
+    Integer getAdCountByTag(String tag);
+
+    Integer getDistributedAdCountByTag(String tag);
 }

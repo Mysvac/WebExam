@@ -7,7 +7,7 @@ import LoginAndRegister from "./components/LoginAndRegister.vue";
     <main>
       <RouterView/>
     </main>
-<!--    <LoginAndRegister></LoginAndRegister>-->
+
 </template>
 
 <style scoped>

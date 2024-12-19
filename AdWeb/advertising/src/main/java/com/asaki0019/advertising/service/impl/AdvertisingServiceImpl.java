@@ -116,4 +116,14 @@ public class AdvertisingServiceImpl implements AdvertisingService {
     public List<Ad> getAllAds() {
         return adMapper.selectList(null); // 查询所有广告
     }
+
+    @Override
+    public Integer getAdCountByTag(String tag) {
+        return adMapper.countByTag(tag);
+    }
+
+    @Override
+    public Integer getDistributedAdCountByTag(String tag) {
+        return adMapper.getDistributedCountByTag(tag);
+    }
 }

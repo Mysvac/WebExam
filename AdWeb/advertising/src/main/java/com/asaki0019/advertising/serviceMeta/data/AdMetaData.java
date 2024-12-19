@@ -16,8 +16,17 @@ public class AdMetaData {
     private BigDecimal cost;
     private String fileId;
     private String isRequest; // 标记是否已申请
-
-    public AdMetaData(String id, String title, String status, String tags, String description, String distributor, BigDecimal cost, String fileId, String isRequest) {
+    private int distributed;
+    public AdMetaData(String id,
+                      String title,
+                      String status,
+                      String tags,
+                      String description,
+                      String distributor,
+                      BigDecimal cost,
+                      String fileId,
+                      String isRequest,
+                      int distributed) {
         this.id = id;
         this.title = title;
         this.status = status;
@@ -27,5 +36,6 @@ public class AdMetaData {
         this.cost = cost;
         this.fileId = fileId;
         this.isRequest = isRequest;
+        this.distributed = distributed;
     }
 }

@@ -3,6 +3,7 @@ package com.asaki0019.advertising.model;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -22,4 +23,5 @@ public class Ad {
     private String fileId; // 文件ID
     private Integer statusId; // 广告状态ID
     private LocalDateTime createdTime; // 广告创建时间
+    private Integer distributed; // 广告分发量
 }

@@ -2,6 +2,7 @@ import Mock from "mockjs/dist/mock.js";
 
 export default [
     {
+        //http://localhost:8080/api/advertising-table-data
         url: '/api/advertising-chart-data', // 接口 URL
         method: 'post', // 请求方法
         response: (req) => {

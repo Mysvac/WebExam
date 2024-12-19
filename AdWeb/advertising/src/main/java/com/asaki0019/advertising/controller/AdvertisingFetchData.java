@@ -1,7 +1,6 @@
 package com.asaki0019.advertising.controller;
 
 import com.asaki0019.advertising.model.Ad;
-import com.asaki0019.advertising.model.AdApplication;
 import com.asaki0019.advertising.model.User;
 import com.asaki0019.advertising.service.AdvertisingApplicationService;
 import com.asaki0019.advertising.service.AdvertisingService;
@@ -17,10 +16,12 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @RestController
@@ -58,7 +59,8 @@ public class AdvertisingFetchData {
                         ad.getAdvertiserName(), // 假设广告中有 advertiserName 字段
                         ad.getPrice(),
                         ad.getFileId(),
-                        isRequest ? "已申请" : "未申请" // 标记是否已申请
+                        isRequest ? "已申请" : "未申请",
+                        ad.getDistributed()
                 );
             }).toList();
 
@@ -81,7 +83,7 @@ public class AdvertisingFetchData {
             // 获取当前用户的广告列表
             List<Ad> ads = advertisingService.getAdsByUser(nowUser.getId());
 
-            // 过滤广告状态，只保留 "审核中"、"已发布" 和 "未发布" 的广告
+            // 过滤广告状态，只保留 "审核中"、"已发布" 的广告
             List<Ad> filteredAds = ads.stream()
                     .filter(ad -> Objects.equals(ad.getStatusId(), AdStatusEnum.UNDER_REVIEW.getId())
                             || Objects.equals(ad.getStatusId(), AdStatusEnum.PUBLISHED.getId()))
@@ -147,6 +149,46 @@ public class AdvertisingFetchData {
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(new AdReviewResponse(500, "获取需要审核广告表格数据失败: " + e.getMessage(), null));
+        }
+    }
+
+    @PostMapping("/fetch-request-ads")
+    public ResponseEntity<AdListMetaResponse> getAdvertisingAppliedData(@RequestBody Map<String, String> body) {
+        try {
+            var userCookie = body.get("userCookie");
+            if (userCookie == null) {
+                return ResponseEntity.status(500).body(new AdListMetaResponse(500, "获取已申请广告数据失败: cookie 错误 ", null));
+            }
+
+            List<Ad> reviewedAds = advertisingService.getAllReviewedAdsWithUserAppliedStatus(userCookie);
+            List<String> appliedAdIds = advertisingApplicationService.selectAdIdsByUserId(userCookie);
+
+            // 只保留已申请的广告
+            List<AdMetaData> appliedAdDataList = reviewedAds.stream()
+                    .filter(ad -> appliedAdIds.contains(ad.getId())) // 过滤已申请的广告
+                    .map(ad -> {
+                        String status = getAdStatus(ad.getStatusId());
+                        String url = uploadedFileService.getUploadedFileById(ad.getFileId()).getFileUrl();
+                        return new AdMetaData(
+                                ad.getId(),
+                                ad.getTitle(),
+                                status,
+                                ad.getTags(),
+                                ad.getDescription(),
+                                ad.getAdvertiserName(), // 假设广告中有 advertiserName 字段
+                                ad.getPrice(),
+                                url,
+                                "已申请",
+                                ad.getDistributed()
+                        );
+                    })
+                    .toList();
+
+            // 构建响应
+            AdListMetaResponse response = new AdListMetaResponse(200, "获取已申请广告数据成功", appliedAdDataList);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(new AdListMetaResponse(500, "获取已申请广告数据失败: " + e.getMessage(), null));
         }
     }
 

@@ -95,11 +95,11 @@ onMounted(() => {
 
     <!-- 广告数据表格 -->
     <el-table :data="ads" style="width: 100%">
-      <el-table-column prop="id" label="ID" width="80"/>
+      <el-table-column prop="id" label="ID" width="180"/>
       <el-table-column prop="tags" label="标签" width="80"/>
-      <el-table-column prop="title" label="标题" width="200"/>
+      <el-table-column prop="title" label="标题" width="120"/>
       <el-table-column prop="description" label="描述"/>
-      <el-table-column prop="fileId" label="广告链接" width="200">
+      <el-table-column prop="fileId" label="广告资源链接" width="280">
         <template #default="scope">
           <a :href="scope.row.fileId" target="_blank">{{ scope.row.fileId }}</a>
         </template>

@@ -98,6 +98,30 @@ public class AdvertisingUploaded {
         }
     }
 
+    @DeleteMapping("/delete-file/{fileId}")
+    public ResponseEntity<String> deleteFile(@PathVariable String fileId) {
+        try {
+            // 根据 fileId 查询文件记录
+            UploadedFile uploadedFile = uploadedFileService.getUploadedFileById(fileId);
+            if (uploadedFile == null) {
+                return ResponseEntity.status(404).body("文件不存在");
+            }
+
+            // 获取文件的 URL
+            String fileUrl = uploadedFile.getFileUrl();
+
+            // 删除文件系统中的文件
+            uploadedFileService.deleteFileFromFileSystem(fileUrl);
+
+            // 删除数据库中的文件记录
+            uploadedFileService.deleteUploadedFileById(fileId);
+
+            return ResponseEntity.ok("文件删除成功");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("文件删除失败: " + e.getMessage());
+        }
+    }
+
     private UploadResponse getUploadResponse(MultipartFile file, String uploadDir, String fileName) throws IOException {
         File dir = new File(uploadDir);
         if (!dir.exists()) {

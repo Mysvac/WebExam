@@ -3,7 +3,6 @@
 import {ref} from "vue";
 import {useRouter} from "vue-router";
 import service from "../utils/service.js";
-import {errorMessage} from "../utils/notification.js";
 import {ElMessage} from "element-plus";
 
 const router = useRouter()
@@ -28,21 +27,22 @@ async function handleLogin() {
     });
     const json = response.data;
     if (json.code === 200) {
+      ElMessage.success("登录成功")
       localStorage.setItem('role', json.data.role);
       localStorage.setItem('name', json.data.name);
       localStorage.setItem('cookie', json.data.cookie);
       await router.replace('/mainView');
     }else{
-      alert(json.data.message);
+      ElMessage.error(json.data.message);
     }
   }catch (e){
-    alert("账号或密码错误");
+    ElMessage.error("账号或密码错误");
   }
 }
 
 async function handleRegister() {
   if (password.value !== verifiedPassword.value) {
-    alert('两次输入的密码不一致');
+    ElMessage.error('两次输入的密码不一致');
     return;
   }
   try {
@@ -53,11 +53,13 @@ async function handleRegister() {
       verifiedPassword: verifiedPassword.value
     });
     if (response.data.code === 200) {
-      alert(response.data.message);
+      ElMessage.success("注册成功");
       switchLoginModel();
+    }else{
+      ElMessage.error("注册失败");
     }
   } catch (error) {
-    console.log(error.message);
+    await router.replace('/404View')
   }
 }
 </script>

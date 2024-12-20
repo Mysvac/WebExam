@@ -5,6 +5,7 @@ import com.asaki0019.advertising.model.AdApplication;
 import com.asaki0019.advertising.model.User;
 import com.asaki0019.advertising.service.AdvertisingApplicationService;
 import com.asaki0019.advertising.service.AdvertisingService;
+import com.asaki0019.advertising.service.UploadedFileService;
 import com.asaki0019.advertising.type.AdStatusEnum;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class AdvertisingHandle {
 
     @Autowired
     private AdvertisingApplicationService advertisingApplicationService;
+
+    @Autowired
+    private UploadedFileService uploadedFileService;
     @PostMapping("/advertising-review-data-ok")
     public ResponseEntity<Map<String, Object>> approveAd(@RequestBody Map<String, String> body,
                                                          HttpSession session) {
@@ -82,9 +86,15 @@ public class AdvertisingHandle {
             if (checkUser(session)) {
                 return ResponseEntity.status(401).body(Map.of("code", 401, "message", "用户未登录"));
             }
-            var id = body.get("id");
+            var adId = body.get("id");
             var user = (User)session.getAttribute("user");
-            advertisingService.deleteAd(id,user.getId());
+            Ad ad = advertisingService.getAdByAdId(adId);
+            String filedId = ad.getFileId();
+            if(filedId == null){
+                return ResponseEntity.status(401).body(Map.of("code", 401, "message", "错误的资源链接"));
+            }
+            uploadedFileService.deleteFileFromFileSystem(filedId);
+            advertisingService.deleteAd(adId,user.getId());
             return ResponseEntity.ok(Map.of("code", 200, "message", "解除广告成功"));
         }catch (Exception e) {
             return ResponseEntity.status(401).body(Map.of("code", 401, "message", e.getMessage()));

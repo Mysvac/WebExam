@@ -10,7 +10,7 @@ import AboutUs from "./viewComponents/AboutUs.vue";
 import router from "../router/index.js";
 import AdvertisingReview from "./viewComponents/AdvertisingReview.vue";
 import service from "../utils/service.js";
-import printJsonToConsole from "../utils/printJsonToConsole.js";
+import {ElMessage} from "element-plus";
 
 const name = ref(localStorage.getItem('name'));
 const role =  ref(localStorage.getItem('role'));
@@ -33,10 +33,9 @@ async function Logout() {
     const response = await service.get('http://localhost:8080/api/exit')
     if(response.data.code===200){
       localStorage.clear();
-      alert("exit");
       await router.replace('/');
     }else{
-      alert("error");
+      ElMessage.error("error");
     }
   }catch (e){
     console.log(e);
@@ -128,7 +127,7 @@ function handleMenuClick(index) {
               </el-icon>
               <template #dropdown>
                 <el-dropdown-menu class="dropdown-menu">
-                  <el-dropdown-item class="dropdown-item">Edit</el-dropdown-item>
+                  <el-dropdown-item class="dropdown-item" >Edit</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>

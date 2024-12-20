@@ -22,10 +22,11 @@
       </el-select>
     </el-form-item>
 
-    <!-- 发布商 -->
+    <!-- 广告标题 -->
     <el-form-item label="广告标题" prop="title">
       <el-input v-model="ruleForm.title"/>
     </el-form-item>
+
     <!-- 广告描述 -->
     <el-form-item label="广告描述" prop="description">
       <el-input v-model="ruleForm.description" type="textarea"/>
@@ -54,14 +55,12 @@
     <el-form-item label="广告资源" prop="file">
       <el-upload
           class="upload-demo"
-          :action="fileUploadedPath"
-          :on-success="handleUploadSuccess"
-          :on-error="handleUploadError"
-          :before-upload="beforeUpload"
+          :auto-upload="false"
+          :on-change="handleFileChange"
           :file-list="fileList"
           :limit="1"
       >
-        <el-button type="primary">点击上传</el-button>
+        <el-button type="primary">选择文件</el-button>
         <template #tip>
           <div class="el-upload__tip">
             只能上传一个文件，且文件类型必须与选择的文件类型匹配
@@ -92,7 +91,7 @@ const fileUploadedPath = ref('http://localhost:8080/api/advertising-file-upload'
 // 表单数据
 const ruleForm = reactive({
   tag: '',
-  title:'',
+  title: '',
   description: '',
   distributor: '',
   cost: '',
@@ -124,42 +123,15 @@ const rules = {
     {required: true, message: '请选择文件类型', trigger: 'change'},
   ],
   file: [
-    {required: false, message: '请上传广告资源', trigger: 'blur'},
+    {required: true, message: '请上传广告资源', trigger: 'change'},
   ],
 }
 
 const fileId = ref(-1);
-// 上传成功回调
-const handleUploadSuccess = (response, file) => {
-  if(response.code === 200){
-    console.log('文件上传成功:');
-    fileId.value = response.data.index;
-  }
-  ruleForm.file = file
-}
 
-// 上传失败回调
-const handleUploadError = (error) => {
-  console.error('文件上传失败:', error)
-}
-
-// 上传前检查
-const beforeUpload = (file) => {
-  const allowedTypes = {
-    image: ['image/jpeg', 'image/png', 'image/gif'],
-    video: ['video/mp4', 'video/avi'],
-    document: ['application/pdf', 'application/txt'],
-  }
-
-  const fileType = ruleForm.fileType
-  const allowedExtensions = allowedTypes[fileType] || []
-
-  if (!allowedExtensions.includes(file.type)) {
-    ElMessage.error(`文件类型不匹配，请上传 ${fileType} 类型的文件`)
-    return false
-  }
-
-  return true
+// 文件选择回调
+const handleFileChange = (file) => {
+  ruleForm.file = file.raw;
 }
 
 // 提交表单
@@ -168,26 +140,43 @@ const submitForm = () => {
   ruleFormRef.value.validate(async (valid) => {
     if (valid) {
       try {
-        const response = await service.post('http://localhost:8080/api/upload-advertising', {
-          tag: ruleForm.tag,
-          title:ruleForm.title,
-          description: ruleForm.description,
-          distributor: ruleForm.distributor,
-          cost: ruleForm.cost,
-          fileId: fileId.value // 只上传文件名
-        });
-        const jsonData = response.data
-        if (jsonData.code === 200) {
-          const json = jsonData.data;
-          printJsonToConsole(json);
+        // 第一步：上传文件
+        const formData = new FormData();
+        formData.append('file', ruleForm.file);
+        const uploadResponse = await service.post(fileUploadedPath.value, formData);
+        if (uploadResponse.data.code === 200) {
+          ElMessage.success("上传文件成功");
+          fileId.value = uploadResponse.data.data.index;
+
+          // 第二步：上传广告信息
+          const adResponse = await service.post('http://localhost:8080/api/upload-advertising', {
+            tag: ruleForm.tag,
+            title: ruleForm.title,
+            description: ruleForm.description,
+            distributor: ruleForm.distributor,
+            cost: ruleForm.cost,
+            fileId: fileId.value // 只上传文件名
+          });
+
+          const jsonData = adResponse.data;
+          if (jsonData.code === 200) {
+            const json = jsonData.data;
+            printJsonToConsole(json);
+            ElMessage.success('广告创建成功');
+          } else {
+            ElMessage.error('广告创建失败');
+            await service.delete(`http://localhost:8080/api/delete-file/${fileId.value}`);
+          }
         } else {
-          console.log('失败');
+          ElMessage.error('文件上传失败');
         }
       } catch (e) {
-        console.log(e.message);
+        if(fileId.value !== -1)
+          await service.delete(`http://localhost:8080/api/delete-file/${fileId.value}`);
+        ElMessage.error('操作失败: ' + e.message);
       }
     } else {
-      console.log('表单验证失败!')
+      ElMessage.error('表单验证失败!');
     }
   })
 }
@@ -197,6 +186,7 @@ const resetForm = () => {
   if (!ruleFormRef.value) return
   ruleFormRef.value.resetFields()
   fileList.value = [] // 清空文件列表
+  ruleForm.file = null;
 }
 </script>
 

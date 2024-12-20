@@ -5,6 +5,7 @@ import service from "../../utils/service.js";
 import AdvertisingSearch from "../utilsComponents/advertisingSearch.vue";
 import {InfoFilled} from "@element-plus/icons-vue";
 import AdvertisingCreatedForm from "../utilsComponents/advertisingCreatedForm.vue";
+import {ElMessage} from "element-plus";
 
 
 const tableData = ref([]);
@@ -17,12 +18,12 @@ async function fetchTableData() {
     if (Array.isArray(response.data.data)) {
       tableData.value = response.data.data;
     } else {
-      console.log("?") // 如果数据不是数组，则初始化为空数组
+      ElMessage.error(response.data.message) // 如果数据不是数组，则初始化为空数组
     }
     //tableData.value = response.data.data;
     filterTableData();
   } catch (e) {
-    console.error('获取表格数据失败:', e);
+    ElMessage.error('获取表格数据失败:' + e.message);
   }
 }
 
@@ -49,13 +50,14 @@ async function deleteRow(index) {
         {id: index});
     const json = response.data;
     if (json.code === 200) {
+      ElMessage.success("广告删除成功");
       tableData.value = tableData.value.filter(row => row.id !== index);
       filterTableData();
     } else {
-      console.error('广告删除失败:', response.data.message);
+      ElMessage.error('广告删除失败:' + response.data.message);
     }
   } catch (e) {
-    console.log(e);
+    ElMessage.error(e.message);
   }
 }
 

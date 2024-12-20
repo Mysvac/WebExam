@@ -29,7 +29,7 @@ public interface AdvertisingService {
      * @param adId 广告ID
      * @return 发布后的广告对象
      */
-    Ad publishAd(String adId);
+    Ad getAdByAdId(String adId);
 
     /**
      * 删除广告

@@ -1,6 +1,6 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { ElTable, ElTableColumn, ElButton, ElCard } from 'element-plus';
+import {onMounted, ref} from 'vue';
+import {ElButton, ElCard, ElMessage, ElTable, ElTableColumn} from 'element-plus';
 import service from "../../utils/service.js";
 
 const tableData = ref([]);
@@ -13,18 +13,18 @@ const fetchData = async () => {
       tableData.value = response.data.data;
     }
   } catch (error) {
-    console.error('获取数据失败', error);
+    ElMessage.error('获取数据失败' + error.message);
   }
 };
 
 const approveItem = async (id) => {
   try {
-    const response = await service.post('http://localhost:8080/api/advertising-review-data-ok',{id:id});
+    const response = await service.post('http://localhost:8080/api/advertising-review-data-ok', {id: id});
     if (response.data.code === 200) {
       tableData.value = tableData.value.filter(row => row.id !== response.data.id);
     }
   } catch (error) {
-    console.error('获取数据失败', error);
+    ElMessage.error('获取数据失败' + error.message);
   }
 };
 
@@ -36,12 +36,12 @@ onMounted(() => {
 <template>
   <el-card class="card">
     <el-table :data="tableData" style="width: 100%">
-      <el-table-column prop="id" label="ID" width="100" />
-      <el-table-column prop="tag" label="标签" width="100" />
-      <el-table-column prop="title" label="标题" width="100" />
-      <el-table-column prop="description" label="描述" />
-      <el-table-column prop="distributor" label="发布商" width="150" />
-      <el-table-column prop="cost" label="价格" width="100" />
+      <el-table-column prop="id" label="ID" width="100"/>
+      <el-table-column prop="tag" label="标签" width="100"/>
+      <el-table-column prop="title" label="标题" width="100"/>
+      <el-table-column prop="description" label="描述"/>
+      <el-table-column prop="distributor" label="发布商" width="150"/>
+      <el-table-column prop="cost" label="价格" width="100"/>
       <el-table-column label="广告资源" width="150">
         <template #default="scope">
           <a :href="scope.row.url" target="_blank">{{ scope.row.url }}</a>

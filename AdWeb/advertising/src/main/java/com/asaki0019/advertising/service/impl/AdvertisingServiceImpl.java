@@ -67,15 +67,11 @@ public class AdvertisingServiceImpl implements AdvertisingService {
     }
 
     @Override
-    public Ad publishAd(String adId) {
+    public Ad getAdByAdId(String adId) {
         Ad ad = adMapper.selectById(adId);
         if (ad == null) {
             throw new IllegalArgumentException("Ad with ID " + adId + " does not exist.");
         }
-
-        // 更新广告状态为“已发布”
-        ad.setStatusId(AdStatusEnum.PUBLISHED.getId());
-        adMapper.updateById(ad);
         return ad;
     }
 

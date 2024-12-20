@@ -2,6 +2,7 @@
 import AdvertisingPie from "../utilsComponents/advertisingPie.vue";
 import {onMounted, ref, watchEffect} from "vue";
 import service from "../../utils/service.js";
+import {ElMessage} from "element-plus";
 
 
 const chartTitle = ref('广告种类与分布');
@@ -16,8 +17,8 @@ async function fetchCharData() {
     updateDescriptions();
     advertisingCounts.value = response.data.data.reduce(
         (sum, item) => sum + item.value, 0);
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    ElMessage.error('获取数据失败' + error.message);
   }
 }
 

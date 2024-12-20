@@ -4,6 +4,7 @@ import service from "../../utils/service.js";
 import AdvertisingTable from "../utilsComponents/advertisingTable.vue";
 import AdvertisingSearch from "../utilsComponents/advertisingSearch.vue";
 import {InfoFilled} from "@element-plus/icons-vue";
+import {ElMessage} from "element-plus";
 
 const tableData = ref([]);
 const filteredTableData = ref([]);
@@ -12,11 +13,12 @@ const currentPage = ref(1); // 当前页码
 const pageSize = ref(8); // 每页显示的条数
 const adCost = ref(0);
 
-function updateCost(){
+function updateCost() {
   adCost.value = tableData.value.reduce(
       (sum, item) => sum +
           (item.isRequest === '未申请' ? 0 : item.cost), 0);
 }
+
 // 获取表格数据
 async function fetchTableData() {
   try {
@@ -26,11 +28,11 @@ async function fetchTableData() {
       tableData.value = response.data.data;
       updateCost();
     } else {
-      console.log("?ss")
+      ElMessage.error(response.data.message);
     }
     filterTableData(); // 初始化过滤数据
   } catch (e) {
-    console.error('获取表格数据失败:', e);
+    ElMessage.error('获取表格数据失败:', e.message);
   }
 }
 
@@ -64,10 +66,10 @@ async function unRequestRow(index) {
         updateCost()
       }
     } else {
-      console.error('广告解除失败:', response.data.message);
+      ElMessage.error('广告解除失败:' + response.data.message);
     }
   } catch (e) {
-    console.log(e);
+    ElMessage.error(e.message);
   }
 }
 
@@ -83,10 +85,10 @@ async function requestRow(index) {
         updateCost()
       }
     } else {
-      console.error('广告申请失败:', response.data.message);
+      ElMessage.error('广告申请失败:' + response.data.message);
     }
   } catch (e) {
-    console.log(e);
+    ElMessage.error(e.message);
   }
 }
 

@@ -4,9 +4,9 @@ import {ref} from 'vue'
 
 const activeName = ref('1')
 const imagItems = ref([
-  {id: 0, title: "轮播图1", url: 'src/assets/collapseImages/【哲风壁纸】下雨-商店-绿色护眼.png'},
-  {id: 1, title: "轮播图2", url: 'src/assets/collapseImages/【哲风壁纸】动漫女孩-夹克-常设.png'},
-  {id: 2, title: "轮播图3", url: 'src/assets/collapseImages/【哲风壁纸】漫画风大草原-绿色护眼.png'}
+  {id: 0, title: "轮播图1", url: 'collapseImages/【哲风壁纸】下雨-商店-绿色护眼.png'},
+  {id: 1, title: "轮播图2", url: 'collapseImages/【哲风壁纸】动漫女孩-夹克-常设.png'},
+  {id: 2, title: "轮播图3", url: 'collapseImages/【哲风壁纸】漫画风大草原-绿色护眼.png'}
 ])
 </script>
 

@@ -32,7 +32,7 @@ async function fetchTableData() {
     }
     filterTableData(); // 初始化过滤数据
   } catch (e) {
-    ElMessage.error('获取表格数据失败:', e.message);
+    console.error('获取表格数据失败:', e.message);
   }
 }
 

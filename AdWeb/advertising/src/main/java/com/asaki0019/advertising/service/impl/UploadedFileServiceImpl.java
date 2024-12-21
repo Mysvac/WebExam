@@ -13,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 @Service
 public class UploadedFileServiceImpl implements UploadedFileService {
@@ -63,5 +64,10 @@ public class UploadedFileServiceImpl implements UploadedFileService {
         } else {
             throw new RuntimeException("文件不存在: " + filePath);
         }
+    }
+
+    @Override
+    public List<UploadedFile> getAllUploadedFiles() {
+        return uploadedFileMapper.selectList(null);
     }
 }

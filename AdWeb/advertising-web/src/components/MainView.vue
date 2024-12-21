@@ -1,5 +1,5 @@
 <script setup>
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import OverView from "./viewComponents/OverView.vue";
 import DataAnalysis from "./viewComponents/DataAnalysis.vue";
 import AdvertisementList from "./viewComponents/AdvertisementList.vue";
@@ -11,11 +11,12 @@ import router from "../router/index.js";
 import AdvertisingReview from "./viewComponents/AdvertisingReview.vue";
 import service from "../utils/service.js";
 import {ElMessage} from "element-plus";
+import printJsonToConsole from "../utils/printJsonToConsole.js";
 
 const name = ref(localStorage.getItem('name'));
-const role =  ref(localStorage.getItem('role'));
-const avatarUrl = ref('src/assets/avatar.jpg');
-const activeIndex = ref('1-1')
+const role = ref(localStorage.getItem('role'));
+const avatarUrl = ref('avatar.jpg');
+const activeIndex = ref('1-1');
 const components = {
   '1-1': OverView,
   '1-2': DataAnalysis,
@@ -27,18 +28,30 @@ const components = {
   '4-1': AboutUs
 };
 
+async function checkLoginStatus() {
+  try {
+    const response = await service.get('http://localhost:8080/api/verifiedUser');
+    if (!response.data.code) {
+      ElMessage.error("你似乎没有登录捏！！！");
+      await router.replace('/');
+    }
+  } catch (error) {
+    await router.replace('/404View');
+  }
+}
 
 async function Logout() {
-  try{
-    const response = await service.get('http://localhost:8080/api/exit')
-    if(response.data.code===200){
+  try {
+    const response = await service.get('http://localhost:8080/api/exit');
+    if (response.data.code === 200) {
       localStorage.clear();
-      await router.replace('/');
-    }else{
+    } else {
       ElMessage.error("error");
     }
-  }catch (e){
+    await router.replace('/');
+  } catch (e) {
     console.log(e);
+    await router.replace('/');
   }
 }
 
@@ -46,6 +59,10 @@ async function Logout() {
 function handleMenuClick(index) {
   activeIndex.value = index;
 }
+
+onMounted(() => {
+  checkLoginStatus();
+});
 </script>
 
 <template>
@@ -86,27 +103,25 @@ function handleMenuClick(index) {
                 <el-menu-item class="menu-item" index="2-3"
                               @click="handleMenuClick('2-3')">广告申请
                 </el-menu-item>
-                <el-menu-item v-if="role==='admin'"
+                <el-menu-item v-if="role === 'admin'"
                               class="menu-item" index="2-4"
                               @click="handleMenuClick('2-4')">广告审核
                 </el-menu-item>
-
               </el-menu-item-group>
             </el-sub-menu>
 
             <!-- 用户管理 -->
             <el-sub-menu class="menu-item" index="3">
               <template #title>
-                <el-icon><i class="fa-solid fa-user"></i>
-                  <v-messages/>
-                </el-icon>
+                <el-icon><i class="fa-solid fa-user"></i></el-icon>
                 用户管理
               </template>
               <el-menu-item class="menu-item" index="3-1" @click="handleMenuClick('3-1')">
                 用户
               </el-menu-item>
-              <!-- 关于 -->
             </el-sub-menu>
+
+            <!-- 关于 -->
             <el-sub-menu class="menu-item" index="4">
               <template #title>
                 <el-icon><i class="fa-solid fa-bars"></i></el-icon>
@@ -127,16 +142,14 @@ function handleMenuClick(index) {
               </el-icon>
               <template #dropdown>
                 <el-dropdown-menu class="dropdown-menu">
-                  <el-dropdown-item class="dropdown-item" >Edit</el-dropdown-item>
+                  <el-dropdown-item class="dropdown-item">Edit</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
             <span>{{ name }}</span>
             <div class="block">
-              <el-avatar :size="50" :src=avatarUrl
-                         style="margin-top: 20px;
-                                margin-left: 10px"
-              />
+              <el-avatar :size="50" :src="avatarUrl"
+                         style="margin-top: 20px; margin-left: 10px"/>
             </div>
           </div>
         </el-header>
@@ -151,7 +164,6 @@ function handleMenuClick(index) {
       </el-container>
     </el-container>
   </div>
-
 </template>
 
 <style scoped>
@@ -177,10 +189,6 @@ function handleMenuClick(index) {
   justify-content: center;
   height: 100%;
   right: 20px;
-}
-
-.sidebar-menu {
-  border-right: none;
 }
 
 .sidebar-menu {
@@ -231,6 +239,4 @@ function handleMenuClick(index) {
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* 平滑过渡效果 */
   z-index: 1000;
 }
-
-
 </style>

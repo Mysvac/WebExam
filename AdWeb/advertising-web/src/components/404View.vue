@@ -1,8 +1,8 @@
 <script setup>
 import { useRouter } from 'vue-router';
 const router = useRouter();
-const goToHome = () => {
-  router.push({ name: '/mainView' }); // 假设首页的路由名称为 'home'
+const goToHome = async () => {
+  await router.replace('/'); // 假设首页的路由名称为 'home'
 };
 </script>
 

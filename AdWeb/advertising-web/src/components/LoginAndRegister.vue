@@ -73,7 +73,7 @@ async function handleRegister() {
       <img
           :key="isLoginModel ? 'login' : 'register'"
           class="background-image"
-          :src="isLoginModel ? 'src/assets/loginBack.png' : 'src/assets/registerBack.png'"
+          :src="isLoginModel ? 'loginBack.png' : 'registerBack.png'"
           alt="background"
       />
     </transition>

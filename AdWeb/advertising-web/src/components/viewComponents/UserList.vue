@@ -3,10 +3,10 @@ import {onMounted, ref} from 'vue';
 import {ElCard, ElCarousel, ElCarouselItem, ElDescriptions, ElDescriptionsItem} from 'element-plus';
 
 const imagItems = ref([
-  {id: 0, title: "轮播图1", url: 'src/assets/userInfoImages/【哲风壁纸】秋天-蜡笔小新.png'},
-  {id: 1, title: "轮播图2", url: 'src/assets/userInfoImages/【哲风壁纸】凌（明日方舟）-动漫女孩.png'},
-  {id: 2, title: "轮播图3", url: 'src/assets/collapseImages/【哲风壁纸】漫画风大草原-绿色护眼.png'},
-  {id: 3, title: "轮播图4", url: 'src/assets/userInfoImages/【哲风壁纸】佐贺（明日方舟）-动漫女孩.png'}
+  {id: 0, title: "轮播图1", url: 'userInfoImages/【哲风壁纸】佐贺（明日方舟）-动漫女孩.png'},
+  {id: 1, title: "轮播图2", url: 'userInfoImages/【哲风壁纸】凌（明日方舟）-动漫女孩.png'},
+  {id: 2, title: "轮播图3", url: 'loginBack.png'},
+  {id: 3, title: "轮播图4", url: 'userInfoImages/【哲风壁纸】秋天-蜡笔小新.png'}
 ])
 
 const name = ref('');

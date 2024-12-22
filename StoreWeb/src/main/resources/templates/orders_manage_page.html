@@ -2,23 +2,23 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>小小书屋-管理</title>
+  <title>小小杂货铺-管理</title>
 
-  <link href="/style/management_page.css" rel="stylesheet">
+  <link href="/style/orders_manege_page.css" rel="stylesheet">
   <script src="/scripts/orders_manage_page.js" defer></script>
 </head>
 <body>
 <header>
   <nav>
     <ul>
-      <li class="logo"><a href="/">小小书屋</a></li>
+      <li class="logo"><a href="/">小小杂货铺</a></li>
       <li><a href="/page/classify">分类</a></li>
       <li><a href="/page/bill">订单</a></li>
       <li><a href="/page/cart">购物车</a></li>
-      <li class="account"><a href="/page/profile" th:text="${uid == null ? '登录' : uid }"></a></li>
+      <li class="account"><a id="a_uid" href="/page/profile" th:text="${uid == null ? '登录' : uid }"></a></li>
       <li class="search">
         <form action="/page/search" method="get">
-          <input id="search-input" type="text" placeholder="搜索书籍..." name="info"/>
+          <input id="search-input" type="text" placeholder="搜索商品..." name="info"/>
           <input id="search-button" type="submit" value="搜索"/>
         </form>
       </li>
@@ -41,8 +41,14 @@
 
     <!-- 右侧内容区域 -->
     <div class="content">
+      <div class="search-div">
+        <form class="search-div" method="get" action="/page/manage-orders">
+          <input id="search" class="search" name="search" type="text"  placeholder="根据订单/用户/书籍号查询...">
+          <input class="submit" type="submit" value="搜索">
+        </form>
+      </div>
       <div th:if="${#lists.isEmpty(orders)}">
-        <p>无进行中的订单</p>
+        <p>空</p>
       </div>
       <div class="bill" th:each="bill : ${orders}">
         <div class="profile">
@@ -72,7 +78,7 @@
 </main>
 
 <footer>
-  <p>&copy; 2024 小小书屋 | 仅供学习测试使用</p>
+  <p>&copy; 2024 小小杂货铺 | 仅供学习测试使用</p>
 </footer>
 </body>
 </html>

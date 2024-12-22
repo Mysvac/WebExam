@@ -2,7 +2,7 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>小小书屋-管理</title>
+    <title>小小杂货铺-管理</title>
 
     <link href="/style/books_manage_page.css" rel="stylesheet">
     <script src="/scripts/books_manage_page.js" defer></script>
@@ -11,14 +11,14 @@
 <header>
     <nav>
         <ul>
-            <li class="logo"><a href="/">小小书屋</a></li>
+            <li class="logo"><a href="/">小小杂货铺</a></li>
             <li><a href="/page/classify">分类</a></li>
             <li><a href="/page/bill">订单</a></li>
             <li><a href="/page/cart">购物车</a></li>
-            <li class="account"><a href="/page/profile" th:text="${uid == null ? '登录' : uid }"></a></li>
+            <li class="account"><a id="a_uid" href="/page/profile" th:text="${uid == null ? '登录' : uid }"></a></li>
             <li class="search">
                 <form action="/page/search" method="get">
-                    <input id="search-input" type="text" placeholder="搜索书籍..." name="info"/>
+                    <input id="search-input" type="text" placeholder="搜索商品..." name="info"/>
                     <input id="search-button" type="submit" value="搜索"/>
                 </form>
             </li>
@@ -41,8 +41,14 @@
 
         <!-- 右侧内容区域 -->
         <div class="content">
+            <div class="search-div">
+                <form class="search-div" method="get" action="/page/manage-books">
+                    <input id="search" class="search" name="search" type="text" placeholder="根据编号或书名查询...">
+                    <input class="submit" type="submit" value="搜索">
+                </form>
+            </div>
             <div th:if="${#lists.isEmpty(books)}">
-                <p>暂无书籍</p>
+                <p>暂无图书</p>
             </div>
             <div class="a-book" th:each="book : ${books}">
                 <div class="profile">
@@ -64,8 +70,9 @@
                 </div>
                 <button class="update-book"  th:data-bookid="${book.bookid}" >修改</button>
                 <button class="delete-book"  th:data-bookid="${book.bookid}" >删除</button>
-                <button class="buy-able" th:data-bookid="${book.bookid}" th:text="${book.available==1 ? '销售中' : '停售中'}">销售中</button>
-                <span th:if="${book.available==0}" style="color: red"> !*!</span>
+                <button class="buy-able" th:data-bookid="${book.bookid}" th:text="${book.available==1 ? '销售中' : '停售中'}"
+                th:style="${book.available==1 ? '' : 'background-color: red;'}">销售中</button>
+
             </div>
 
         </div>
@@ -73,7 +80,7 @@
 </main>
 
 <footer>
-    <p>&copy; 2024 小小书屋 | 仅供学习测试使用</p>
+    <p>&copy; 2024 小小杂货铺 | 仅供学习测试使用</p>
 </footer>
 </body>
 </html>

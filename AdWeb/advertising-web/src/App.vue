@@ -1,6 +1,4 @@
 <script setup>
-import MainView from "./components/MainView.vue";
-import LoginAndRegister from "./components/LoginAndRegister.vue";
 </script>
 
 <template>
@@ -11,4 +9,5 @@ import LoginAndRegister from "./components/LoginAndRegister.vue";
 </template>
 
 <style scoped>
+
 </style>

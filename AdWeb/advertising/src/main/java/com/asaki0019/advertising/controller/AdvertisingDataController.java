@@ -8,9 +8,7 @@ import com.asaki0019.advertising.service.UploadedFileService;
 import com.asaki0019.advertising.serviceMeta.data.AdData;
 import com.asaki0019.advertising.serviceMeta.data.AdMetaData;
 import com.asaki0019.advertising.serviceMeta.data.AdReviewData;
-import com.asaki0019.advertising.serviceMeta.res.AdListMetaResponse;
-import com.asaki0019.advertising.serviceMeta.res.AdListResponse;
-import com.asaki0019.advertising.serviceMeta.res.AdReviewResponse;
+import com.asaki0019.advertising.serviceMeta.res.BaseResponse;
 import com.asaki0019.advertising.type.AdStatusEnum;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
@@ -57,11 +55,11 @@ public class AdvertisingDataController {
      * @return 包含广告表格数据的响应实体
      */
     @PostMapping("/advertising-table-data")
-    public ResponseEntity<AdListMetaResponse> getAdvertisingTableData(HttpSession session) {
+    public ResponseEntity<BaseResponse<List<AdMetaData>>> getAdvertisingTableData(HttpSession session) {
         try {
             User nowUser = (User) session.getAttribute("user");
             if (nowUser == null) {
-                return ResponseEntity.status(401).body(new AdListMetaResponse(401, "用户不存在", null));
+                return ResponseEntity.status(401).body(new BaseResponse<>(401, "用户不存在", null));
             }
 
             List<Ad> reviewedAds = advertisingService.getAllReviewedAdsWithUserAppliedStatus(nowUser.getId());
@@ -73,10 +71,10 @@ public class AdvertisingDataController {
                     .toList();
 
             // 构建响应
-            AdListMetaResponse response = new AdListMetaResponse(200, "获取广告表格数据成功", adDataList);
+            var response = new BaseResponse<>(200, "获取广告表格数据成功", adDataList);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(new AdListMetaResponse(500, "获取广告表格数据失败: " + e.getMessage(), null));
+            return ResponseEntity.status(500).body(new BaseResponse<>(500, "获取广告表格数据失败: " + e.getMessage(), null));
         }
     }
 
@@ -87,11 +85,11 @@ public class AdvertisingDataController {
      * @return 包含当前用户广告表格数据的响应实体
      */
     @PostMapping("/advertising-id-table-data")
-    public ResponseEntity<AdListResponse> getAdvertisingUseTableData(HttpSession session) {
+    public ResponseEntity<BaseResponse<List<AdData>>> getAdvertisingUseTableData(HttpSession session) {
         try {
             User nowUser = (User) session.getAttribute("user");
             if (nowUser == null) {
-                return ResponseEntity.status(401).body(new AdListResponse(401, "用户不存在", null));
+                return ResponseEntity.status(401).body(new BaseResponse<>(401, "用户不存在", null));
             }
 
             // 获取当前用户的广告列表
@@ -109,10 +107,10 @@ public class AdvertisingDataController {
                     .toList();
 
             // 构建响应
-            AdListResponse response = new AdListResponse(200, "获取广告表格数据成功", adDataList);
+            var response = new BaseResponse<>(200, "获取广告表格数据成功", adDataList);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(new AdListResponse(500, "获取广告表格数据失败: " + e.getMessage(), null));
+            return ResponseEntity.status(500).body(new BaseResponse<>(500, "获取广告表格数据失败: " + e.getMessage(), null));
         }
     }
 
@@ -123,11 +121,11 @@ public class AdvertisingDataController {
      * @return 包含需要审核广告表格数据的响应实体
      */
     @PostMapping("/advertising-review-data")
-    public ResponseEntity<AdReviewResponse> adReviewTableResponse(HttpSession session) {
+    public ResponseEntity<BaseResponse<List<AdReviewData>>> adReviewTableResponse(HttpSession session) {
         try {
             User nowUser = (User) session.getAttribute("user");
             if (nowUser == null) {
-                return ResponseEntity.status(401).body(new AdReviewResponse(401, "用户不存在", null));
+                return ResponseEntity.status(401).body(new BaseResponse<>(401, "用户不存在", null));
             }
 
             // 获取所有广告
@@ -144,10 +142,10 @@ public class AdvertisingDataController {
                     .toList();
 
             // 构建响应
-            AdReviewResponse response = new AdReviewResponse(200, "获取需要审核广告表格数据成功", adReviewDataList);
+            var response = new BaseResponse<>(200, "获取需要审核广告表格数据成功", adReviewDataList);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(new AdReviewResponse(500, "获取需要审核广告表格数据失败: " + e.getMessage(), null));
+            return ResponseEntity.status(500).body(new BaseResponse<>(500, "获取需要审核广告表格数据失败: " + e.getMessage(), null));
         }
     }
 
@@ -158,11 +156,11 @@ public class AdvertisingDataController {
      * @return 包含已申请广告数据的响应实体
      */
     @PostMapping("/fetch-request-ads")
-    public ResponseEntity<AdListMetaResponse> getAdvertisingAppliedData(@RequestBody Map<String, String> body) {
+    public ResponseEntity<BaseResponse<List<AdMetaData>>> getAdvertisingAppliedData(@RequestBody Map<String, String> body) {
         try {
             var userCookie = body.get("userCookie");
             if (userCookie == null) {
-                return ResponseEntity.status(500).body(new AdListMetaResponse(500, "获取已申请广告数据失败: cookie 错误 ", null));
+                return ResponseEntity.status(500).body(new BaseResponse<>(500, "获取已申请广告数据失败: cookie 错误 ", null));
             }
 
             List<Ad> reviewedAds = advertisingService.getAllReviewedAdsWithUserAppliedStatus(userCookie);
@@ -175,10 +173,10 @@ public class AdvertisingDataController {
                     .toList();
 
             // 构建响应
-            AdListMetaResponse response = new AdListMetaResponse(200, "获取已申请广告数据成功", appliedAdDataList);
+            var response = new BaseResponse<>(200, "获取已申请广告数据成功", appliedAdDataList);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(new AdListMetaResponse(500, "获取已申请广告数据失败: " + e.getMessage(), null));
+            return ResponseEntity.status(500).body(new BaseResponse<>(500, "获取已申请广告数据失败: " + e.getMessage(), null));
         }
     }
 

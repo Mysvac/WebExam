@@ -25,7 +25,7 @@ function mapFileType(fileType) {
 // 获取广告详情
 async function fetchAdDetails() {
   try {
-    const response = await service.get(`http://localhost:8080/api/show-ad`, {
+    const response = await service.get(`/api/show-ad`, {
       params: { adId }, // 传递广告 ID 作为查询参数
     });
 

@@ -12,6 +12,7 @@
     <artifactId>advertising</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>advertising</name>
+    <packaging>war</packaging>
     <description>advertising</description>
     <url/>
     <licenses>

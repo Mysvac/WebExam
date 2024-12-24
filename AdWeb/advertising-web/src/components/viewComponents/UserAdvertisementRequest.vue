@@ -6,15 +6,15 @@ import {ElMessage} from "element-plus";
 // 定义广告数据
 const ads = ref([]);
 const errorMessage = ref("");
-const apiUrl = ref("http://localhost:8080/api/fetch-request-ads"); // 替换为实际的 API URL
-const clickUrl = ref("http://localhost:8080/api/ad-click")
+const apiUrl = ref("/api/fetch-request-ads"); // 替换为实际的 API URL
+const clickUrl = ref("/api/ad-click")
 const fetchCode = ref("");
 const localUserCookie = ref("");
 localUserCookie.value = localStorage.getItem('cookie') || null;
 // 获取广告数据的方法
 const fetchAds = async () => {
   try {
-    const response = await service.post("http://localhost:8080/api/fetch-request-ads", {
+    const response = await service.post("/api/fetch-request-ads", {
       userCookie: localUserCookie.value,
     });
     if (response.data.code === 200) {

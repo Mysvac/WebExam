@@ -13,8 +13,8 @@ const filteredTableData = ref([]);
 
 async function fetchTableData() {
   try {
-    //http://localhost:8080
-    const response = await service.post('http://localhost:8080/api/advertising-id-table-data');
+    //
+    const response = await service.post('/api/advertising-id-table-data');
     if (Array.isArray(response.data.data)) {
       tableData.value = response.data.data;
     } else {
@@ -46,7 +46,7 @@ async function deleteRows() {
 
 async function deleteRow(index) {
   try {
-    const response = await service.post('http://localhost:8080/api/delete-advertising',
+    const response = await service.post('/api/delete-advertising',
         {id: index});
     const json = response.data;
     if (json.code === 200) {

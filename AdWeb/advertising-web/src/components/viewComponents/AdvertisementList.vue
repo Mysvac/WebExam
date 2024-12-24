@@ -22,8 +22,8 @@ function updateCost() {
 // 获取表格数据
 async function fetchTableData() {
   try {
-    //http://localhost:8080
-    const response = await service.post('http://localhost:8080/api/advertising-table-data');
+    //
+    const response = await service.post('/api/advertising-table-data');
     if (Array.isArray(response.data.data)) {
       tableData.value = response.data.data;
       updateCost();
@@ -55,7 +55,7 @@ async function conveyAdvertisingToRequest() {
 
 async function unRequestRow(index) {
   try {
-    const response = await service.post('http://localhost:8080/api/unRequest-advertising', {
+    const response = await service.post('/api/unRequest-advertising', {
       id: index
     });
     const json = response.data;
@@ -75,7 +75,7 @@ async function unRequestRow(index) {
 
 async function requestRow(index) {
   try {
-    const response = await service.post('http://localhost:8080/api/request-advertising',
+    const response = await service.post('/api/request-advertising',
         {id: index});
     const json = response.data;
     if (json.code === 200) {

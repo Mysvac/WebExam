@@ -21,7 +21,7 @@ const switchLoginModel = () => {
 
 async function handleLogin() {
   try{
-    const response = await service.post('http://localhost:8080/api/login', {
+    const response = await service.post('/api/login', {
       username: username.value,
       password: password.value
     });
@@ -46,7 +46,7 @@ async function handleRegister() {
     return;
   }
   try {
-    const response = await service.post('http://localhost:8080/api/register', {
+    const response = await service.post('/api/register', {
       username: username.value,
       name: name.value,
       password: password.value,

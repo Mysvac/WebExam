@@ -11,7 +11,7 @@ const advertisingDescriptions = ref([]);
 
 async function fetchCharData() {
   try {
-    const response = await service.post('http://localhost:8080/api/advertising-chart-data');
+    const response = await service.post('/api/advertising-chart-data');
     chartData.value = response.data.data;
     updateDescriptions();
     advertisingCounts.value = response.data.data.reduce(

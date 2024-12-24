@@ -8,7 +8,7 @@ import com.asaki0019.advertising.service.AdvertisingApplicationService;
 import com.asaki0019.advertising.service.AdvertisingService;
 import com.asaki0019.advertising.service.UploadedFileService;
 import com.asaki0019.advertising.serviceMeta.data.ShowAdData;
-import com.asaki0019.advertising.serviceMeta.res.ShowAdResponse;
+import com.asaki0019.advertising.serviceMeta.res.BaseResponse;
 import com.asaki0019.advertising.type.AdStatusEnum;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
@@ -142,14 +142,14 @@ public class AdvertisingOperationController {
      * @return 包含广告详情的响应实体
      */
     @GetMapping("/show-ad")
-    public ResponseEntity<ShowAdResponse> showAd(@RequestParam("adId") String adId) {
+    public ResponseEntity<BaseResponse<ShowAdData>> showAd(@RequestParam("adId") String adId) {
         try {
             if (adId == null) {
-                return ResponseEntity.status(400).body(new ShowAdResponse(400, "广告 ID 为空", null));
+                return ResponseEntity.status(400).body(new BaseResponse<>(400, "广告 ID 为空", null));
             }
             Ad ad = advertisingService.getAdByAdId(adId);
             UploadedFile file = uploadedFileService.getUploadedFileById(ad.getFileId());
-            ShowAdResponse adResponse = new ShowAdResponse(
+            BaseResponse<ShowAdData> adResponse = new BaseResponse<>(
                     200,
                     "访问成功",
                     new ShowAdData(
@@ -162,7 +162,7 @@ public class AdvertisingOperationController {
             );
             return ResponseEntity.ok(adResponse);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(new ShowAdResponse(500, "访问失败: " + e.getMessage(), null));
+            return ResponseEntity.status(500).body(new BaseResponse<>(500, "访问失败: " + e.getMessage(), null));
         }
     }
 

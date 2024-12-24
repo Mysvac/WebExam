@@ -8,7 +8,7 @@ import com.asaki0019.advertising.service.UploadedFileService;
 import com.asaki0019.advertising.serviceMeta.data.AdData;
 import com.asaki0019.advertising.serviceMeta.data.UploadData;
 import com.asaki0019.advertising.serviceMeta.req.AdRequest;
-import com.asaki0019.advertising.serviceMeta.res.AdResponse;
+import com.asaki0019.advertising.serviceMeta.res.BaseResponse;
 import com.asaki0019.advertising.serviceMeta.res.UploadResponse;
 import com.asaki0019.advertising.type.AdStatusEnum;
 import jakarta.servlet.http.HttpSession;
@@ -51,11 +51,11 @@ public class AdvertisingFileController {
      * @return 包含广告创建结果的响应实体
      */
     @PostMapping("/upload-advertising")
-    public ResponseEntity<AdResponse> createAd(@RequestBody AdRequest adRequest, HttpSession session) {
+    public ResponseEntity<BaseResponse<AdData>> createAd(@RequestBody AdRequest adRequest, HttpSession session) {
         try {
             User nowUser = (User) session.getAttribute("user");
             if (nowUser == null) {
-                return ResponseEntity.status(401).body(new AdResponse(401, "用户不存在", null));
+                return ResponseEntity.status(401).body(new BaseResponse<AdData>(401, "用户不存在", null));
             }
 
             // 解析请求体中的数据
@@ -78,7 +78,7 @@ public class AdvertisingFileController {
             Ad createdAd = advertisingService.createAd(ad, nowUser.getId(), fileId);
 
             // 构建响应
-            AdResponse response = new AdResponse(200, "广告上传成功", new AdData(
+            BaseResponse<AdData> response = new BaseResponse<AdData>(200, "广告上传成功", new AdData(
                     createdAd.getId(),
                     createdAd.getTitle(),
                     AdStatusEnum.UNDER_REVIEW.getStatusName(), // 初始状态为“审核中”
@@ -90,7 +90,7 @@ public class AdvertisingFileController {
             ));
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(new AdResponse(500, "广告上传失败: " + e.getMessage(), null));
+            return ResponseEntity.status(500).body(new BaseResponse<AdData>(500, "广告上传失败: " + e.getMessage(), null));
         }
     }
 

@@ -25,7 +25,7 @@ public class AdClickController {
     private final AdClickService adClickService;
     private final AdvertisingApplicationService advertisingApplicationService;
 
-    private static final String AD_URL_PREFIX = "http://localhost:5173/#/SAD/";
+    private static final String AD_URL_PREFIX = "http://localhost:8080/#/SAD/";
     public AdClickController(AdvertisingService advertisingService,
                              AdClickService adClickService,
                              AdvertisingApplicationService advertisingApplicationService) {

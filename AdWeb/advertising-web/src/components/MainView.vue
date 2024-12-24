@@ -11,7 +11,6 @@ import router from "../router/index.js";
 import AdvertisingReview from "./viewComponents/AdvertisingReview.vue";
 import service from "../utils/service.js";
 import {ElMessage} from "element-plus";
-import printJsonToConsole from "../utils/printJsonToConsole.js";
 
 const name = ref(localStorage.getItem('name'));
 const role = ref(localStorage.getItem('role'));
@@ -30,7 +29,7 @@ const components = {
 
 async function checkLoginStatus() {
   try {
-    const response = await service.get('http://localhost:8080/api/verifiedUser');
+    const response = await service.get('/api/verifiedUser');
     if (!response.data.code) {
       ElMessage.error("你似乎没有登录捏！！！");
       await router.replace('/');
@@ -42,7 +41,7 @@ async function checkLoginStatus() {
 
 async function Logout() {
   try {
-    const response = await service.get('http://localhost:8080/api/exit');
+    const response = await service.get('/api/exit');
     if (response.data.code === 200) {
       localStorage.clear();
     } else {
@@ -169,14 +168,14 @@ onMounted(() => {
 <style scoped>
 .layout-container-main {
   position: relative;
-  background-color: var(--el-color-primary-light-7);
-  color: var(--el-text-color-primary);
+  background-color: whitesmoke;
+  color: gray;
   height: 100vh;
 }
 
 .sidebar {
-  color: var(--el-text-color-primary);
-  background: var(--el-color-primary-light-8);
+  color: gray;
+  background: whitesmoke;
 }
 
 .sidebar-scrollbar {

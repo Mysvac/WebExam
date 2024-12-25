@@ -2,7 +2,6 @@ package com.asaki0019.advertising.controller;
 
 import com.asaki0019.advertising.model.Ad;
 import com.asaki0019.advertising.model.UploadedFile;
-import com.asaki0019.advertising.model.User;
 import com.asaki0019.advertising.service.AdvertisingService;
 import com.asaki0019.advertising.service.UploadedFileService;
 import com.asaki0019.advertising.serviceMeta.data.AdData;
@@ -11,7 +10,8 @@ import com.asaki0019.advertising.serviceMeta.req.AdRequest;
 import com.asaki0019.advertising.serviceMeta.res.BaseResponse;
 import com.asaki0019.advertising.serviceMeta.res.UploadResponse;
 import com.asaki0019.advertising.type.AdStatusEnum;
-import jakarta.servlet.http.HttpSession;
+import com.asaki0019.advertising.utils.JWTToken;
+import com.asaki0019.advertising.utils.Utils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
@@ -47,18 +47,17 @@ public class AdvertisingFileController {
      * 创建广告。
      *
      * @param adRequest 广告请求对象
-     * @param session   HTTP 会话对象
      * @return 包含广告创建结果的响应实体
      */
     @PostMapping("/upload-advertising")
-    public ResponseEntity<BaseResponse<AdData>> createAd(@RequestBody AdRequest adRequest, HttpSession session) {
+    public ResponseEntity<BaseResponse<AdData>> createAd(@RequestBody AdRequest adRequest) {
         try {
-            User nowUser = (User) session.getAttribute("user");
-            if (nowUser == null) {
-                return ResponseEntity.status(401).body(new BaseResponse<AdData>(401, "用户不存在", null));
+            var jwt = adRequest.getJwt();
+            if (Utils.isNotUserLoggedIn(jwt)) {
+                return ResponseEntity.status(401).body(new BaseResponse<>(401, "用户未登录", null));
             }
-
             // 解析请求体中的数据
+            String userId = (String) JWTToken.parsePayload(jwt).get("uuid");
             String title = adRequest.getTitle();
             String description = adRequest.getDescription();
             String distributor = adRequest.getDistributor();
@@ -75,10 +74,10 @@ public class AdvertisingFileController {
             ad.setDistributed(0);
 
             // 调用广告服务创建广告
-            Ad createdAd = advertisingService.createAd(ad, nowUser.getId(), fileId);
+            Ad createdAd = advertisingService.createAd(ad, userId, fileId);
 
             // 构建响应
-            BaseResponse<AdData> response = new BaseResponse<AdData>(200, "广告上传成功", new AdData(
+            BaseResponse<AdData> response = new BaseResponse<>(200, "广告上传成功", new AdData(
                     createdAd.getId(),
                     createdAd.getTitle(),
                     AdStatusEnum.UNDER_REVIEW.getStatusName(), // 初始状态为“审核中”
@@ -90,7 +89,8 @@ public class AdvertisingFileController {
             ));
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(new BaseResponse<AdData>(500, "广告上传失败: " + e.getMessage(), null));
+            Utils.logError("广告创建处理失败", e, "AdvertisingDataController.getAdvertisingTableData");
+            return ResponseEntity.status(500).body(new BaseResponse<>(500, "广告上传失败: " + e.getMessage(), null));
         }
     }
 
@@ -103,6 +103,7 @@ public class AdvertisingFileController {
     @PostMapping("/advertising-file-upload")
     public ResponseEntity<UploadResponse> uploadFile(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
+            Utils.log(Utils.LogLevel.INFO, "文件不能为空", null, "AdvertisingFileController.uploadFile");
             return ResponseEntity.badRequest().body(new UploadResponse(400, "文件不能为空", null));
         }
 
@@ -119,6 +120,7 @@ public class AdvertisingFileController {
             UploadResponse response = handleFileUpload(file, uploadDir, fileName);
             return ResponseEntity.ok(response);
         } catch (IOException e) {
+            Utils.logError("文件上传处理失败", e, "AdvertisingFileController.uploadFile");
             return ResponseEntity.status(500).body(new UploadResponse(500, "文件上传失败: " + e.getMessage(), null));
         }
     }
@@ -149,6 +151,7 @@ public class AdvertisingFileController {
 
             return ResponseEntity.ok("文件删除成功");
         } catch (Exception e) {
+            Utils.logError("文件删除处理失败", e, "AdvertisingFileController.deleteFile");
             return ResponseEntity.status(500).body("文件删除失败: " + e.getMessage());
         }
     }
@@ -165,7 +168,8 @@ public class AdvertisingFileController {
     private UploadResponse handleFileUpload(MultipartFile file, String uploadDir, String fileName) throws IOException {
         File dir = new File(uploadDir);
         if (!dir.exists() && !dir.mkdirs()) {
-            throw new IOException("创建目录失败");
+            Utils.logError("创建目录失败", null, "AdvertisingFileController.handleFileUpload");
+            return new UploadResponse(500, "文件上传失败", new UploadData(fileName, file.getContentType(), null));
         }
 
         // 使用流保存文件

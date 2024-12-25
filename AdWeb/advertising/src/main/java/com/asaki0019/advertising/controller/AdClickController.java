@@ -5,6 +5,7 @@ import com.asaki0019.advertising.model.AdClick;
 import com.asaki0019.advertising.service.AdClickService;
 import com.asaki0019.advertising.service.AdvertisingApplicationService;
 import com.asaki0019.advertising.service.AdvertisingService;
+import com.asaki0019.advertising.utils.Utils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,6 +53,7 @@ public class AdClickController {
 
             // 验证请求参数
             if (clientId == null || adId == null || userId == null || tag == null) {
+                Utils.logError("不合适的参数", null, "AdClickController");
                 return ResponseEntity.status(500).body(Map.of("Error", "Invalid"));
             }
 
@@ -88,6 +90,7 @@ public class AdClickController {
             response.put("ad_urls", matchedAds);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
+            Utils.logError("广告点击处理失败", e, "AdClickController");
             return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
         }
     }

@@ -1,36 +1,25 @@
 <script setup>
-
 import {ArrowRight, CaretBottom, CaretTop, Warning} from "@element-plus/icons-vue";
-import service from "../../utils/service.js";
-import {ref, onMounted, watchEffect} from 'vue';
-const dailyActiveUsers = ref(98500);
-const monthlyActiveUsers = ref(693700);
-const newTransactionsToday = ref(72000);
+import {ref, onMounted} from 'vue';
 
-const fetchData = async () => {
-  try {
-    const response = await service.get('/api/website-feedback'); // 使用封装的 axios 实例
-    const json = response.data;
-    dailyActiveUsers.value = json.data.dailyActiveUsers;
-    monthlyActiveUsers.value = json.data.monthlyActiveUsers ;
-    newTransactionsToday.value = json.data.newTransactionsToday ;
-  } catch (error) {
-    console.error('Error fetching data:');
-  }
+// 定义三个随机数的引用
+const dailyActiveUsers = ref(0);
+const monthlyActiveUsers = ref(0);
+const newTransactionsToday = ref(0);
+
+// 生成随机数
+const generateRandomData = () => {
+  dailyActiveUsers.value = Math.floor(Math.random() * 100000); // 随机生成 0 到 99999 的数
+  monthlyActiveUsers.value = Math.floor(Math.random() * 1000000); // 随机生成 0 到 999999 的数
+  newTransactionsToday.value = Math.floor(Math.random() * 100000); // 随机生成 0 到 99999 的数
 };
 
-// 组件挂载时发起请求
+// 组件挂载时生成随机数
 onMounted(() => {
-  fetchData();
+  generateRandomData(); // 初始化数据
+  // 每 5 秒更新一次数据
+  setInterval(generateRandomData, 5000);
 });
-
-
-// 定期更新数据（例如每 5 秒更新一次）
-watchEffect(() => {
-  const interval = setInterval(fetchData, 5000);
-  return () => clearInterval(interval); // 清除定时器
-});
-
 </script>
 
 <template>
@@ -48,7 +37,7 @@ watchEffect(() => {
                     placement="top"
                 >
                   <el-icon style="margin-left: 4px" :size="12">
-                    <Warning />
+                    <Warning/>
                   </el-icon>
                 </el-tooltip>
               </div>
@@ -58,11 +47,11 @@ watchEffect(() => {
             <div class="footer-item">
               <span>than yesterday</span>
               <span class="green">
-              24%
-              <el-icon>
-                <CaretTop />
-              </el-icon>
-            </span>
+                24%
+                <el-icon>
+                  <CaretTop/>
+                </el-icon>
+              </span>
             </div>
           </div>
         </div>
@@ -79,7 +68,7 @@ watchEffect(() => {
                     placement="top"
                 >
                   <el-icon style="margin-left: 4px" :size="12">
-                    <Warning />
+                    <Warning/>
                   </el-icon>
                 </el-tooltip>
               </div>
@@ -89,11 +78,11 @@ watchEffect(() => {
             <div class="footer-item">
               <span>month on month</span>
               <span class="red">
-              12%
-              <el-icon>
-                <CaretBottom />
-              </el-icon>
-            </span>
+                12%
+                <el-icon>
+                  <CaretBottom/>
+                </el-icon>
+              </span>
             </div>
           </div>
         </div>
@@ -111,15 +100,15 @@ watchEffect(() => {
             <div class="footer-item">
               <span>than yesterday</span>
               <span class="green">
-              16%
-              <el-icon>
-                <CaretTop />
-              </el-icon>
-            </span>
+                16%
+                <el-icon>
+                  <CaretTop/>
+                </el-icon>
+              </span>
             </div>
             <div class="footer-item">
               <el-icon :size="14">
-                <ArrowRight />
+                <ArrowRight/>
               </el-icon>
             </div>
           </div>
@@ -165,6 +154,7 @@ watchEffect(() => {
 .green {
   color: var(--el-color-success);
 }
+
 .red {
   color: var(--el-color-error);
 }

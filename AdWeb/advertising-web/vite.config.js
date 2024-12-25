@@ -23,4 +23,14 @@ export default defineConfig({
       logger: true  //是否在控制台显示请求日志
     }),
   ],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://10.100.164.22:8080/',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
+  }
+
 })

@@ -31,7 +31,7 @@ const fetchAds = async () => {
 // 生成 fetch 代码
 const generateFetchCode = () => {
   fetchCode.value = `
-fetch('${apiUrl.value}', {
+fetch('http://10.100.164.22:8080/${apiUrl.value}', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -45,7 +45,7 @@ fetch('${apiUrl.value}', {
   .catch(error => console.error('Error:', error));
 
 
-fetch('${clickUrl.value}', {
+fetch('http://10.100.164.22:8080/${clickUrl.value}', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',

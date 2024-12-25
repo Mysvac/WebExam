@@ -8,7 +8,9 @@ const tableData = ref([]);
 const fetchData = async () => {
   try {
     //
-    const response = await service.post('/api/advertising-review-data');
+    const response = await service.post('/api/advertising-review-data', {
+      jwt: localStorage.getItem('jwt')
+    });
     if (response.data.code === 200) {
       tableData.value = response.data.data;
     }
@@ -19,7 +21,11 @@ const fetchData = async () => {
 
 const approveItem = async (id) => {
   try {
-    const response = await service.post('/api/advertising-review-data-ok', {id: id});
+    const response = await service.post('/api/advertising-review-data-ok',
+        {
+          id: id,
+          jwt: localStorage.getItem('jwt')
+        });
     if (response.data.code === 200) {
       tableData.value = tableData.value.filter(row => row.id !== response.data.id);
     }

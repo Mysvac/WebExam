@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 public class AdRequest {
+    private String jwt;
     private String tag; // 广告标签
     private String title; // 广告标题
     private String description; // 广告描述

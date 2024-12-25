@@ -1,7 +1,6 @@
 package com.asaki0019.advertising.controller;
 
 import com.asaki0019.advertising.model.Ad;
-import com.asaki0019.advertising.model.User;
 import com.asaki0019.advertising.service.AdvertisingApplicationService;
 import com.asaki0019.advertising.service.AdvertisingService;
 import com.asaki0019.advertising.service.UploadedFileService;
@@ -10,7 +9,8 @@ import com.asaki0019.advertising.serviceMeta.data.AdMetaData;
 import com.asaki0019.advertising.serviceMeta.data.AdReviewData;
 import com.asaki0019.advertising.serviceMeta.res.BaseResponse;
 import com.asaki0019.advertising.type.AdStatusEnum;
-import jakarta.servlet.http.HttpSession;
+import com.asaki0019.advertising.utils.JWTToken;
+import com.asaki0019.advertising.utils.Utils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,19 +51,18 @@ public class AdvertisingDataController {
     /**
      * 获取广告表格数据。
      *
-     * @param session HTTP 会话对象
      * @return 包含广告表格数据的响应实体
      */
     @PostMapping("/advertising-table-data")
-    public ResponseEntity<BaseResponse<List<AdMetaData>>> getAdvertisingTableData(HttpSession session) {
+    public ResponseEntity<BaseResponse<List<AdMetaData>>> getAdvertisingTableData(@RequestBody Map<String, String> body) {
         try {
-            User nowUser = (User) session.getAttribute("user");
-            if (nowUser == null) {
+            var jwt = body.get("jwt");
+            if (Utils.isNotUserLoggedIn(jwt)) {
                 return ResponseEntity.status(401).body(new BaseResponse<>(401, "用户不存在", null));
             }
-
-            List<Ad> reviewedAds = advertisingService.getAllReviewedAdsWithUserAppliedStatus(nowUser.getId());
-            List<String> appliedAdIds = advertisingApplicationService.selectAdIdsByUserId(nowUser.getId());
+            var userId = (String) JWTToken.parsePayload(jwt).get("uuid");
+            List<Ad> reviewedAds = advertisingService.getAllReviewedAdsWithUserAppliedStatus(userId);
+            List<String> appliedAdIds = advertisingApplicationService.selectAdIdsByUserId(userId);
 
             // 将广告数据转换为前端需要的格式
             List<AdMetaData> adDataList = reviewedAds.stream()
@@ -74,6 +73,7 @@ public class AdvertisingDataController {
             var response = new BaseResponse<>(200, "获取广告表格数据成功", adDataList);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
+            Utils.logError("获取广告表格数据失败", e, "AdvertisingDataController.getAdvertisingTableData");
             return ResponseEntity.status(500).body(new BaseResponse<>(500, "获取广告表格数据失败: " + e.getMessage(), null));
         }
     }
@@ -81,19 +81,19 @@ public class AdvertisingDataController {
     /**
      * 获取当前用户的广告表格数据。
      *
-     * @param session HTTP 会话对象
      * @return 包含当前用户广告表格数据的响应实体
      */
     @PostMapping("/advertising-id-table-data")
-    public ResponseEntity<BaseResponse<List<AdData>>> getAdvertisingUseTableData(HttpSession session) {
+    public ResponseEntity<BaseResponse<List<AdData>>> getAdvertisingUseTableData(
+            @RequestBody Map<String, String> body) {
         try {
-            User nowUser = (User) session.getAttribute("user");
-            if (nowUser == null) {
+            var jwt = body.get("jwt");
+            if (Utils.isNotUserLoggedIn(jwt)) {
                 return ResponseEntity.status(401).body(new BaseResponse<>(401, "用户不存在", null));
             }
-
+            var userId = (String) JWTToken.parsePayload(jwt).get("uuid");
             // 获取当前用户的广告列表
-            List<Ad> ads = advertisingService.getAdsByUser(nowUser.getId());
+            List<Ad> ads = advertisingService.getAdsByUser(userId);
 
             // 过滤广告状态，只保留 "审核中"、"已发布" 的广告
             List<Ad> filteredAds = ads.stream()
@@ -110,21 +110,21 @@ public class AdvertisingDataController {
             var response = new BaseResponse<>(200, "获取广告表格数据成功", adDataList);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(new BaseResponse<>(500, "获取广告表格数据失败: " + e.getMessage(), null));
+            Utils.logError("获取个人请求数据失败", e, "AdvertisingDataController.getAdvertisingUseTableData");
+            return ResponseEntity.status(500).body(new BaseResponse<>(500, "获取个人请求数据失败: " + e.getMessage(), null));
         }
     }
 
     /**
      * 获取需要审核的广告表格数据。
      *
-     * @param session HTTP 会话对象
      * @return 包含需要审核广告表格数据的响应实体
      */
     @PostMapping("/advertising-review-data")
-    public ResponseEntity<BaseResponse<List<AdReviewData>>> adReviewTableResponse(HttpSession session) {
+    public ResponseEntity<BaseResponse<List<AdReviewData>>> adReviewTableResponse(@RequestBody Map<String, String> body) {
         try {
-            User nowUser = (User) session.getAttribute("user");
-            if (nowUser == null) {
+            var jwt = body.get("jwt");
+            if (Utils.isNotUserLoggedIn(jwt)) {
                 return ResponseEntity.status(401).body(new BaseResponse<>(401, "用户不存在", null));
             }
 
@@ -176,6 +176,7 @@ public class AdvertisingDataController {
             var response = new BaseResponse<>(200, "获取已申请广告数据成功", appliedAdDataList);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
+            Utils.logError("获取已申请广告数据失败", e, "AdvertisingDataController.getAdvertisingAppliedData");
             return ResponseEntity.status(500).body(new BaseResponse<>(500, "获取已申请广告数据失败: " + e.getMessage(), null));
         }
     }

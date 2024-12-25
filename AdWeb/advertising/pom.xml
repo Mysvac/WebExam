@@ -10,9 +10,9 @@
     </parent>
     <groupId>com.Asaki0019</groupId>
     <artifactId>advertising</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0</version>
     <name>advertising</name>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <description>advertising</description>
     <url/>
     <licenses>
@@ -31,6 +31,12 @@
         <java.version>17</java.version>
     </properties>
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.12.6</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

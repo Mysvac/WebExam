@@ -11,6 +11,7 @@ import router from "../router/index.js";
 import AdvertisingReview from "./viewComponents/AdvertisingReview.vue";
 import service from "../utils/service.js";
 import {ElMessage} from "element-plus";
+import printJsonToConsole from "../utils/printJsonToConsole.js";
 
 const name = ref(localStorage.getItem('name'));
 const role = ref(localStorage.getItem('role'));
@@ -29,7 +30,10 @@ const components = {
 
 async function checkLoginStatus() {
   try {
-    const response = await service.get('/api/verifiedUser');
+    const response = await service.post('/api/verifiedUser', {
+      jwt: localStorage.getItem('jwt')
+    });
+    printJsonToConsole(response.data);
     if (!response.data.code) {
       ElMessage.error("你似乎没有登录捏！！！");
       await router.replace('/');
@@ -42,10 +46,11 @@ async function checkLoginStatus() {
 async function Logout() {
   try {
     const response = await service.get('/api/exit');
+    printJsonToConsole(response.data)
     if (response.data.code === 200) {
       localStorage.clear();
     } else {
-      ElMessage.error("error");
+      ElMessage.error("error" + response.data.message);
     }
     await router.replace('/');
   } catch (e) {

@@ -150,6 +150,7 @@ const submitForm = () => {
 
           // 第二步：上传广告信息
           const adResponse = await service.post('/api/upload-advertising', {
+            jwt:localStorage.getItem('jwt'),
             tag: ruleForm.tag,
             title: ruleForm.title,
             description: ruleForm.description,

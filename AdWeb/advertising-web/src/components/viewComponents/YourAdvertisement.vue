@@ -14,7 +14,9 @@ const filteredTableData = ref([]);
 async function fetchTableData() {
   try {
     //
-    const response = await service.post('/api/advertising-id-table-data');
+    const response = await service.post('/api/advertising-id-table-data', {
+      jwt: localStorage.getItem('jwt')
+    });
     if (Array.isArray(response.data.data)) {
       tableData.value = response.data.data;
     } else {
@@ -47,7 +49,10 @@ async function deleteRows() {
 async function deleteRow(index) {
   try {
     const response = await service.post('/api/delete-advertising',
-        {id: index});
+        {
+          id: index,
+          jwt: localStorage.getItem('jwt')
+        });
     const json = response.data;
     if (json.code === 200) {
       ElMessage.success("广告删除成功");

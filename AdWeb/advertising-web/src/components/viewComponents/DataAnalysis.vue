@@ -1,23 +1,26 @@
 <script setup>
 import AdvertisingPie from "../utilsComponents/advertisingPie.vue";
-import {onMounted, ref, watchEffect} from "vue";
+import { onMounted, ref, onUnmounted } from "vue";
 import service from "../../utils/service.js";
-
 
 const chartTitle = ref('广告种类与分布');
 const chartData = ref([]);
-const advertisingCounts = ref();
+const advertisingCounts = ref(0);
 const advertisingDescriptions = ref([]);
+let intervalId = null; // 用于存储定时器 ID
 
+// 获取图表数据
 async function fetchCharData() {
   try {
-    const response = await service.post('/api/advertising-chart-data');
+    const response = await service.post('/api/advertising-chart-data', {
+      jwt: localStorage.getItem('jwt')
+    });
     chartData.value = response.data.data;
     updateDescriptions();
     advertisingCounts.value = response.data.data.reduce(
         (sum, item) => sum + item.value, 0);
   } catch (error) {
-    console.error('获取数据失败' + error.message);
+    console.error('获取数据失败: ' + error.message);
   }
 }
 
@@ -47,21 +50,23 @@ const updateDescriptions = () => {
   });
 };
 
-
+// 组件挂载时初始化数据并启动定时器
 onMounted(() => {
-  fetchCharData();
+  fetchCharData(); // 初始化数据
+  intervalId = setInterval(fetchCharData, 10000); // 每 10 秒请求一次数据
 });
 
-watchEffect(() => {
-  const interval = setInterval(fetchCharData, 10000);
-  return () => clearInterval(interval); // 清除定时器
+// 组件卸载时清除定时器
+onUnmounted(() => {
+  if (intervalId) {
+    clearInterval(intervalId); // 清除定时器
+  }
 });
 
+// 根据状态获取颜色
 const getStatusColor = (isHot) => {
-  if (isHot === '热门')
-    return 'red';
-  return 'gray';
-}
+  return isHot === '热门' ? 'red' : 'gray';
+};
 </script>
 
 <template>
@@ -73,7 +78,7 @@ const getStatusColor = (isHot) => {
     <el-card class="card">
       <el-carousel height="150px" motion-blur>
         <el-carousel-item class="advertising-description"
-                          v-for="item in advertisingDescriptions" :key="item.id">
+                          v-for="item in advertisingDescriptions" :key="item.name">
           <el-descriptions :title="item.name">
             <el-descriptions-item label="广告数量">{{ item.value }}</el-descriptions-item>
             <el-descriptions-item label="目前发布数量">{{ item.distributed }}</el-descriptions-item>
@@ -92,7 +97,6 @@ const getStatusColor = (isHot) => {
       </el-carousel>
     </el-card>
   </div>
-
 </template>
 
 <style scoped>

@@ -2,7 +2,10 @@ package com.asaki0019.advertising.controller;
 
 import com.asaki0019.advertising.model.User;
 import com.asaki0019.advertising.service.UserService;
+import com.asaki0019.advertising.utils.JWTToken;
+import com.asaki0019.advertising.utils.Utils;
 import jakarta.servlet.http.HttpSession;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,29 +38,35 @@ public class UserAuthenticationController {
      */
     @PostMapping("/register")
     public ResponseEntity<Map<String, Object>> register(@RequestBody Map<String, String> body) {
-        String username = body.get("username");
-        String name = body.get("name");
-        String password = body.get("password");
-        String verifiedPassword = body.get("verifiedPassword");
+        try {
+            String username = body.get("username");
+            String name = body.get("name");
+            String password = body.get("password");
+            String verifiedPassword = body.get("verifiedPassword");
 
-        // 验证参数
-        if (username == null || name == null || password == null || !password.equals(verifiedPassword)) {
-            return ResponseEntity.badRequest().body(Map.of("code", 400, "message", "用户名、密码和确认密码不能为空或不匹配"));
-        }
+            // 验证参数
+            if (username == null || name == null || password == null || !password.equals(verifiedPassword)) {
+                Utils.log(Utils.LogLevel.INFO, "用户名、密码和确认密码为空或不匹配", null, "UserAuthenticationController");
+                return ResponseEntity.badRequest().body(Map.of("code", 400, "message", "用户名、密码和确认密码不能为空或不匹配"));
+            }
 
-        // 创建用户对象
-        User user = new User();
-        user.setUsername(username);
-        user.setName(name);
-        user.setPassword(password);
-        user.setRole("common");
+            // 创建用户对象
+            User user = new User();
+            user.setUsername(username);
+            user.setName(name);
+            user.setPassword(password);
+            user.setRole("common");
 
-        // 调用服务层注册用户
-        boolean result = userService.registerUser(user);
-        if (result) {
-            return ResponseEntity.ok(Map.of("code", 200, "message", "注册成功", "data", user));
-        } else {
-            return ResponseEntity.badRequest().body(Map.of("code", 400, "message", "用户已存在"));
+            // 调用服务层注册用户
+            boolean result = userService.registerUser(user);
+            if (result) {
+                return ResponseEntity.ok(Map.of("code", 200, "message", "注册成功", "data", user));
+            } else {
+                return ResponseEntity.badRequest().body(Map.of("code", 400, "message", "用户已存在"));
+            }
+        } catch (Exception e) {
+            Utils.logError("用户注册处理失败", e, "UserAuthenticationController");
+            return ResponseEntity.status(500).body(Map.of("code", 500, "message", e.getMessage()));
         }
     }
 
@@ -70,37 +79,42 @@ public class UserAuthenticationController {
      */
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody Map<String, String> body, HttpSession session) {
-        String username = body.get("username");
-        String password = body.get("password");
+        try {
+            String username = body.get("username");
+            String password = body.get("password");
 
-        // 验证参数
-        if (username == null || password == null) {
-            return ResponseEntity.badRequest().body(Map.of("code", 400, "message", "用户名和密码不能为空"));
-        }
+            // 验证参数
+            if (username == null || password == null) {
+                Utils.log(Utils.LogLevel.INFO, "用户名或密码为空", null, "UserAuthenticationController");
+                return ResponseEntity.badRequest().body(Map.of("code", 400, "message", "用户名和密码不能为空"));
+            }
 
-        // 调用服务层登录用户
-        User user = userService.loginUser(username, password);
-        if (user != null) {
-            session.setAttribute("user", user);
+            // 调用服务层登录用户
+            User user = userService.loginUser(username, password);
+            if (user == null) {
+                return ResponseEntity.status(401).body(Map.of("code", 401, "message", "用户不存在"));
+            }
+            var jwt = JWTToken.generateToken(username, user.getId());
             Map<String, Object> data = new HashMap<>();
+            data.put("jwt", jwt);
             data.put("name", user.getName());
             data.put("cookie", user.getId()); // 模拟 Cookie
             data.put("role", user.getRole()); // 模拟角色
             return ResponseEntity.ok(Map.of("code", 200, "message", "登录成功", "data", data));
-        } else {
-            return ResponseEntity.status(401).body(Map.of("code", 401, "message", "用户名或密码错误"));
+
+        } catch (Exception e) {
+            Utils.logError("用户登录处理失败", e, "UserAuthenticationController");
         }
+        return ResponseEntity.status(401).body(Map.of("code", 401, "message", "用户名或密码错误"));
     }
 
     /**
      * 用户退出接口。
      *
-     * @param session HTTP 会话对象
      * @return 包含退出结果的响应实体
      */
     @GetMapping("/exit")
-    public ResponseEntity<Map<String, Object>> exitUser(HttpSession session) {
-        session.removeAttribute("user");
+    public ResponseEntity<Map<String, Object>> exitUser() {
         return ResponseEntity.ok(Map.of("code", 200, "message", "退出登录成功"));
     }
 }

@@ -24,12 +24,11 @@ public class NewsListServlet extends HttpServlet {
 
         String action = request.getParameter("action");
         String searchQuery = request.getParameter("searchQuery");
-        String month = request.getParameter("month");
+        //String month = request.getParameter("month");
         String type = request.getParameter("type"); // 根据类型筛选新闻
 
         try {
             List<News> newsList = null;
-
 
 //            // 如果有月份筛选
 //            if (month != null && !month.isEmpty()) {
@@ -37,7 +36,11 @@ public class NewsListServlet extends HttpServlet {
 //            }
             // 如果有类型筛选
             if (type != null && !type.isEmpty()) {
-                newsList = newsListService.getNewsByType(type);
+                if ("上理要闻".equals(type)) {
+                    newsList = newsListService.getNewsByType("");  // 空值处理
+                } else {
+                    newsList = newsListService.getNewsByType(type); // 根据实际类型查询
+                }
             }
             // 如果有搜索关键词
             else if (searchQuery != null && !searchQuery.isEmpty()) {

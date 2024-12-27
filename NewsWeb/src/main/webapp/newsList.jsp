@@ -9,7 +9,7 @@
     <title>上理工新闻</title>
 </head>
 <body>
-<h1>新闻列表</h1>
+<h1><a href="newsservlet">新闻列表</a></h1>
 <!-- 导航栏 -->
 <div class="navbar">
     <ul>

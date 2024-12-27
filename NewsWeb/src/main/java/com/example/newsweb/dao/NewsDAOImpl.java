@@ -31,13 +31,6 @@ public class NewsDAOImpl implements NewsDAO {
                 news.setLink(rs.getString("link"));
                 news.setImageLink(rs.getString("image_link"));
 
-                // 解析 JSON 数据，将 JSON 字符串转换为 List<String>
-                String contentJson = rs.getString("content");
-                if (contentJson != null && !contentJson.isEmpty()) {
-                    List<String> contentList = gson.fromJson(contentJson, new TypeToken<List<String>>(){}.getType());
-                    news.setContent(contentList);
-                }
-
                 String imagesJson = rs.getString("images");
                 if (imagesJson != null && !imagesJson.isEmpty()) {
                     List<String> imagesList = gson.fromJson(imagesJson, new TypeToken<List<String>>(){}.getType());
@@ -114,14 +107,9 @@ public class NewsDAOImpl implements NewsDAO {
                 news.setId(rs.getInt("id"));
                 news.setTitle(rs.getString("title"));
                 news.setDate(rs.getString("date"));
+                news.setSummary(rs.getString("summary"));
                 news.setLink(rs.getString("link"));
                 news.setImageLink(rs.getString("image_link"));
-
-                String contentJson = rs.getString("content");
-                if (contentJson != null && !contentJson.isEmpty()) {
-                    List<String> contentList = gson.fromJson(contentJson, new TypeToken<List<String>>(){}.getType());
-                    news.setContent(contentList);
-                }
 
                 String imagesJson = rs.getString("images");
                 if (imagesJson != null && !imagesJson.isEmpty()) {
@@ -182,14 +170,9 @@ public class NewsDAOImpl implements NewsDAO {
                 news.setId(rs.getInt("id"));
                 news.setTitle(rs.getString("title"));
                 news.setDate(rs.getString("date"));
+                news.setSummary(rs.getString("summary"));
                 news.setLink(rs.getString("link"));
                 news.setImageLink(rs.getString("image_link"));
-
-                String contentJson = rs.getString("content");
-                if (contentJson != null && !contentJson.isEmpty()) {
-                    List<String> contentList = gson.fromJson(contentJson, new TypeToken<List<String>>(){}.getType());
-                    news.setContent(contentList);
-                }
 
                 String imagesJson = rs.getString("images");
                 if (imagesJson != null && !imagesJson.isEmpty()) {

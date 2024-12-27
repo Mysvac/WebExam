@@ -22,13 +22,15 @@ function updateCost() {
 // 获取表格数据
 async function fetchTableData() {
   try {
-    //http://localhost:8080
-    const response = await service.post('http://localhost:8080/api/advertising-table-data');
+    //
+    const response = await service.post('/api/advertising-table-data', {
+      jwt: localStorage.getItem('jwt')
+    });
     if (Array.isArray(response.data.data)) {
       tableData.value = response.data.data;
       updateCost();
     } else {
-      ElMessage.error(response.data.message);
+      console.error(response.data.message);
     }
     filterTableData(); // 初始化过滤数据
   } catch (e) {
@@ -55,7 +57,8 @@ async function conveyAdvertisingToRequest() {
 
 async function unRequestRow(index) {
   try {
-    const response = await service.post('http://localhost:8080/api/unRequest-advertising', {
+    const response = await service.post('/api/unRequest-advertising', {
+      jwt: localStorage.getItem('jwt'),
       id: index
     });
     const json = response.data;
@@ -75,8 +78,11 @@ async function unRequestRow(index) {
 
 async function requestRow(index) {
   try {
-    const response = await service.post('http://localhost:8080/api/request-advertising',
-        {id: index});
+    const response = await service.post('/api/request-advertising',
+        {
+          id: index,
+          jwt: localStorage.getItem('jwt')
+        });
     const json = response.data;
     if (json.code === 200) {
       const rowIndex = tableData.value.findIndex(row => row.id === index);

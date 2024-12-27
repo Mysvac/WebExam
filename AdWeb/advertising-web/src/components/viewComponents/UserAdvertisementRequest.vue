@@ -6,15 +6,15 @@ import {ElMessage} from "element-plus";
 // 定义广告数据
 const ads = ref([]);
 const errorMessage = ref("");
-const apiUrl = ref("http://localhost:8080/api/fetch-request-ads"); // 替换为实际的 API URL
-const clickUrl = ref("http://localhost:8080/api/ad-click")
+const apiUrl = ref("/api/fetch-request-ads"); // 替换为实际的 API URL
+const clickUrl = ref("/api/ad-click")
 const fetchCode = ref("");
 const localUserCookie = ref("");
 localUserCookie.value = localStorage.getItem('cookie') || null;
 // 获取广告数据的方法
 const fetchAds = async () => {
   try {
-    const response = await service.post("http://localhost:8080/api/fetch-request-ads", {
+    const response = await service.post("/api/fetch-request-ads", {
       userCookie: localUserCookie.value,
     });
     if (response.data.code === 200) {
@@ -31,30 +31,15 @@ const fetchAds = async () => {
 // 生成 fetch 代码
 const generateFetchCode = () => {
   fetchCode.value = `
-fetch('${apiUrl.value}', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    userCookie: ${localUserCookie.value},
-  }),
-})
-  .then(response => response.json())
-  .then(data => console.log(data))
-  .catch(error => console.error('Error:', error));
-
-
-fetch('${clickUrl.value}', {
+fetch('http://10.100.164.22:8080${clickUrl.value}', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
   },
    body: JSON.stringify({
     client_id: your_website_user_uuid,
-    user_id: ${localUserCookie.value},
-    ad_id: click_now_ad_id,
-    tag: ad_tag
+    user_id: "${localUserCookie.value}",
+    tag: click tags
   }),
 })
   .then(response => response.json())
@@ -63,6 +48,7 @@ fetch('${clickUrl.value}', {
 `
   ;
 };
+
 
 // 复制 fetch 代码到剪贴板
 const copyFetchCode = () => {

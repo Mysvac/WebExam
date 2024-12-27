@@ -1,5 +1,8 @@
 package com.asaki0019.advertising.type;
 
+import lombok.Getter;
+
+@Getter
 public enum AdTagEnum {
     ELECTRONICS("电子产品"),
     HOUSEHOLD("家居用品"),
@@ -15,7 +18,4 @@ public enum AdTagEnum {
         this.tagName = tagName;
     }
 
-    public String getTagName() {
-        return tagName;
-    }
 }

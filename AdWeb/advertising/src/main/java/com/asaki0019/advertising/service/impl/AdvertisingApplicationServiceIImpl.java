@@ -5,8 +5,8 @@ import com.asaki0019.advertising.mapper.AdMapper;
 import com.asaki0019.advertising.model.Ad;
 import com.asaki0019.advertising.model.AdApplication;
 import com.asaki0019.advertising.service.AdvertisingApplicationService;
+import com.asaki0019.advertising.utils.Utils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,50 +15,81 @@ import java.util.List;
 
 @Service
 public class AdvertisingApplicationServiceIImpl implements AdvertisingApplicationService {
-    @Autowired
-    private AdApplicationMapper adApplicationMapper;
 
-    @Autowired
-    private AdMapper adMapper;
+    private final AdApplicationMapper adApplicationMapper;
+    private final AdMapper adMapper;
+
+    public AdvertisingApplicationServiceIImpl(AdApplicationMapper adApplicationMapper, AdMapper adMapper) {
+        this.adApplicationMapper = adApplicationMapper;
+        this.adMapper = adMapper;
+    }
+
     @Override
     public List<String> selectAdIdsByUserId(String userId) {
-        return  adApplicationMapper.selectAdIdsByUserId(userId);
+        try {
+            return adApplicationMapper.selectAdIdsByUserId(userId);
+        } catch (RuntimeException e) {
+            Utils.logError("无法根据 userId 获取列表信息", e, "userId: " + userId);
+            throw e; // 重新抛出异常，确保调用方能够处理
+        }
     }
 
     @Override
     @Transactional
     public AdApplication applyForAd(String adId, String applicantId) {
-        Ad ad = adMapper.selectById(adId);
-        var distribution = ad.getDistributed();
-        ad.setDistributed(distribution + 1);
-        adMapper.updateById(ad);
-        AdApplication application = new AdApplication();
-        application.setAdId(adId);
-        application.setApplicantId(applicantId);
-        application.setApplicationTime(LocalDateTime.now());
-        // 保存广告申请记录
-        adApplicationMapper.insert(application);
-        return application;
+        try {
+            // 查询广告信息
+            Ad ad = adMapper.selectById(adId);
+            if (ad == null) {
+                throw new RuntimeException("广告不存在，adId: " + adId);
+            }
+
+            // 更新广告分发数量
+            int distribution = ad.getDistributed();
+            ad.setDistributed(distribution + 1);
+            adMapper.updateById(ad);
+
+            // 创建广告申请记录
+            AdApplication application = new AdApplication();
+            application.setAdId(adId);
+            application.setApplicantId(applicantId);
+            application.setApplicationTime(LocalDateTime.now());
+
+            // 保存广告申请记录
+            adApplicationMapper.insert(application);
+
+            return application;
+        } catch (RuntimeException e) {
+            Utils.logError("申请广告失败", e, "adId: " + adId + ", applicantId: " + applicantId);
+            throw e; // 重新抛出异常，触发事务回滚
+        }
     }
 
     @Override
     @Transactional
     public AdApplication unApplyForAd(String adId, String applicantId) {
-        // 构建删除条件
-        QueryWrapper<AdApplication> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("ad_id", adId).eq("applicant_id", applicantId);
+        try {
+            // 构建删除条件
+            QueryWrapper<AdApplication> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("ad_id", adId).eq("applicant_id", applicantId);
 
-        // 删除广告申请记录
-        int deleted = adApplicationMapper.delete(queryWrapper);
-        // 如果删除成功，返回一个空的 AdApplication 对象
-        if (deleted > 0) {
-            Ad ad = adMapper.selectById(adId);
-            var distribution = ad.getDistributed();
-            ad.setDistributed(distribution - 1);
-            adMapper.updateById(ad);
-            return new AdApplication();
-        } else {
-            throw new RuntimeException("Failed to delete ad application for adId: " + adId + " and applicantId: " + applicantId);
+            // 删除广告申请记录
+            int deleted = adApplicationMapper.delete(queryWrapper);
+            if (deleted > 0) {
+                // 更新广告分发数量
+                Ad ad = adMapper.selectById(adId);
+                if (ad != null) {
+                    int distribution = ad.getDistributed();
+                    ad.setDistributed(distribution - 1);
+                    adMapper.updateById(ad);
+                }
+                return new AdApplication();
+            } else {
+                throw new RuntimeException("删除广告申请记录失败，adId: " + adId + ", applicantId: " + applicantId);
+            }
+        } catch (RuntimeException e) {
+            Utils.logError("取消申请广告失败", e, "adId: " + adId + ", applicantId: " + applicantId);
+            throw e; // 重新抛出异常，触发事务回滚
         }
     }
 }

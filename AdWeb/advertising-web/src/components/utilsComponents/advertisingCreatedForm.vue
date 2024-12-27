@@ -87,7 +87,7 @@ import printJsonToConsole from "../../utils/printJsonToConsole.js";
 
 // 表单引用
 const ruleFormRef = ref()
-const fileUploadedPath = ref('http://localhost:8080/api/advertising-file-upload');
+const fileUploadedPath = ref('/api/advertising-file-upload');
 // 表单数据
 const ruleForm = reactive({
   tag: '',
@@ -149,7 +149,8 @@ const submitForm = () => {
           fileId.value = uploadResponse.data.data.index;
 
           // 第二步：上传广告信息
-          const adResponse = await service.post('http://localhost:8080/api/upload-advertising', {
+          const adResponse = await service.post('/api/upload-advertising', {
+            jwt:localStorage.getItem('jwt'),
             tag: ruleForm.tag,
             title: ruleForm.title,
             description: ruleForm.description,
@@ -165,14 +166,14 @@ const submitForm = () => {
             ElMessage.success('广告创建成功');
           } else {
             ElMessage.error('广告创建失败');
-            await service.delete(`http://localhost:8080/api/delete-file/${fileId.value}`);
+            await service.delete(`/api/delete-file/${fileId.value}`);
           }
         } else {
           ElMessage.error('文件上传失败');
         }
       } catch (e) {
         if(fileId.value !== -1)
-          await service.delete(`http://localhost:8080/api/delete-file/${fileId.value}`);
+          await service.delete(`/api/delete-file/${fileId.value}`);
         ElMessage.error('操作失败: ' + e.message);
       }
     } else {

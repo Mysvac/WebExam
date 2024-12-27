@@ -30,7 +30,10 @@ const components = {
 
 async function checkLoginStatus() {
   try {
-    const response = await service.get('http://localhost:8080/api/verifiedUser');
+    const response = await service.post('/api/verifiedUser', {
+      jwt: localStorage.getItem('jwt')
+    });
+    printJsonToConsole(response.data);
     if (!response.data.code) {
       ElMessage.error("你似乎没有登录捏！！！");
       await router.replace('/');
@@ -42,11 +45,12 @@ async function checkLoginStatus() {
 
 async function Logout() {
   try {
-    const response = await service.get('http://localhost:8080/api/exit');
+    const response = await service.get('/api/exit');
+    printJsonToConsole(response.data)
     if (response.data.code === 200) {
       localStorage.clear();
     } else {
-      ElMessage.error("error");
+      ElMessage.error("error" + response.data.message);
     }
     await router.replace('/');
   } catch (e) {
@@ -169,14 +173,14 @@ onMounted(() => {
 <style scoped>
 .layout-container-main {
   position: relative;
-  background-color: var(--el-color-primary-light-7);
-  color: var(--el-text-color-primary);
+  background-color: whitesmoke;
+  color: gray;
   height: 100vh;
 }
 
 .sidebar {
-  color: var(--el-text-color-primary);
-  background: var(--el-color-primary-light-8);
+  color: gray;
+  background: whitesmoke;
 }
 
 .sidebar-scrollbar {

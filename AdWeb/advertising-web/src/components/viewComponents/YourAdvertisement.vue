@@ -13,8 +13,10 @@ const filteredTableData = ref([]);
 
 async function fetchTableData() {
   try {
-    //http://localhost:8080
-    const response = await service.post('http://localhost:8080/api/advertising-id-table-data');
+    //
+    const response = await service.post('/api/advertising-id-table-data', {
+      jwt: localStorage.getItem('jwt')
+    });
     if (Array.isArray(response.data.data)) {
       tableData.value = response.data.data;
     } else {
@@ -46,8 +48,11 @@ async function deleteRows() {
 
 async function deleteRow(index) {
   try {
-    const response = await service.post('http://localhost:8080/api/delete-advertising',
-        {id: index});
+    const response = await service.post('/api/delete-advertising',
+        {
+          id: index,
+          jwt: localStorage.getItem('jwt')
+        });
     const json = response.data;
     if (json.code === 200) {
       ElMessage.success("广告删除成功");
@@ -83,7 +88,7 @@ const onAddItem = () => {
 let intervalId = null;
 onMounted(() => {
   fetchTableData();
-  // intervalId = setInterval(fetchTableData, 10000); // 每 10 秒拉取一次数据
+  intervalId = setInterval(fetchTableData, 10000); // 每 10 秒拉取一次数据
 });
 
 watch(

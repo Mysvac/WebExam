@@ -20,8 +20,8 @@ const switchLoginModel = () => {
 }
 
 async function handleLogin() {
-  try{
-    const response = await service.post('http://localhost:8080/api/login', {
+  try {
+    const response = await service.post('/api/login', {
       username: username.value,
       password: password.value
     });
@@ -31,11 +31,12 @@ async function handleLogin() {
       localStorage.setItem('role', json.data.role);
       localStorage.setItem('name', json.data.name);
       localStorage.setItem('cookie', json.data.cookie);
+      localStorage.setItem('jwt', json.data.jwt);
       await router.replace('/mainView');
-    }else{
+    } else {
       ElMessage.error(json.data.message);
     }
-  }catch (e){
+  } catch (e) {
     ElMessage.error("账号或密码错误");
   }
 }
@@ -46,7 +47,7 @@ async function handleRegister() {
     return;
   }
   try {
-    const response = await service.post('http://localhost:8080/api/register', {
+    const response = await service.post('/api/register', {
       username: username.value,
       name: name.value,
       password: password.value,
@@ -55,7 +56,7 @@ async function handleRegister() {
     if (response.data.code === 200) {
       ElMessage.success("注册成功");
       switchLoginModel();
-    }else{
+    } else {
       ElMessage.error("注册失败");
     }
   } catch (error) {

@@ -8,14 +8,14 @@ function getDeviceInfo() {
     const uid = uid_a ? uid_a.textContent : "";
 
     if(uid === "登录" || uid === "") {
-        const devicePixelRatio = window.devicePixelRatio;  // 设备像素比
-        const userAgent = navigator.userAgent;  // 用户代理
-        const language = navigator.language;  // 浏览器语言
-        const maxTouchPoints = navigator.maxTouchPoints;  // 最大触摸点数（如果支持）
-        const screenWidth = screen.width;
-        const screenHeight = screen.height;
-        const hardwareConcurrency = navigator.hardwareConcurrency;
-        const deviceMemory = navigator.deviceMemory
+        const devicePixelRatio = window.devicePixelRatio || "";  // 设备像素比
+        const userAgent = navigator.userAgent || "";  // 用户代理
+        const language = navigator.language || "";  // 浏览器语言
+        const maxTouchPoints = navigator.maxTouchPoints || "";  // 最大触摸点数（如果支持）
+        const screenWidth = screen.width || "";  // 屏幕宽度
+        const screenHeight = screen.height || "";  // 屏幕高度
+        const hardwareConcurrency = navigator.hardwareConcurrency || "";  // CPU 核心数
+        const deviceMemory = navigator.deviceMemory || "";  // 设备内存
 
         // 合并设备信息为一个字符串
         return `${screenWidth}|${screenHeight}|${devicePixelRatio}|${hardwareConcurrency}|${deviceMemory}|${userAgent}|${language}|${maxTouchPoints}`;
@@ -159,39 +159,33 @@ function create_ad(data){
 function generateDeviceIdentifier() {
     let deviceInfo = getDeviceInfo()
 
-    return crypto.subtle.digest("SHA-256", new TextEncoder().encode(deviceInfo))
-        .then(hashBuffer => {
-            let hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(byte => byte.toString(16).padStart(2, "0")).join("");  // 返回哈希值
-        });
+    return CryptoJS.SHA256(deviceInfo).toString(CryptoJS.enc.Hex);
 }
 
 
-// 是异步的，所以要调then
-generateDeviceIdentifier().then(userIdentifier => 
-{
-    // 获取到网址类型
-    let test = document.getElementById("goods_type");
-    let tag = test ? test.textContent : "";
 
-    /*
-        获取广告信息
-    */
-    fetch('http://10.100.164.22:8080/api/ad-click', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            client_id: userIdentifier.substring(0,32),
-            user_id: "d312e97ba0265422a0ad7cd222656bf4",
-            tag: tag
-        }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            // 创建广告
-            create_ad(data);
-        })
-        .catch(error => console.error('Error:', error));
-});
+// 获取到网址类型
+let test = document.getElementById("goods_type");
+let tag = test ? test.textContent : "";
+let userIdentifier = generateDeviceIdentifier();
+
+/*
+    获取广告信息
+*/
+fetch('http://10.100.164.22:8080/api/ad-click', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+        client_id: userIdentifier.substring(0,32),
+        user_id: "d312e97ba0265422a0ad7cd222656bf4",
+        tag: tag
+    }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        // 创建广告
+        create_ad(data);
+    })
+    .catch(error => console.error('Error:', error));

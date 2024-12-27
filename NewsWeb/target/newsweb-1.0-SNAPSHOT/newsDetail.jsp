@@ -17,7 +17,7 @@
 
   <title>${news.title}</title>
 </head>
-<body class="news-detail-page">
+<body class="news-detail-page">/用于区分主页面和详情页
 <h1>${news.title}</h1>
 <div class="news-detail">
 

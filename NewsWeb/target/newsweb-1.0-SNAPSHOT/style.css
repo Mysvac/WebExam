@@ -153,7 +153,7 @@ body:not(.news-detail-page) {
 }
 
 h1 {
-    text-align: left;
+    text-align: left;/向左对齐
     background-color: #3e8e41;
     color: #fff;
     padding: 20px 0 20px 30px;

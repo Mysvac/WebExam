@@ -31,20 +31,6 @@ const fetchAds = async () => {
 // 生成 fetch 代码
 const generateFetchCode = () => {
   fetchCode.value = `
-fetch('http://10.100.164.22:8080${apiUrl.value}', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    userCookie: "${localUserCookie.value}",
-  }),
-})
-  .then(response => response.json())
-  .then(data => console.log(data))
-  .catch(error => console.error('Error:', error));
-
-
 fetch('http://10.100.164.22:8080${clickUrl.value}', {
   method: 'POST',
   headers: {
@@ -53,7 +39,7 @@ fetch('http://10.100.164.22:8080${clickUrl.value}', {
    body: JSON.stringify({
     client_id: your_website_user_uuid,
     user_id: "${localUserCookie.value}",
-    ad_id: click_now_ad_id
+    tag: click tags
   }),
 })
   .then(response => response.json())
@@ -62,6 +48,7 @@ fetch('http://10.100.164.22:8080${clickUrl.value}', {
 `
   ;
 };
+
 
 // 复制 fetch 代码到剪贴板
 const copyFetchCode = () => {

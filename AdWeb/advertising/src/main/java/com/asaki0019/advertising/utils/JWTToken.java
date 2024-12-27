@@ -85,10 +85,15 @@ public class JWTToken {
      * @return 解析后的Claims
      */
     public static Jws<Claims> parseClaim(String token) {
-        return Jwts.parser()
-                .verifyWith(KEY)
-                .build()
-                .parseSignedClaims(token);
+        try {
+            return Jwts.parser()
+                    .verifyWith(KEY)
+                    .build()
+                    .parseSignedClaims(token);
+        } catch (Exception e) {
+            Utils.logError("JWT解析失败", e, "JWT未知错误");
+            throw e;
+        }
     }
     /**
      * 解析JWT并获取Header
@@ -97,7 +102,12 @@ public class JWTToken {
      * @return 解析后的Header
      */
     public static JwsHeader parseHeader(String token) {
-        return parseClaim(token).getHeader();
+        try {
+            return parseClaim(token).getHeader();
+        }catch (Exception e){
+            Utils.logError("JWT解析失败", e, "JWT未知错误");
+            throw e;
+        }
     }
 
     /**

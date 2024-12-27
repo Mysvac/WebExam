@@ -5,6 +5,7 @@ import com.asaki0019.advertising.model.AdClick;
 import com.asaki0019.advertising.service.AdClickService;
 import com.asaki0019.advertising.utils.Utils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,12 +36,24 @@ public class AdClickServiceImpl implements AdClickService {
                 // 如果不存在，则插入新记录
                 adClickMapper.insert(adClick);
             } else {
-                // 如果存在，则更新记录
-                existingAdClick.setUserId(adClick.getUserId());
-                existingAdClick.setAdId(adClick.getAdId());
-                existingAdClick.setNewInterestTags(adClick.getNewInterestTags());
-                existingAdClick.setClickTime(adClick.getClickTime());
-                adClickMapper.updateById(existingAdClick);
+                // 如果存在，则动态更新非空字段
+                UpdateWrapper<AdClick> updateWrapper = new UpdateWrapper<>();
+                updateWrapper.eq("client_id", adClick.getClientId());
+
+                // 更新用户ID和点击时间
+                updateWrapper.set(adClick.getUserId() != null, "user_id", adClick.getUserId());
+                updateWrapper.set(adClick.getClickTime() != null, "click_time", adClick.getClickTime());
+
+                // 更新兴趣标签（仅更新非零值）
+                updateWrapper.set(adClick.getElectronicTag() != 0, "electronic_tag", adClick.getElectronicTag());
+                updateWrapper.set(adClick.getHomeTag() != 0, "home_tag", adClick.getHomeTag());
+                updateWrapper.set(adClick.getCustomTag() != 0, "custom_tag", adClick.getCustomTag());
+                updateWrapper.set(adClick.getMakeupTag() != 0, "makeup_tag", adClick.getMakeupTag());
+                updateWrapper.set(adClick.getFoodTag() != 0, "food_tag", adClick.getFoodTag());
+                updateWrapper.set(adClick.getTransportationTag() != 0, "transportation_tag", adClick.getTransportationTag());
+                updateWrapper.set(adClick.getTravelTag() != 0, "travel_tag", adClick.getTravelTag());
+
+                adClickMapper.update(null, updateWrapper);
             }
         } catch (RuntimeException e) {
             // 记录更新广告点击记录时发生的错误

@@ -89,6 +89,9 @@ public class AdvertisingFileController {
                     cost,
                     fileId
             ));
+            Utils.log(Utils.LogLevel.INFO,
+                    "上传用户" + createdAd.getAdvertiserId() + "---文件上传路径: " + uploadDir + createdAd.getFileId(),
+                    null, "AdvertisingFileController.uploadFile");
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             if (adRequest.getFileId() != null) {
@@ -118,7 +121,6 @@ public class AdvertisingFileController {
             String fileExtension = originalFilename != null ? originalFilename.substring(originalFilename.lastIndexOf(".")) : "";
             String fileName = UUID.randomUUID() + fileExtension;
 
-            Utils.log(Utils.LogLevel.INFO, "文件上传路径: " + uploadDir, null, "AdvertisingFileController.uploadFile");
             // 处理文件上传
             UploadResponse response = handleFileUpload(file, uploadDir, fileName);
             return ResponseEntity.ok(response);

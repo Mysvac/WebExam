@@ -30,7 +30,7 @@ async function fetchTableData() {
       tableData.value = response.data.data;
       updateCost();
     } else {
-      ElMessage.error(response.data.message);
+      console.error(response.data.message);
     }
     filterTableData(); // 初始化过滤数据
   } catch (e) {

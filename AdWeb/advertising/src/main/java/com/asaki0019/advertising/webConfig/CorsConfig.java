@@ -21,10 +21,11 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(@NonNull CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins(
-                                "http://localhost:5173",
-                                "http://10.100.164.22:8080",
-                                "http://localhost:8080")
+//                        .allowedOrigins(
+//                                "http://localhost:5173",
+//                                "http://10.100.164.22:8080",
+//                                "http://localhost:8080")
+                        .allowedOriginPatterns("*")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .exposedHeaders("Authorization", "Content-Type") // 暴露响应头

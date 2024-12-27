@@ -64,7 +64,28 @@ public class AdvertisingOperationController {
             return ResponseEntity.status(500).body(Map.of("code", 500, "message", e.getMessage()));
         }
     }
-
+    /**
+     * 审核通过广告。
+     *
+     * @param body    包含广告 ID 的请求体
+     * @return 包含审核结果的响应实体
+     */
+    @PostMapping("/advertising-review-data-false")
+    public ResponseEntity<Map<String, Object>> refuseAd(@RequestBody Map<String, String> body) {
+        try {
+            var jwt = body.get("jwt");
+            if (Utils.isNotUserLoggedIn(jwt)) {
+                return ResponseEntity.status(401).body(Map.of("code", 401, "message", "用户不存在"));
+            }
+            var adId = body.get("id");
+            Ad ad = advertisingService.getAdByAdId(adId);
+            advertisingService.deleteAd(adId, ad.getAdvertiserId());
+            return ResponseEntity.ok(Map.of("code", 200, "message", "拒绝广告数据成功", "id", ad.getId()));
+        } catch (Exception e) {
+            Utils.logError("广告审核处理失败", e, "AdvertisingDataController.getAdvertisingTableData");
+            return ResponseEntity.status(500).body(Map.of("code", 500, "message", e.getMessage()));
+        }
+    }
     /**
      * 申请广告。
      *

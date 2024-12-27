@@ -6,11 +6,10 @@ import com.asaki0019.advertising.service.UploadedFileService;
 import com.asaki0019.advertising.utils.Utils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.List;
 
 @Service
@@ -18,6 +17,8 @@ public class UploadedFileServiceImpl implements UploadedFileService {
 
     private final UploadedFileMapper uploadedFileMapper;
 
+    @Value("${file.upload-dir}")
+    private String uploadDir;
     @Autowired
     public UploadedFileServiceImpl(UploadedFileMapper uploadedFileMapper) {
         this.uploadedFileMapper = uploadedFileMapper;
@@ -65,14 +66,19 @@ public class UploadedFileServiceImpl implements UploadedFileService {
             if (uploadedFile == null) {
                 throw new RuntimeException("文件不存在");
             }
-            String filePath = uploadedFile.getFileUrl();
-            if (StringUtils.isEmpty(filePath)) {
+            String fileUrl = uploadedFile.getFileUrl();
+            if (StringUtils.isEmpty(fileUrl)) {
                 throw new RuntimeException("文件路径为空");
             }
-            String uploadDir = ResourceUtils.getURL("classpath:").getPath() + "static/uploads/";
-            String baseUrl = "http://localhost:8080/uploads/";
-            String fileName = filePath.substring(baseUrl.length());
-            filePath = uploadDir + fileName;
+
+            // 我在数据库中保存的时对应的URL："http://10.100.164.22:8080/uploads/" + fileName;
+            // 我需要替换未实际的路径：uploadDir + "\\" + (去掉网络前缀)fileName
+            // 从URL中提取文件名
+            String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
+
+            // 组合成实际的文件路径
+            String filePath = uploadDir + File.separator + fileName;
+
             File file = new File(filePath);
             if (file.exists()) {
                 if (file.delete()) {
@@ -83,7 +89,7 @@ public class UploadedFileServiceImpl implements UploadedFileService {
             } else {
                 throw new RuntimeException("文件不存在: " + filePath);
             }
-        } catch (RuntimeException | FileNotFoundException e) {
+        } catch (RuntimeException e) {
             Utils.logError("从文件系统删除文件失败", e, "fileId: " + fileId);
             throw new RuntimeException("从文件系统删除文件失败: " + e.getMessage(), e);
         }

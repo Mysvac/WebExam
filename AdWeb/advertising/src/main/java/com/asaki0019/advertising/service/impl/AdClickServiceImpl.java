@@ -6,13 +6,16 @@ import com.asaki0019.advertising.service.AdClickService;
 import com.asaki0019.advertising.utils.Utils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AdClickServiceImpl implements AdClickService {
     private final AdClickMapper adClickMapper;
+
     public AdClickServiceImpl(AdClickMapper adClickMapper) {
         this.adClickMapper = adClickMapper;
     }
+
     /**
      * 更新广告点击记录
      * 如果数据库中不存在对应的广告点击记录，则插入新记录
@@ -21,6 +24,7 @@ public class AdClickServiceImpl implements AdClickService {
      * @param adClick 广告点击对象，包含需要更新的数据
      */
     @Override
+    @Transactional
     public void updateAdClick(AdClick adClick) {
         try {
             // 检查数据库中是否已存在该客户端ID的广告点击记录
@@ -38,9 +42,10 @@ public class AdClickServiceImpl implements AdClickService {
                 existingAdClick.setClickTime(adClick.getClickTime());
                 adClickMapper.updateById(existingAdClick);
             }
-        }catch (RuntimeException e){
+        } catch (RuntimeException e) {
             // 记录更新广告点击记录时发生的错误
-            Utils.logError("更新广告点击记录失败", e, "AdClickServiceImpl.updateAdClick");
+            Utils.logError("更新广告点击记录失败: " + adClick.toString(), e, "AdClickServiceImpl.updateAdClick");
+            throw e;
         }
     }
 
@@ -50,7 +55,6 @@ public class AdClickServiceImpl implements AdClickService {
                 new QueryWrapper<AdClick>()
                         .eq("client_id", clientId)
                         .eq("user_id", userId)
-
         );
     }
 }

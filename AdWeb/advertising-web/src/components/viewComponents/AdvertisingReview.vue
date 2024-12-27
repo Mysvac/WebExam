@@ -19,6 +19,21 @@ const fetchData = async () => {
   }
 };
 
+const refuseItem = async (id) =>{
+  try {
+    const response = await service.post('/api/advertising-review-data-false',
+        {
+          id: id,
+          jwt: localStorage.getItem('jwt')
+        });
+    if (response.data.code === 200) {
+      tableData.value = tableData.value.filter(row => row.id !== response.data.id);
+    }
+  } catch (error) {
+    ElMessage.error('获取数据失败' + error.message);
+  }
+}
+
 const approveItem = async (id) => {
   try {
     const response = await service.post('/api/advertising-review-data-ok',
@@ -53,9 +68,10 @@ onMounted(() => {
           <a :href="scope.row.url" target="_blank">{{ scope.row.url }}</a>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="100">
+      <el-table-column label="操作" width="200">
         <template #default="scope">
           <el-button type="success" @click="approveItem(scope.row.id)">允许</el-button>
+          <el-button type="danger" @click="refuseItem(scope.row.id)">拒绝</el-button>
         </template>
       </el-table-column>
     </el-table>

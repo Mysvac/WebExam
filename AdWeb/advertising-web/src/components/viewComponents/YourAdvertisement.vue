@@ -88,7 +88,7 @@ const onAddItem = () => {
 let intervalId = null;
 onMounted(() => {
   fetchTableData();
-  // intervalId = setInterval(fetchTableData, 10000); // 每 10 秒拉取一次数据
+  intervalId = setInterval(fetchTableData, 10000); // 每 10 秒拉取一次数据
 });
 
 watch(

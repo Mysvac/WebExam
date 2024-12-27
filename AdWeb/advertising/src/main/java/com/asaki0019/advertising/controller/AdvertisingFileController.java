@@ -12,8 +12,8 @@ import com.asaki0019.advertising.serviceMeta.res.UploadResponse;
 import com.asaki0019.advertising.type.AdStatusEnum;
 import com.asaki0019.advertising.utils.JWTToken;
 import com.asaki0019.advertising.utils.Utils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,6 +32,8 @@ public class AdvertisingFileController {
     private final UploadedFileService uploadedFileService;
     private final AdvertisingService advertisingService;
 
+    @Value("${file.upload-dir}")
+    private String uploadDir;
     /**
      * 构造函数，使用构造函数注入依赖。
      *
@@ -89,6 +91,9 @@ public class AdvertisingFileController {
             ));
             return ResponseEntity.ok(response);
         } catch (Exception e) {
+            if (adRequest.getFileId() != null) {
+                deleteFile(adRequest.getFileId());
+            }
             Utils.logError("广告创建处理失败", e, "AdvertisingDataController.getAdvertisingTableData");
             return ResponseEntity.status(500).body(new BaseResponse<>(500, "广告上传失败: " + e.getMessage(), null));
         }
@@ -113,9 +118,7 @@ public class AdvertisingFileController {
             String fileExtension = originalFilename != null ? originalFilename.substring(originalFilename.lastIndexOf(".")) : "";
             String fileName = UUID.randomUUID() + fileExtension;
 
-            // 获取项目的静态资源目录路径
-            String uploadDir = ResourceUtils.getURL("classpath:").getPath() + "static/uploads/";
-
+            Utils.log(Utils.LogLevel.INFO, "文件上传路径: " + uploadDir, null, "AdvertisingFileController.uploadFile");
             // 处理文件上传
             UploadResponse response = handleFileUpload(file, uploadDir, fileName);
             return ResponseEntity.ok(response);
@@ -125,34 +128,23 @@ public class AdvertisingFileController {
         }
     }
 
-    /**
-     * 删除文件。
-     *
-     * @param fileId 文件 ID
-     * @return 包含文件删除结果的响应实体
-     */
-    @DeleteMapping("/delete-file/{fileId}")
-    public ResponseEntity<String> deleteFile(@PathVariable String fileId) {
+
+    public void deleteFile(String fileId) {
         try {
             // 根据 fileId 查询文件记录
             UploadedFile uploadedFile = uploadedFileService.getUploadedFileById(fileId);
             if (uploadedFile == null) {
-                return ResponseEntity.status(404).body("文件不存在");
+                Utils.logError("文件不存在", null, "AdvertisingFileController.deleteFile");
+                return;
             }
-
-            // 获取文件的 URL
-            String fileUrl = uploadedFile.getFileUrl();
-
             // 删除文件系统中的文件
-            uploadedFileService.deleteFileFromFileSystem(fileUrl);
+            uploadedFileService.deleteFileFromFileSystem(fileId);
 
             // 删除数据库中的文件记录
             uploadedFileService.deleteUploadedFileById(fileId);
 
-            return ResponseEntity.ok("文件删除成功");
         } catch (Exception e) {
             Utils.logError("文件删除处理失败", e, "AdvertisingFileController.deleteFile");
-            return ResponseEntity.status(500).body("文件删除失败: " + e.getMessage());
         }
     }
 
@@ -184,7 +176,7 @@ public class AdvertisingFileController {
         }
 
         // 构建响应
-        String fileUrl = "http://localhost:8080/uploads/" + fileName; // 文件的访问 URL
+        String fileUrl = "http://10.100.164.22:8080/uploads/" + fileName;
 
         UploadedFile uploadedFile = new UploadedFile();
         uploadedFile.setFileName(fileName);

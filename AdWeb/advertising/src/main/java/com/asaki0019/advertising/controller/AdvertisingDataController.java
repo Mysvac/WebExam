@@ -12,10 +12,7 @@ import com.asaki0019.advertising.type.AdStatusEnum;
 import com.asaki0019.advertising.utils.JWTToken;
 import com.asaki0019.advertising.utils.Utils;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -167,7 +164,8 @@ public class AdvertisingDataController {
             List<String> appliedAdIds = advertisingApplicationService.selectAdIdsByUserId(userCookie);
 
             // 只保留已申请的广告
-            List<AdMetaData> appliedAdDataList = reviewedAds.stream()
+            List<AdMetaData> appliedAdDataList =
+                    reviewedAds.stream()
                     .filter(ad -> appliedAdIds.contains(ad.getId())) // 过滤已申请的广告
                     .map(ad -> convertToAdMetaData(ad, appliedAdIds))
                     .toList();
@@ -199,7 +197,7 @@ public class AdvertisingDataController {
                 ad.getDescription(),
                 ad.getAdvertiserName(), // 假设广告中有 advertiserName 字段
                 ad.getPrice(),
-                AD_URL_PREFIX + ad.getId(),
+                uploadedFileService.getUploadedFileById(ad.getFileId()).getFileUrl(),
                 isRequest ? "已申请" : "未申请",
                 ad.getDistributed()
         );

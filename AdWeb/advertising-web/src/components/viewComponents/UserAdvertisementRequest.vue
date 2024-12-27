@@ -31,13 +31,13 @@ const fetchAds = async () => {
 // 生成 fetch 代码
 const generateFetchCode = () => {
   fetchCode.value = `
-fetch('http://10.100.164.22:8080/${apiUrl.value}', {
+fetch('http://10.100.164.22:8080${apiUrl.value}', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({
-    userCookie: ${localUserCookie.value},
+    userCookie: "${localUserCookie.value}",
   }),
 })
   .then(response => response.json())
@@ -45,16 +45,15 @@ fetch('http://10.100.164.22:8080/${apiUrl.value}', {
   .catch(error => console.error('Error:', error));
 
 
-fetch('http://10.100.164.22:8080/${clickUrl.value}', {
+fetch('http://10.100.164.22:8080${clickUrl.value}', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
   },
    body: JSON.stringify({
     client_id: your_website_user_uuid,
-    user_id: ${localUserCookie.value},
-    ad_id: click_now_ad_id,
-    tag: ad_tag
+    user_id: "${localUserCookie.value}",
+    ad_id: click_now_ad_id
   }),
 })
   .then(response => response.json())

@@ -1,13 +1,11 @@
 package com.asaki0019.advertising.controller;
 
-import com.asaki0019.advertising.model.User;
 import com.asaki0019.advertising.service.AdvertisingService;
 import com.asaki0019.advertising.serviceMeta.data.AdChartData;
 import com.asaki0019.advertising.serviceMeta.res.BaseResponse;
 import com.asaki0019.advertising.type.AdTagEnum;
 import com.asaki0019.advertising.utils.JWTToken;
 import com.asaki0019.advertising.utils.Utils;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;

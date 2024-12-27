@@ -55,21 +55,26 @@ public class JWTToken {
      * @return 生成的JWT字符串
      */
     public static String generateToken(String username, String uuid) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("username", username);
-        claims.put("uuid", uuid); // 将 uuid 添加到 claims 中
-        return Jwts.builder()
-                .header()
-                .add("typ", "JWT")
-                .add("alg", "HS256")
-                .and()
-                .claims(claims)
-                .subject(username)
-                .issuedAt(new Date())
-                .issuer(JWT_ISS)
-                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(KEY, ALGORITHM)
-                .compact();
+        try {
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("username", username);
+            claims.put("uuid", uuid); // 将 uuid 添加到 claims 中
+            return Jwts.builder()
+                    .header()
+                    .add("typ", "JWT")
+                    .add("alg", "HS256")
+                    .and()
+                    .claims(claims)
+                    .subject(username)
+                    .issuedAt(new Date())
+                    .issuer(JWT_ISS)
+                    .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                    .signWith(KEY, ALGORITHM)
+                    .compact();
+        } catch (Exception e) {
+            Utils.logError("JWT 签发失败", e, "JWT未知错误");
+            throw e;
+        }
     }
 
 

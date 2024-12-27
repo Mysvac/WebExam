@@ -102,6 +102,8 @@ function create_ad(data){
     let elem_div = document.createElement('div');
     // 设置 <div> 的样式，使其固定在页面最上层
     elem_div.style.position = 'fixed';  // 固定位置
+    elem_div.style.top = '0px';
+    elem_div.style.right = '0px';
     elem_div.style.zIndex = '9999';     // 设置较高的层级，确保它显示在最上层
     elem_div.style.width = '150px';
     elem_div.style.height = '150px';

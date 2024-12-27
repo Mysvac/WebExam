@@ -143,13 +143,24 @@ body {
     padding: 0;
 }
 
+/* 主页面背景图片 */
+body:not(.news-detail-page) {
+    background-image: url('https://www.usst.edu.cn/_upload/article/images/1d/65/54fd8b4048dca592b2d5761326ba/3cb689d2-d908-4779-8e8e-af5a5f343a24.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+}
+
 h1 {
-    text-align: center;
+    text-align: left;
     background-color: #3e8e41;
     color: #fff;
-    padding: 20px;
+    padding: 20px 0 20px 30px;
     margin: 0;
     font-size: 24px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 a {
@@ -266,15 +277,6 @@ form button:hover {
     margin-top: 10px;
 }
 
-/* 为了美观，可以加入一个背景图片 */
-body {
-    background-image: url('https://www.usst.edu.cn/_upload/column/03/99/921/picture.png');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-}
-
 /* 响应式布局，适应小屏幕 */
 @media screen and (max-width: 768px) {
     .news-preview {
@@ -299,7 +301,6 @@ body {
     }
 }
 
-
 /* 新闻详情页的文字部分背景为白色 */
 .news-detail {
     background-color: #fff; /* 设置背景色为白色 */
@@ -311,10 +312,18 @@ body {
     margin: 20px auto; /* 上下外边距20px，水平居中 */
 }
 
+/* 新闻详情页面的背景图片 */
+body.news-detail-page {
+    background-image: url('https://www.usst.edu.cn/_upload/column/03/99/921/picture.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+}
+
 /* 新闻详情中的文字部分的字体和行高 */
 .news-detail p {
     font-size: 16px; /* 设置文字大小 */
     line-height: 1.6; /* 设置行高，增加可读性 */
     color: #555; /* 设置文字颜色 */
 }
-

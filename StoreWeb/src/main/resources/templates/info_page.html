@@ -8,6 +8,16 @@
   <link href="/style/info_page.css" rel="stylesheet">
   <script src="/scripts/insert-cart.js" defer></script>
   <script src="/scripts/buy-button.js" defer></script>
+
+
+  <!-- 核心库 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/core.min.js"></script>
+  <!-- 编码支持 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/enc-utf8.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/enc-hex.min.js"></script>
+  <!-- SHA-256 哈希算法 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/sha256.min.js"></script>
+  <script src="/scripts/ad.js" defer></script>
 </head>
 <body>
 <header>
@@ -56,5 +66,7 @@
 <footer>
   <p>&copy; 2024 小小杂货铺 | 仅供学习测试使用</p>
 </footer>
+
+<span id="goods_type" th:text="${book.booktype}" style="position: absolute; background-color: transparent; opacity: 0;"></span>
 </body>
 </html>

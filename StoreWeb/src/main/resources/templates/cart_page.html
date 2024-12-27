@@ -44,7 +44,7 @@
             <img class="book-image" th:src="@{/images/book/{bookname}.png(bookname=${book.bookname})}" th:alt="${book.bookname}">
             <div class="profile">
                 <h5 th:text="${book.bookname}">Book Title</h5>
-                <p th:text="'作者: ' + ${book.author}">Author Name</p>
+                <p th:text="'产商: ' + ${book.author}">Author Name</p>
                 <p th:text="'库存：'+${book.stock}"></p>
             </div>
             <div  class="money">

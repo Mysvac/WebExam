@@ -34,7 +34,7 @@
       <ul>
         <li id="bill-management-btn" class="sidebar-item"><a href="/page/management">账单查询</a></li>
         <li id="order-management-btn" class="sidebar-item"><a href="/page/manage-orders">订单处理</a></li>
-        <li id="book-management-btn" class="sidebar-item"><a href="/page/manage-books">书籍管理</a></li>
+        <li id="book-management-btn" class="sidebar-item"><a href="/page/manage-books">商品管理</a></li>
         <li id="user-management-btn" class="sidebar-item"><a href="/page/manage-users">用户管理</a></li>
       </ul>
     </div>
@@ -43,7 +43,7 @@
     <div class="content">
       <div class="search-div">
         <form class="search-div" method="get" action="/page/manage-orders">
-          <input id="search" class="search" name="search" type="text"  placeholder="根据订单/用户/书籍号查询...">
+          <input id="search" class="search" name="search" type="text"  placeholder="根据订单/用户/商品号查询...">
           <input class="submit" type="submit" value="搜索">
         </form>
       </div>
@@ -53,8 +53,8 @@
       <div class="bill" th:each="bill : ${orders}">
         <div class="profile">
           <h5 th:text="'订单号：'+${bill.billid}">billid</h5>
-          <p th:text="'书籍编号：'+${bill.bookid}">Book Title</p>
-          <p th:text="'书名：'+${bill.bookname}"></p>
+          <p th:text="'商品编号：'+${bill.bookid}">Book Title</p>
+          <p th:text="'商品名：'+${bill.bookname}"></p>
         </div>
 
         <div  class="money">

@@ -1,0 +1,296 @@
+/* 确保所有文本在页面上固定显示 */
+body {
+    font-family: Arial, sans-serif;  /* 设置统一字体 */
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100vh; /* 页面高度填满整个视口 */
+}
+
+h1, .news-detail, .news-content, .news-preview {
+    width: 80%; /* 限制宽度，避免文本过于拉伸 */
+    margin: 0 auto; /* 使内容水平居中 */
+    padding: 20px;
+    box-sizing: border-box;
+}
+h1 a {
+    text-decoration: none;  /* 去掉下划线 */
+    color: inherit;         /* 使链接的颜色继承父元素颜色 */
+}
+
+
+.news-content {
+    overflow: hidden; /* 防止内容溢出 */
+    text-indent: 2em; /*段首缩进*/
+}
+
+.news-date, .news-author {
+    font-size: 1rem;
+    color: #666;
+    margin-top: 10px;
+}
+
+/* 为新闻列表标题添加样式 */
+.news-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-decoration: none;
+    color: #333;
+}
+
+.news-title:hover {
+    text-decoration: underline;
+}
+
+/* 使每个新闻预览的文字固定宽度，避免页面拉伸时内容流动 */
+.news-preview {
+    width: 100%;
+    max-width: 800px; /* 限制最大宽度 */
+    margin: 10px auto;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.news-preview img {
+    display: block;
+    margin: 20px auto;
+    max-width: 100%;   /* 自适应宽度 */
+    height: auto;      /* 保持比例 */
+    max-height: 400px; /* 限制最大高度 */
+}
+
+.news-summary {
+    font-size: 1rem;
+    color: #444;
+    line-height: 1.6;
+}
+
+.news-detail img {
+    display: block;
+    margin: 20px auto;
+    max-width: 100%;   /* 自适应宽度 */
+    height: auto;      /* 保持比例 */
+    max-height: 400px; /* 限制最大高度 */
+}
+
+
+/* 导航栏 */
+.navbar {
+    width: 100%;
+    background-color: #333;
+    color: white;
+    padding: 10px 0;
+}
+
+.navbar ul {
+    list-style-type: none;
+    text-align: center;
+}
+
+.navbar ul li {
+    display: inline-block;
+    margin: 0 15px;
+}
+
+.navbar ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.2rem;
+}
+
+.navbar ul li a:hover {
+    text-decoration: underline;
+}
+
+form {
+    text-align: center;
+    margin: 20px 0;
+}
+
+form input {
+    padding: 10px;
+    font-size: 1rem;
+    width: 300px;
+    margin-right: 10px;
+}
+
+form button {
+    padding: 10px;
+    font-size: 1rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #45a049;
+}
+/* 基础字体和颜色设置 */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    text-align: center;
+    background-color: #3e8e41;
+    color: #fff;
+    padding: 20px;
+    margin: 0;
+    font-size: 24px;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* 导航栏样式 */
+.navbar {
+    background-color: #333;
+    overflow: hidden;
+}
+
+.navbar ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar ul li {
+    float: left;
+}
+
+.navbar ul li a {
+    display: block;
+    color: white;
+    padding: 14px 20px;
+    text-align: center;
+}
+
+.navbar ul li a:hover {
+    background-color: #575757;
+}
+
+/* 搜索框样式 */
+form {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+form input[type="text"] {
+    padding: 10px;
+    font-size: 16px;
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+form button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-left: 10px;
+}
+
+form button:hover {
+    background-color: #45a049;
+}
+
+/* 新闻预览部分样式 */
+.news-preview {
+    background-color: #fff;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 1000px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.news-preview:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.news-preview img {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+.news-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.news-title:hover {
+    color: #0056b3;
+}
+
+.news-date {
+    font-size: 14px;
+    color: #888;
+}
+
+.news-summary {
+    font-size: 16px;
+    color: #555;
+    line-height: 1.6;
+    margin-top: 10px;
+}
+
+/* 为了美观，可以加入一个背景图片 */
+body {
+    background-image: url('https://www.usst.edu.cn/_upload/column/03/99/921/picture.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+}
+
+/* 响应式布局，适应小屏幕 */
+@media screen and (max-width: 768px) {
+    .news-preview {
+        width: 90%;
+    }
+
+    form input[type="text"] {
+        width: 80%;
+    }
+
+    .navbar ul li {
+        float: none;
+        text-align: center;
+    }
+
+    .navbar ul li a {
+        padding: 12px;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+}
+

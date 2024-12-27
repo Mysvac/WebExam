@@ -31,7 +31,5 @@
   </div>
 </div>
 
-
-<a href="newsservlet">返回新闻列表</a>
 </body>
 </html>

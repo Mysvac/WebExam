@@ -8,7 +8,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @WebServlet(name = "NewsListServlet", value = "/newsservlet")
 public class NewsListServlet extends HttpServlet {
@@ -23,13 +25,19 @@ public class NewsListServlet extends HttpServlet {
         String action = request.getParameter("action");
         String searchQuery = request.getParameter("searchQuery");
         String month = request.getParameter("month");
+        String type = request.getParameter("type"); // 根据类型筛选新闻
 
         try {
             List<News> newsList = null;
 
-            // 如果有月份筛选
-            if (month != null && !month.isEmpty()) {
-                newsList = newsListService.getNewsByMonth(month);
+
+//            // 如果有月份筛选
+//            if (month != null && !month.isEmpty()) {
+//                newsList = newsListService.getNewsByMonth(month);
+//            }
+            // 如果有类型筛选
+            if (type != null && !type.isEmpty()) {
+                newsList = newsListService.getNewsByType(type);
             }
             // 如果有搜索关键词
             else if (searchQuery != null && !searchQuery.isEmpty()) {
@@ -41,6 +49,7 @@ public class NewsListServlet extends HttpServlet {
             }
 
             request.setAttribute("newsList", newsList);
+
 
         } catch (SQLException e) {
             e.printStackTrace();

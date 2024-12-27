@@ -12,6 +12,15 @@ public class News {
     private List<String> content; // JSON数据
     private List<String> images; // JSON
     private List<String> author; // JSON
+    private String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public int getId() {
         return id;

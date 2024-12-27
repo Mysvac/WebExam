@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public interface DAO {
     // 提供数据库连接的具体实现
     public default Connection getConnection() throws SQLException {
-        String URL = "jdbc:mysql://localhost:3306/news?useUnicode=true&characterEncoding=UTF-8";
+        String URL = "jdbc:mysql://localhost:3306/news?useUnicode=true&characterEncoding=UTF-8";//news改自己的数据库结构名
         String USER = "root";
         String PASSWORD = "111111";
 

@@ -6,6 +6,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="ad.js" defer></script>
+    <!-- 核心库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/core.min.js"></script>
+    <!-- 编码支持 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/enc-utf8.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/enc-hex.min.js"></script>
+    <!-- SHA-256 哈希算法 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/sha256.min.js"></script>
+
     <title>上理工新闻</title>
 </head>
 <body>
@@ -13,14 +22,14 @@
 <!-- 导航栏 -->
 <div class="navbar">
     <ul>
-        <li><a href="newsservlet?action=month&month=2024-05">5月</a></li>
-        <li><a href="newsservlet?action=month&month=2024-06">6月</a></li>
-        <li><a href="newsservlet?action=month&month=2024-07">7月</a></li>
-        <li><a href="newsservlet?action=month&month=2024-08">8月</a></li>
-        <li><a href="newsservlet?action=month&month=2024-09">9月</a></li>
-        <li><a href="newsservlet?action=month&month=2024-10">10月</a></li>
-        <li><a href="newsservlet?action=month&month=2024-11">11月</a></li>
-        <li><a href="newsservlet?action=month&month=2024-12">12月</a></li>
+        <li><a href="newsservlet?action=month&month=2024-05">电子产品</a></li>
+        <li><a href="newsservlet?action=month&month=2024-06">家居用品</a></li>
+        <li><a href="newsservlet?action=month&month=2024-07">服装服饰</a></li>
+        <li><a href="newsservlet?action=month&month=2024-08">美妆护肤</a></li>
+        <li><a href="newsservlet?action=month&month=2024-09">食品饮料</a></li>
+        <li><a href="newsservlet?action=month&month=2024-10">汽车交通</a></li>
+        <li><a href="newsservlet?action=month&month=2024-11">旅游出行</a></li>
+        <li><a href="newsservlet?action=month&month=2024-12">上理要闻</a></li>
     </ul>
 </div>
 

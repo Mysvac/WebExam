@@ -42,7 +42,7 @@ public class NewsDAOImpl implements NewsDAO {
                     List<String> authorList = gson.fromJson(authorJson, new TypeToken<List<String>>(){}.getType());
                     news.setAuthor(authorList);
                 }
-
+                news.setType(rs.getString("type"));
                 newsList.add(news);
             }
         }
@@ -85,7 +85,7 @@ public class NewsDAOImpl implements NewsDAO {
                     List<String> authorList = gson.fromJson(authorJson, new TypeToken<List<String>>(){}.getType());
                     news.setAuthor(authorList);
                 }
-
+                news.setType(rs.getString("type"));
                 return news;
             }
         }
@@ -122,7 +122,7 @@ public class NewsDAOImpl implements NewsDAO {
                     List<String> authorList = gson.fromJson(authorJson, new TypeToken<List<String>>(){}.getType());
                     news.setAuthor(authorList);
                 }
-
+                news.setType(rs.getString("type"));
                 newsList.add(news);
             }
         }

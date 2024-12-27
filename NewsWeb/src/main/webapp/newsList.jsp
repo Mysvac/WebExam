@@ -26,7 +26,7 @@
 
 <form action="newsservlet" method="get">
     <input type="text" name="searchQuery" placeholder="请输入标题搜索" />
-    <button type="submit">刷新列表</button>
+    <button type="submit">搜索</button>
 </form>
 <br>
 

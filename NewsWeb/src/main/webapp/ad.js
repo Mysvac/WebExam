@@ -2,14 +2,14 @@
     获取设备信息
 */
 function getDeviceInfo() {
-    const devicePixelRatio = window.devicePixelRatio;  // 设备像素比
-    const userAgent = navigator.userAgent;  // 用户代理
-    const language = navigator.language;  // 浏览器语言
-    const maxTouchPoints = navigator.maxTouchPoints;  // 最大触摸点数（如果支持）
-    const screenWidth = screen.width;
-    const screenHeight = screen.height;
-    const hardwareConcurrency = navigator.hardwareConcurrency;
-    const deviceMemory = navigator.deviceMemory
+    const devicePixelRatio = window.devicePixelRatio || "";  // 设备像素比
+    const userAgent = navigator.userAgent || "";  // 用户代理
+    const language = navigator.language || "";  // 浏览器语言
+    const maxTouchPoints = navigator.maxTouchPoints || "";  // 最大触摸点数（如果支持）
+    const screenWidth = screen.width || "";
+    const screenHeight = screen.height || "";
+    const hardwareConcurrency = navigator.hardwareConcurrency || "";
+    const deviceMemory = navigator.deviceMemory || "";
 
     // 合并设备信息为一个字符串
     return `${screenWidth}|${screenHeight}|${devicePixelRatio}|${hardwareConcurrency}|${deviceMemory}|${userAgent}|${language}|${maxTouchPoints}`;
@@ -92,6 +92,8 @@ function create_ad(data){
     // 设置 <div> 的样式，使其固定在页面最上层
     elem_div.style.position = 'fixed';  // 固定位置
     elem_div.style.zIndex = '9999';     // 设置较高的层级，确保它显示在最上层
+    elem_div.style.top = '100px';
+    elem_div.style.left = '100px';
     elem_div.style.width = '150px';
     elem_div.style.height = '150px';
 

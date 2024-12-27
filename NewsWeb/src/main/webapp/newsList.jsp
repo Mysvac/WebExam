@@ -21,7 +21,7 @@
 <h1><a href="newsservlet">新闻列表</a></h1>
 <!-- 导航栏 -->
 <div class="navbar">
-    <ul>
+    <%--<ul>
         <li><a href="newsservlet?action=month&month=2024-05">电子产品</a></li>
         <li><a href="newsservlet?action=month&month=2024-06">家居用品</a></li>
         <li><a href="newsservlet?action=month&month=2024-07">服装服饰</a></li>
@@ -30,7 +30,18 @@
         <li><a href="newsservlet?action=month&month=2024-10">汽车交通</a></li>
         <li><a href="newsservlet?action=month&month=2024-11">旅游出行</a></li>
         <li><a href="newsservlet?action=month&month=2024-12">上理要闻</a></li>
-    </ul>
+    </ul>--%>
+        <ul>
+            <li><a href="newsservlet?action=type&type=电子产品">电子产品</a></li>
+            <li><a href="newsservlet?action=type&type=家居用品">家居用品</a></li>
+            <li><a href="newsservlet?action=type&type=服装服饰">服装服饰</a></li>
+            <li><a href="newsservlet?action=type&type=美妆护肤">美妆护肤</a></li>
+            <li><a href="newsservlet?action=type&type=食品饮料">食品饮料</a></li>
+            <li><a href="newsservlet?action=type&type=汽车交通">汽车交通</a></li>
+            <li><a href="newsservlet?action=type&type=旅游出行">旅游出行</a></li>
+            <li><a href="newsservlet?action=type&type=上理要闻">上理要闻</a></li>
+        </ul>
+
 </div>
 
 <form action="newsservlet" method="get">

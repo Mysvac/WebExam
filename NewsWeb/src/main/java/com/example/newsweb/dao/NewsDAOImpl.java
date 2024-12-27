@@ -6,7 +6,9 @@ import com.google.gson.reflect.TypeToken;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class NewsDAOImpl implements NewsDAO {
 
@@ -91,6 +93,50 @@ public class NewsDAOImpl implements NewsDAO {
         }
         return null;
     }
+
+    public List<News> getNewsByType(String type) throws SQLException {
+        List<News> newsList = new ArrayList<>();
+
+        // SQL 查询：只根据类型筛选新闻
+        String sql = "SELECT * FROM newsdetail WHERE type = ? ORDER BY date DESC"; // 根据 type 查询
+
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, type);  // 设置类型筛选条件
+
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                News news = new News();
+                news.setId(rs.getInt("id"));
+                news.setTitle(rs.getString("title"));
+                news.setDate(rs.getString("date"));
+                news.setSummary(rs.getString("summary"));
+                news.setLink(rs.getString("link"));
+                news.setImageLink(rs.getString("image_link"));
+
+                // 解析 images 字段
+                String imagesJson = rs.getString("images");
+                if (imagesJson != null && !imagesJson.isEmpty()) {
+                    List<String> imagesList = gson.fromJson(imagesJson, new TypeToken<List<String>>(){}.getType());
+                    news.setImages(imagesList);
+                }
+
+                // 解析 author 字段
+                String authorJson = rs.getString("author");
+                if (authorJson != null && !authorJson.isEmpty()) {
+                    List<String> authorList = gson.fromJson(authorJson, new TypeToken<List<String>>(){}.getType());
+                    news.setAuthor(authorList);
+                }
+
+                news.setType(rs.getString("type"));
+                newsList.add(news);
+            }
+        }
+        return newsList;
+    }
+
 
     public List<News> getNewsByMonth(String month) throws SQLException {
         List<News> newsList = new ArrayList<>();

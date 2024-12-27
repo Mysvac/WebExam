@@ -16,7 +16,7 @@
 
   <div class="news-content">
     <c:forEach var="contentItem" items="${news.content}">
-      <p>${contentItem}</p>
+      <p class="indented">${contentItem}</p>
     </c:forEach>
   </div>
 

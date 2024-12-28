@@ -35,6 +35,17 @@
 
 </div>
 
+<%--登录--%>
+<c:choose>
+    <c:when test="${sessionScope.isLoggedIn}">
+        <a href="logout-servlet" class="logout-link">注销</a>
+        <span class="login-link">已登录</span>
+    </c:when>
+    <c:otherwise>
+        <a href="login.jsp" class="login-link">登录</a>
+    </c:otherwise>
+</c:choose>
+
 <%--搜索框--%>
 <form action="newsservlet" method="get">
     <input type="text" name="searchQuery" placeholder="请输入标题搜索" />

@@ -20,7 +20,7 @@
 <body>
 <div class="news-detail">
     <h2>${news.title}</h2>
-  <div class="news-date">${news.date}</div>
+  <div class="detail-date">${news.date}</div>
 
   <div class="news-content">
     <c:forEach var="contentItem" items="${news.content}">

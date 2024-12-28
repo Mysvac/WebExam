@@ -38,9 +38,11 @@
       <span>${author}</span>
     </c:forEach>
   </div>
+
+    <span id="goods_type">${news.type}</span>
 </div>
 
-<span id="goods_type">${news.type}</span>
+
 
 
 </body>

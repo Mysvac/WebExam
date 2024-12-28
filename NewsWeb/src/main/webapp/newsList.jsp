@@ -56,11 +56,16 @@
 <c:forEach var="news" items="${newsList}">
     <div class="news-preview">
         <a href="news-detail?id=${news.id}" class="news-title">${news.title}</a>
-        <c:if test="${not empty news.imageLink}">
-            <img src="${news.imageLink}" alt="News Image"/>
-        </c:if>
+        <br><br><br>
         <div class="news-date">${news.date}</div>
-        <div class="news-summary">${news.summary}</div>
+        <br>
+        <div class="pre-container">
+            <div class="news-summary">${news.summary}</div>
+            <c:if test="${not empty news.imageLink}">
+                <img src="${news.imageLink}" alt="News Image"/>
+            </c:if>
+
+        </div>
     </div>
 </c:forEach>
 

@@ -6,11 +6,11 @@ body {
     box-sizing: border-box;
     width: 100%;
     height: 100vh; /* 页面高度填满整个视口 */
-    background-color: #f4f4f4;  /* 页面背景色 */
+    background-color: #f4f4f4;
 }
 
 h1 {
-    width: 80%; /* 限制宽度，避免文本过于拉伸 */
+    width: 80%;
     margin: 0 auto; /* 使内容水平居中 */
     padding: 20px;
     box-sizing: border-box;
@@ -19,11 +19,11 @@ h1 {
 
 /* 详情页标题 */
 .news-detail h2 {
-    font-size: 2rem; /* 使标题的字体比内容大 */
+    font-size: 2rem;
     font-weight: bold;
-    color: #333; /* 标题颜色 */
+    color: #333;
     margin-bottom: 20px; /* 标题与内容之间的间距 */
-    text-align: center; /* 标题居中 */
+    text-align: center;
 }
 
 /* 隐藏 h1 标签，仅在详情页 */
@@ -32,24 +32,26 @@ body.news-detail-page h1 {
 }
 
 .news-detail {
-    width: 80%; /* 限制宽度，避免文本过于拉伸 */
-    margin: 0 auto; /* 使内容水平居中 */
+    width: 80%;
+    margin: 0 auto;
     padding: 20px;
     box-sizing: border-box;
     background-color: #f4f4f4;
 }
 
 .news-content {
-    width: 80%; /* 限制宽度，避免文本过于拉伸 */
-    margin: 0 auto; /* 使内容水平居中 */
+    width: 80%;
+    margin: 0 auto;
     padding: 20px;
     box-sizing: border-box;
     background-color: #f4f4f4;
+    overflow: hidden; /* 防止内容溢出 */
+    text-indent: 2em; /* 段首缩进 */
 }
 
 .news-preview {
-    width: 80%; /* 限制宽度，避免文本过于拉伸 */
-    margin: 0 auto; /* 使内容水平居中 */
+    width: 80%;
+    margin: 0 auto;
     padding: 20px;
     box-sizing: border-box;
     background-color: #f4f4f4;
@@ -60,10 +62,6 @@ h1 a {
     color: inherit;         /* 使链接的颜色继承父元素颜色 */
 }
 
-.news-content {
-    overflow: hidden; /* 防止内容溢出 */
-    text-indent: 2em; /* 段首缩进 */
-}
 
 .news-date, .news-author {
     font-size: 1rem;
@@ -77,16 +75,20 @@ h1 a {
     font-weight: bold;
     text-decoration: none;
     color: #333;
+    /* 限制为一行 */
+    white-space: nowrap;         /* 防止文本换行 */
+    overflow: hidden;            /* 隐藏超出范围的文本 */
+    text-overflow: ellipsis;     /* 使用省略号表示超出的文本 */
 }
 
 .news-title:hover {
     text-decoration: underline;
 }
 
-/* 使每个新闻预览的文字固定宽度，避免页面拉伸时内容流动 */
+/*新闻预览样式*/
 .news-preview {
     width: 100%;
-    max-width: 800px; /* 限制最大宽度 */
+    max-width: 800px;
     margin: 10px auto;
     padding: 15px;
     border: 1px solid #ddd;
@@ -94,20 +96,39 @@ h1 a {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.news-preview img {
-    display: block;
-    margin: 20px auto;
-    max-width: 100%;   /* 自适应宽度 */
-    height: auto;      /* 保持比例 */
-    max-height: 400px; /* 限制最大高度 */
+.pre-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
 }
 
+/*新闻预览图片*/
+.news-preview img {
+    /*display: block;*/
+    /*margin: 20px auto;*/
+    /*max-width: 100%;   !* 自适应宽度 *!*/
+    /*height: auto;      !* 保持比例 *!*/
+    /*max-height: 400px; !* 限制最大高度 *!*/
+    display: block;
+    width: 270px;      /* 设置宽度为固定值 */
+    height: 180px;     /* 设置高度为固定值，确保为正方形 */
+    object-fit: cover; /* 保持图片比例并裁剪多余的部分 */
+    border-radius: 8px; /* 设置圆角 */
+}
+
+/*新闻预览文本*/
 .news-summary {
     font-size: 1rem;
     color: #444;
     line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;  /* 显示前4行 */
+    -webkit-box-orient: vertical;
+    overflow: hidden;  /* 隐藏超出范围的文本 */
 }
 
+/*详情页图片*/
 .news-detail img {
     display: block;
     margin: 20px auto;
@@ -116,8 +137,8 @@ h1 a {
     max-height: 400px; /* 限制最大高度 */
 }
 
-
-goods_type {
+/*隐藏新闻标签类型，用于个性化推送广告*/
+#goods_type {
     position: absolute;
     background-color: transparent;
     opacity: 0;  /*设置透明度为 0，完全透明 */

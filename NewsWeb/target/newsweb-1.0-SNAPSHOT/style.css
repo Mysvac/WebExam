@@ -71,15 +71,23 @@ h1 a {
 
 /* 为新闻列表标题添加样式 */
 .news-title {
+    background-color: #555555;
+    max-width: 100%;
     font-size: 1.5rem;
     font-weight: bold;
     text-decoration: none;
-    color: #333;
-    /* 限制为一行 */
-    white-space: nowrap;         /* 防止文本换行 */
-    overflow: hidden;            /* 隐藏超出范围的文本 */
-    text-overflow: ellipsis;     /* 使用省略号表示超出的文本 */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    display: -webkit-box;        /* 启用弹性盒模型 */
+    -webkit-line-clamp: 1;       /* 限制为显示 1 行 */
+    -webkit-box-orient: vertical;/* 设置文本排列方向为纵向 */
+    overflow: hidden;            /* 隐藏超出容器范围的文本 */
+    text-overflow: ellipsis;     /* 显示省略号 (...) */
+    line-height: 1.6;            /* 确保文本行间距合理 */
+    height: 2rem;              /* 根据字体大小调整容器高度 */
 }
+
 
 .news-title:hover {
     text-decoration: underline;
@@ -96,25 +104,12 @@ h1 a {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+/*装了预览文本和图片*/
 .pre-container {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     gap: 20px;
-}
-
-/*新闻预览图片*/
-.news-preview img {
-    /*display: block;*/
-    /*margin: 20px auto;*/
-    /*max-width: 100%;   !* 自适应宽度 *!*/
-    /*height: auto;      !* 保持比例 *!*/
-    /*max-height: 400px; !* 限制最大高度 *!*/
-    display: block;
-    width: 270px;      /* 设置宽度为固定值 */
-    height: 180px;     /* 设置高度为固定值，确保为正方形 */
-    object-fit: cover; /* 保持图片比例并裁剪多余的部分 */
-    border-radius: 8px; /* 设置圆角 */
 }
 
 /*新闻预览文本*/
@@ -123,9 +118,19 @@ h1 a {
     color: #444;
     line-height: 1.6;
     display: -webkit-box;
+    margin-top: 1.6em;
     -webkit-line-clamp: 4;  /* 显示前4行 */
     -webkit-box-orient: vertical;
     overflow: hidden;  /* 隐藏超出范围的文本 */
+}
+
+/*新闻预览图片*/
+.news-preview img {
+    display: block;
+    width: 270px;      /* 设置宽度为固定值 */
+    height: 180px;     /* 设置高度为固定值，确保为正方形 */
+    object-fit: cover; /* 保持图片比例并裁剪多余的部分 */
+    border-radius: 8px; /* 设置圆角 */
 }
 
 /*详情页图片*/
@@ -160,33 +165,23 @@ h1 a {
     margin: 0;
     padding: 0;
 }
-
 .navbar ul li {
     display: inline-block;
     margin: 0 15px;
 }
-
 .navbar ul li a {
     color: white;
     text-decoration: none;
     font-size: 1.2rem;
     padding: 14px 20px;
 }
-
 .navbar ul li a:hover {
     text-decoration: underline;
 }
 
-/* 统一底色：新闻列表和电子产品一栏底色相同 */
-.news-title, .navbar ul li a {
-    background-color: #555555;
-    color: white;  /* 文字颜色 */
-    padding: 10px 20px;
-    border-radius: 5px;
-}
 
 .news-title:hover, .navbar ul li a:hover {
-    background-color: #367c34;  /* 鼠标悬停时变暗 */
+    background-color: #333333;  /* 鼠标悬停时变暗 */
 }
 
 /* 搜索框样式 */

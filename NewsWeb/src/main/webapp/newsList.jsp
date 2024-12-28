@@ -19,18 +19,9 @@
 </head>
 <body>
 <h1><a href="newsservlet">新闻列表</a></h1>
+
 <!-- 导航栏 -->
 <div class="navbar">
-    <%--<ul>
-        <li><a href="newsservlet?action=month&month=2024-05">电子产品</a></li>
-        <li><a href="newsservlet?action=month&month=2024-06">家居用品</a></li>
-        <li><a href="newsservlet?action=month&month=2024-07">服装服饰</a></li>
-        <li><a href="newsservlet?action=month&month=2024-08">美妆护肤</a></li>
-        <li><a href="newsservlet?action=month&month=2024-09">食品饮料</a></li>
-        <li><a href="newsservlet?action=month&month=2024-10">汽车交通</a></li>
-        <li><a href="newsservlet?action=month&month=2024-11">旅游出行</a></li>
-        <li><a href="newsservlet?action=month&month=2024-12">上理要闻</a></li>
-    </ul>--%>
         <ul>
             <li><a href="newsservlet?action=type&type=电子产品">电子产品</a></li>
             <li><a href="newsservlet?action=type&type=家居用品">家居用品</a></li>
@@ -44,21 +35,21 @@
 
 </div>
 
+<%--搜索框--%>
 <form action="newsservlet" method="get">
     <input type="text" name="searchQuery" placeholder="请输入标题搜索" />
     <button type="submit">搜索</button>
 </form>
 <br>
 
-
-
 <!-- 遍历并展示新闻列表 -->
 <c:forEach var="news" items="${newsList}">
+<%--    预览卡片--%>
     <div class="news-preview">
+        <div class="news-date">${news.date}</div><br><br>
         <a href="news-detail?id=${news.id}" class="news-title">${news.title}</a>
         <br><br><br>
-        <div class="news-date">${news.date}</div>
-        <br>
+
         <div class="pre-container">
             <div class="news-summary">${news.summary}</div>
             <c:if test="${not empty news.imageLink}">

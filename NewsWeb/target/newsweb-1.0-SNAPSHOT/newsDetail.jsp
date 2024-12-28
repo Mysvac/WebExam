@@ -17,10 +17,10 @@
 
   <title>${news.title}</title>
 </head>
-<body class="news-detail-page">/用于区分主页面和详情页
-<h1>${news.title}</h1>
-<div class="news-detail">
+<body>
 
+<div class="news-detail">
+    <h2>${news.title}</h2>
   <div class="news-date">${news.date}</div>
 
   <div class="news-content">

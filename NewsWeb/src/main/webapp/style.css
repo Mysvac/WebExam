@@ -9,7 +9,45 @@ body {
     background-color: #f4f4f4;  /* 页面背景色 */
 }
 
-h1, .news-detail, .news-content, .news-preview {
+h1 {
+    width: 80%; /* 限制宽度，避免文本过于拉伸 */
+    margin: 0 auto; /* 使内容水平居中 */
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #f4f4f4;
+}
+
+/* 详情页标题 */
+.news-detail h2 {
+    font-size: 2rem; /* 使标题的字体比内容大 */
+    font-weight: bold;
+    color: #333; /* 标题颜色 */
+    margin-bottom: 20px; /* 标题与内容之间的间距 */
+    text-align: center; /* 标题居中 */
+}
+
+/* 隐藏 h1 标签，仅在详情页 */
+body.news-detail-page h1 {
+    display: none;
+}
+
+.news-detail {
+    width: 80%; /* 限制宽度，避免文本过于拉伸 */
+    margin: 0 auto; /* 使内容水平居中 */
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #f4f4f4;
+}
+
+.news-content {
+    width: 80%; /* 限制宽度，避免文本过于拉伸 */
+    margin: 0 auto; /* 使内容水平居中 */
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #f4f4f4;
+}
+
+.news-preview {
     width: 80%; /* 限制宽度，避免文本过于拉伸 */
     margin: 0 auto; /* 使内容水平居中 */
     padding: 20px;
@@ -80,15 +118,15 @@ h1 a {
 
 
 goods_type {
-   position: absolute;
-   background-color: transparent;
-  opacity: 0;  /*设置透明度为 0，完全透明 */
+    position: absolute;
+    background-color: transparent;
+    opacity: 0;  /*设置透明度为 0，完全透明 */
 }
 
 /* 导航栏 */
 .navbar {
     width: 100%;
-    background-color: #555555;  /* 绿色背景 */
+    background-color: #555555;
     color: white;
     padding: 10px 0;
     position: relative; /* 确保导航栏可见 */
@@ -120,7 +158,7 @@ goods_type {
 
 /* 统一底色：新闻列表和电子产品一栏底色相同 */
 .news-title, .navbar ul li a {
-    background-color: #555555;  /* 绿色背景 */
+    background-color: #555555;
     color: white;  /* 文字颜色 */
     padding: 10px 20px;
     border-radius: 5px;
@@ -238,6 +276,4 @@ body.news-detail-page {
     h1 {
         font-size: 20px;
     }
-
-
 }

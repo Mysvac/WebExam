@@ -18,9 +18,9 @@
   <title>${news.title}</title>
 </head>
 <body>
-<h1>${news.title}</h1>
-<div class="news-detail">
 
+<div class="news-detail">
+    <h2>${news.title}</h2>
   <div class="news-date">${news.date}</div>
 
   <div class="news-content">

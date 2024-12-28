@@ -78,6 +78,13 @@ h1 a {
     max-height: 400px; /* 限制最大高度 */
 }
 
+
+goods_type {
+   position: absolute;
+   background-color: transparent;
+  opacity: 0;  /*设置透明度为 0，完全透明 */
+}
+
 /* 导航栏 */
 .navbar {
     width: 100%;

@@ -6,6 +6,7 @@ body {
     box-sizing: border-box;
     width: 100%;
     height: 100vh; /* 页面高度填满整个视口 */
+    background-color: #f4f4f4;  /* 页面背景色 */
 }
 
 h1, .news-detail, .news-content, .news-preview {
@@ -13,16 +14,17 @@ h1, .news-detail, .news-content, .news-preview {
     margin: 0 auto; /* 使内容水平居中 */
     padding: 20px;
     box-sizing: border-box;
+    background-color: #f4f4f4;
 }
+
 h1 a {
     text-decoration: none;  /* 去掉下划线 */
     color: inherit;         /* 使链接的颜色继承父元素颜色 */
 }
 
-
 .news-content {
     overflow: hidden; /* 防止内容溢出 */
-    text-indent: 2em; /*段首缩进*/
+    text-indent: 2em; /* 段首缩进 */
 }
 
 .news-date, .news-author {
@@ -76,23 +78,21 @@ h1 a {
     max-height: 400px; /* 限制最大高度 */
 }
 
-/*#goods_type {*/
-/*    position: absolute;*/
-/*    background-color: transparent;*/
-/*    opacity: 0;  !* 设置透明度为 0，完全透明 *!*/
-/*}*/
-
 /* 导航栏 */
 .navbar {
     width: 100%;
-    background-color: #333;
+    background-color: #3e8e41;  /* 绿色背景 */
     color: white;
     padding: 10px 0;
+    position: relative; /* 确保导航栏可见 */
+    z-index: 999;  /* 增加 z-index 确保导航栏在其他元素上方 */
 }
 
 .navbar ul {
     list-style-type: none;
     text-align: center;
+    margin: 0;
+    padding: 0;
 }
 
 .navbar ul li {
@@ -104,99 +104,23 @@ h1 a {
     color: white;
     text-decoration: none;
     font-size: 1.2rem;
-}
-
-.navbar ul li a:hover {
-    text-decoration: underline;
-}
-
-form {
-    text-align: center;
-    margin: 20px 0;
-}
-
-form input {
-    padding: 10px;
-    font-size: 1rem;
-    width: 300px;
-    margin-right: 10px;
-}
-
-form button {
-    padding: 10px;
-    font-size: 1rem;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-form button:hover {
-    background-color: #45a049;
-}
-/* 基础字体和颜色设置 */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
-    margin: 0;
-    padding: 0;
-}
-
-/* 主页面背景图片 */
-body:not(.news-detail-page) {
-    background-image: url('https://www.usst.edu.cn/_upload/article/images/1d/65/54fd8b4048dca592b2d5761326ba/3cb689d2-d908-4779-8e8e-af5a5f343a24.jpg');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-}
-
-h1 {
-    text-align: left;/向左对齐
-    background-color: #3e8e41;
-    color: #fff;
-    padding: 20px 0 20px 30px;
-    margin: 0;
-    font-size: 24px;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-a {
-    color: #007bff;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-/* 导航栏样式 */
-.navbar {
-    background-color: #333;
-    overflow: hidden;
-}
-
-.navbar ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-.navbar ul li {
-    float: left;
-}
-
-.navbar ul li a {
-    display: block;
-    color: white;
     padding: 14px 20px;
-    text-align: center;
 }
 
 .navbar ul li a:hover {
-    background-color: #575757;
+    text-decoration: underline;
+}
+
+/* 统一底色：新闻列表和电子产品一栏底色相同 */
+.news-title, .navbar ul li a {
+    background-color: #3e8e41;  /* 绿色背景 */
+    color: white;  /* 文字颜色 */
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+
+.news-title:hover, .navbar ul li a:hover {
+    background-color: #367c34;  /* 鼠标悬停时变暗 */
 }
 
 /* 搜索框样式 */
@@ -228,77 +152,34 @@ form button:hover {
     background-color: #45a049;
 }
 
-/* 新闻预览部分样式 */
-.news-preview {
-    background-color: #fff;
-    margin: 20px auto;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 80%;
-    max-width: 1000px;
-    transition: transform 0.3s ease-in-out;
+/* 主页面背景图片 */
+body:not(.news-detail-page) {
+    background-image: url('https://www.usst.edu.cn/_upload/article/images/1d/65/54fd8b4048dca592b2d5761326ba/3cb689d2-d908-4779-8e8e-af5a5f343a24.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
 }
 
-.news-preview:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
-}
-
-.news-preview img {
+h1 {
+    text-align: left; /* 向左对齐 */
+    background-color: #3e8e41;  /* 绿色背景 */
+    color: #fff;
+    padding: 20px 0 20px 30px;
+    margin: 0;
+    font-size: 24px;
     width: 100%;
-    max-height: 300px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin: 10px 0;
+    box-sizing: border-box;
 }
 
-.news-title {
-    font-size: 20px;
-    font-weight: bold;
-    color: #333;
-    display: block;
-    margin-bottom: 10px;
+/* 链接样式 */
+a {
+    color: #007bff;
+    text-decoration: none;
 }
 
-.news-title:hover {
-    color: #0056b3;
-}
-
-.news-date {
-    font-size: 14px;
-    color: #888;
-}
-
-.news-summary {
-    font-size: 16px;
-    color: #555;
-    line-height: 1.6;
-    margin-top: 10px;
-}
-
-/* 响应式布局，适应小屏幕 */
-@media screen and (max-width: 768px) {
-    .news-preview {
-        width: 90%;
-    }
-
-    form input[type="text"] {
-        width: 80%;
-    }
-
-    .navbar ul li {
-        float: none;
-        text-align: center;
-    }
-
-    .navbar ul li a {
-        padding: 12px;
-    }
-
-    h1 {
-        font-size: 20px;
-    }
+a:hover {
+    text-decoration: underline;
 }
 
 /* 新闻详情页的文字部分背景为白色 */
@@ -326,4 +207,30 @@ body.news-detail-page {
     font-size: 16px; /* 设置文字大小 */
     line-height: 1.6; /* 设置行高，增加可读性 */
     color: #555; /* 设置文字颜色 */
+}
+
+/* 响应式布局，适应小屏幕 */
+@media screen and (max-width: 768px) {
+    .news-preview {
+        width: 90%;
+    }
+
+    form input[type="text"] {
+        width: 80%;
+    }
+
+    .navbar ul li {
+        float: none;
+        text-align: center;
+    }
+
+    .navbar ul li a {
+        padding: 12px;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+
+
 }

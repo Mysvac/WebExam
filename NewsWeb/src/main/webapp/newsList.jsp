@@ -50,6 +50,8 @@
 </form>
 <br>
 
+
+
 <!-- 遍历并展示新闻列表 -->
 <c:forEach var="news" items="${newsList}">
     <div class="news-preview">
@@ -62,5 +64,37 @@
     </div>
 </c:forEach>
 
+<!-- 分页 -->
+<div class="pagination">
+    <c:forEach var="page" begin="1" end="${totalPages}">
+        <a href="newsservlet?page=${page}" class="${currentPage == page ? 'active' : ''}">${page}</a>
+    </c:forEach>
+</div>
+
+<style>
+    .pagination {
+        margin: 20px 0;
+        text-align: center;
+    }
+    .pagination a {
+        margin: 0 5px;
+        text-decoration: none;
+        color: #007bff;
+        font-size: 1.2rem;
+        padding: 5px 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background-color: #ffffff;
+    }
+    .pagination a.active {
+        background-color: #007bff;
+        color: white;
+        border-color: #007bff;
+    }
+    .pagination a:hover {
+        background-color: #0056b3;
+        color: white;
+    }
+</style>
 </body>
 </html>

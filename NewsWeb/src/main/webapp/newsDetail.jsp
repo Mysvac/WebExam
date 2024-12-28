@@ -18,6 +18,7 @@
    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/sha256.min.js"></script>
 
   <title>${news.title}</title>
+
 </head>
 <body>
 <div class="news-detail">
@@ -60,15 +61,14 @@
             <textarea name="commentText" placeholder="请输入评论"></textarea>
             <button type="submit" id="comment-sub">提交评论</button>
         </form>
-
+        <!-- 显示错误信息 -->
+        <c:if test="${not empty param.error}">
+            <div class="error-message">
+                    ${param.error}
+            </div>
+        </c:if>
     </div>
 
-    <!-- 错误信息 -->
-    <c:if test="${not empty error}">
-        <div class="error-message" style="color: red;">
-                ${error}
-        </div>
-    </c:if>
 </div>
 
 

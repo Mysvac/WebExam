@@ -67,7 +67,7 @@ public class NewsDetailServlet extends HttpServlet {
         // 如果用户没有登录
         if (isLoggedIn == null || !isLoggedIn) {
             // 重定向到登录页面
-            response.sendRedirect("login.jsp");
+            response.sendRedirect("login.jsp?error");
             return;
         }
 
@@ -78,8 +78,7 @@ public class NewsDetailServlet extends HttpServlet {
         // 检查评论内容和新闻 ID 是否有效
         if (newsIdStr == null || commentText == null || commentText.trim().isEmpty()) {
             // 如果没有提供新闻 ID 或评论内容，重定向回原页面并传递错误信息
-            request.setAttribute("error", "评论内容或新闻 ID 不能为空！");
-            request.getRequestDispatcher("news-detail?id=" + newsIdStr).forward(request, response);
+            response.sendRedirect("news-detail?id=" + newsIdStr);
             return;
         }
 

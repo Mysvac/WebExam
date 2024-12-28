@@ -208,6 +208,7 @@ form input[type="text"] {
     border-radius: 5px;
 }
 
+/*表单样式*/
 form button {
     padding: 10px 20px;
     background-color: #4CAF50;
@@ -221,6 +222,14 @@ form button {
 form button:hover {
     background-color: #45a049;
 }
+
+.error-message {
+    color: red;
+    margin-top: 20px;
+    text-align: center;
+    font-size: 1rem;
+}
+
 
 /* 主页面背景图片 */
 body:not(.news-detail-page) {

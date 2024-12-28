@@ -11,7 +11,7 @@
 <% request.setCharacterEncoding("GBK");%>
 <body>
 
-
+<div class="logincon">
 <form action="login-servlet" method="post" onsubmit="return encryptFormData()">
     <h1>登录</h1>
     <label for="username">用户名:</label>
@@ -23,10 +23,9 @@
     <button type="submit">登录</button>
 </form>
 
-<%----%>
 <!-- 错误消息 -->
 <c:if test="${not empty param.error}">
-    <div style="color: red; margin-top: 20px;">
+    <div class="error-message">
         <c:choose>
             <c:when test="${param.error == '1'}">
                 <p>用户名或密码错误，请重新尝试。</p>
@@ -43,5 +42,6 @@
         </c:choose>
     </div>
 </c:if>
+</div>
 </body>
 </html>

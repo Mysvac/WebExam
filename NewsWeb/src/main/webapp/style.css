@@ -88,7 +88,7 @@ goods_type {
 /* 导航栏 */
 .navbar {
     width: 100%;
-    background-color: #3e8e41;  /* 绿色背景 */
+    background-color: #555555;  /* 绿色背景 */
     color: white;
     padding: 10px 0;
     position: relative; /* 确保导航栏可见 */
@@ -120,7 +120,7 @@ goods_type {
 
 /* 统一底色：新闻列表和电子产品一栏底色相同 */
 .news-title, .navbar ul li a {
-    background-color: #3e8e41;  /* 绿色背景 */
+    background-color: #555555;  /* 绿色背景 */
     color: white;  /* 文字颜色 */
     padding: 10px 20px;
     border-radius: 5px;
@@ -161,7 +161,7 @@ form button:hover {
 
 /* 主页面背景图片 */
 body:not(.news-detail-page) {
-    background-image: url('https://www.usst.edu.cn/_upload/article/images/1d/65/54fd8b4048dca592b2d5761326ba/3cb689d2-d908-4779-8e8e-af5a5f343a24.jpg');
+    background-image: url('https://p8.itc.cn/q_70/images03/20230618/5e4e2977d0194d6aa6c4710668c6b29a.jpeg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;

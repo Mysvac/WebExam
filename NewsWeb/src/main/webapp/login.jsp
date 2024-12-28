@@ -23,6 +23,7 @@
     <button type="submit">登录</button>
 </form>
 
+<%----%>
 <!-- 错误消息 -->
 <c:if test="${not empty param.error}">
     <div style="color: red; margin-top: 20px;">

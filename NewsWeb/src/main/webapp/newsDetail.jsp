@@ -18,7 +18,6 @@
   <title>${news.title}</title>
 </head>
 <body>
-
 <div class="news-detail">
     <h2>${news.title}</h2>
   <div class="news-date">${news.date}</div>

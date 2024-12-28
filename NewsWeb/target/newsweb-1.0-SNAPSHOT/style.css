@@ -63,11 +63,17 @@ h1 a {
 }
 
 
-.news-date, .news-author {
+.news-date {
+    text-align: center;
     font-size: 1rem;
     color: #666;
-    margin-top: 10px;
 }
+ .news-author {
+     text-align: right;
+     font-size: 1rem;
+     color: #666;
+     margin-top: 10px;
+ }
 
 /* 为新闻列表标题添加样式 */
 .news-title {

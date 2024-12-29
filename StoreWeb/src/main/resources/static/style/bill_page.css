@@ -128,31 +128,31 @@ main {
     font-size: 18px;         /* 字体大小为18px */
     color: #555;             /* 中灰色文字 */
 }
-/* 设置书籍列表的样式 */
-.books {
-    display: flex;                /* 使用flex布局使书籍横向排列 */
-    flex-direction: column;       /* 让书籍垂直排列 */
-    gap: 20px;                    /* 设置书籍之间的间隔为20px */
+/* 设置商品列表的样式 */
+.goodsList {
+    display: flex;                /* 使用flex布局使商品横向排列 */
+    flex-direction: column;       /* 让商品垂直排列 */
+    gap: 20px;                    /* 设置商品之间的间隔为20px */
     justify-content: flex-start;  /* 从顶部开始排列 */
     padding: 20px;                /* 添加一些内边距 */
 }
 
-/* 设置每本书的样式 */
-.book {
+/* 设置每本商品的样式 */
+.goods {
     display: flex;                /* 使用flex布局 */
     align-items: center;          /* 垂直居中对齐 */
     background-color: #fff;       /* 白色背景 */
     padding: 15px;                /* 内边距15px */
     width: 100%;                  /* 宽度为100%，根据父容器宽度决定 */
-    max-width: 1200px;            /* 限制最大宽度，避免书籍过于宽 */
+    max-width: 1200px;            /* 限制最大宽度，避免商品过于宽 */
     border-radius: 8px;           /* 圆角效果 */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* 轻微的阴影效果 */
     text-align: left;             /* 文字左对齐 */
     margin: 20px auto;
 }
 
-/* 设置书籍封面的样式 */
-.book img {
+/* 设置商品封面的样式 */
+.goods img {
     width: 120px;                 /* 设置图片宽度 */
     height: 120px;                /* 高度固定 */
     object-fit: contain;            /* 保持图片比例，裁剪超出部分 */
@@ -160,16 +160,16 @@ main {
     margin-right: 20px;           /* 右侧间距 */
 }
 
-/* 设置书籍标题的样式 */
-.book h5 {
+/* 设置商品标题的样式 */
+.goods h5 {
     font-size: 18px;              /* 字体大小为18px */
     margin: 0 0 10px 0;           /* 上下外边距为10px */
     color: #333;                  /* 深灰色文字 */
     font-weight: bold;            /* 加粗字体 */
 }
 
-/* 设置书籍作者名称的样式 */
-.book p {
+/* 设置商品作者名称的样式 */
+.goods p {
     font-size: 14px;              /* 字体大小为14px */
     color: #666;                  /* 中灰色文字 */
     margin: 5px 0;                /* 上下外边距 */
@@ -184,7 +184,7 @@ main {
     width: 10%;
 }
 
-/* 设置书籍价格的样式 */
+/* 设置商品价格的样式 */
 .sum-price {
     font-size: 20px;              /* 字体大小为18px */
     font-weight: bold;            /* 加粗字体 */
@@ -193,7 +193,7 @@ main {
 }
 
 /* 设置购买按钮的样式 */
-.book button {
+.goods button {
     background-color: #007bff;    /* 按钮背景色 */
     color: #fff;                  /* 按钮文字颜色 */
     border: none;                 /* 去掉边框 */
@@ -203,7 +203,7 @@ main {
     margin-left: auto;            /* 将按钮推到右侧 */
 }
 
-.book button:hover {
+.goods button:hover {
     background-color: #0056b3;    /* 悬停时改变按钮颜色 */
 }
 

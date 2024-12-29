@@ -18,7 +18,7 @@ class OrdersImpl(private val jdbcTemplate: JdbcTemplate) : OrdersDao {
         Orders(
             billid = rs.getLong("billid"),
             uid = rs.getString("uid"),
-            bookid = rs.getLong("bookid"),
+            goodsid = rs.getLong("goodsid"),
             amount = rs.getInt("amount"),
             status = rs.getString("status"),
             otime = rs.getString("otime"),
@@ -28,7 +28,7 @@ class OrdersImpl(private val jdbcTemplate: JdbcTemplate) : OrdersDao {
 
     // 查询全部
     override fun findAll(): List<Orders>{
-        val sql = "SELECT * FROM orders WHERE status = 'ongoing'"
+        val sql = "SELECT * FROM orders WHERE status = 'ongoing' ORDER BY billid DESC"
         return jdbcTemplate.query(sql, rowMapper)
     }
 
@@ -39,9 +39,9 @@ class OrdersImpl(private val jdbcTemplate: JdbcTemplate) : OrdersDao {
     }
 
     // 特征查询
-    override fun findByAttr(billid: Long, uid: String, bookid: Long): List<Orders> {
-        val sql = "SELECT * FROM orders WHERE ((billid = ? OR uid = ? OR bookid = ?) AND status = 'ongoing')"
-        return jdbcTemplate.query(sql, rowMapper, billid, uid, bookid)
+    override fun findByAttr(billid: Long, uid: String, goodsid: Long): List<Orders> {
+        val sql = "SELECT * FROM orders WHERE ((billid = ? OR uid = ? OR goodsid = ?) AND status = 'ongoing') ORDER BY billid DESC"
+        return jdbcTemplate.query(sql, rowMapper, billid, uid, goodsid)
     }
 
     // 修改
@@ -52,8 +52,8 @@ class OrdersImpl(private val jdbcTemplate: JdbcTemplate) : OrdersDao {
 
     // 插入
     override fun insert(order: Orders) {
-        val sql = "INSERT INTO orders (uid, bookid, amount, status,otime,sumprice) VALUES (?, ?, ?, ?, ?, ?)"
-        jdbcTemplate.update(sql,order.uid,order.bookid,order.amount,order.status,order.otime,order.sumprice)
+        val sql = "INSERT INTO orders (uid, goodsid, amount, status,otime,sumprice) VALUES (?, ?, ?, ?, ?, ?)"
+        jdbcTemplate.update(sql,order.uid,order.goodsid,order.amount,order.status,order.otime,order.sumprice)
     }
 
     // 删除

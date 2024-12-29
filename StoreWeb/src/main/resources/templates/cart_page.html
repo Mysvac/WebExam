@@ -27,35 +27,35 @@
 </header>
 
 <main>
-    <section class="book-list">
+    <section class="goods-list">
         <h2>购物车</h2>
 
         <div class="ope-all">
-            <button id="del-un" class="del-ul" th:if="${!#lists.isEmpty(cartbooks)}">清空停售</button>
-            <button id="del-all" class="del-all" th:if="${!#lists.isEmpty(cartbooks)}">全部清空</button>
-            <button id="buy-all" class="buy-all" th:if="${!#lists.isEmpty(cartbooks)}">全部购买</button>
+            <button id="del-un" class="del-ul" th:if="${!#lists.isEmpty(cartgoodsList)}">清空停售</button>
+            <button id="del-all" class="del-all" th:if="${!#lists.isEmpty(cartgoodsList)}">全部清空</button>
+            <button id="buy-all" class="buy-all" th:if="${!#lists.isEmpty(cartgoodsList)}">全部购买</button>
         </div>
 
-        <div class="book" th:if="${#lists.isEmpty(cartbooks)}">
+        <div class="goods" th:if="${#lists.isEmpty(cartgoodsList)}">
             <p>未找到相关商品</p>
         </div>
-        <div class="book" th:each="book : ${cartbooks}">
+        <div class="goods" th:each="goods : ${cartgoodsList}">
 
-            <img class="book-image" th:src="@{/images/book/{bookname}.png(bookname=${book.bookname})}" th:alt="${book.bookname}">
+            <img class="goods-image" th:src="@{/images/goods/{goodsname}.png(goodsname=${goods.goodsname})}" th:alt="${goods.goodsname}">
             <div class="profile">
-                <h5 th:text="${book.bookname}">Book Title</h5>
-                <p th:text="'产商: ' + ${book.author}">Author Name</p>
-                <p th:text="'库存：'+${book.stock}"></p>
+                <h5 th:text="${goods.goodsname}">Goods Title</h5>
+                <p th:text="'产商: ' + ${goods.author}">Author Name</p>
+                <p th:text="'库存：'+${goods.stock}"></p>
             </div>
             <div  class="money">
-                <p  class="single-price" th:text="'单价：￥' + ${book.price/100} + '.' + ${book.price%100}">Price</p>
-                <p>数量：<input type="number" class="booknum" th:value="${book.amount}"/></p>
-                <p class="sum-price" th:text="'总价：￥' + ${book.price*book.amount/100} + '.' + ${book.price*book.amount%100}">Sum Price</p>
+                <p  class="single-price" th:text="'单价：￥' + ${goods.price/100} + '.' + ${goods.price%100}">Price</p>
+                <p>数量：<input type="number" class="goodsnum" th:value="${goods.amount}"/></p>
+                <p class="sum-price" th:text="'总价：￥' + ${goods.price*goods.amount/100} + '.' + ${goods.price*goods.amount%100}">Sum Price</p>
             </div>
-            <button class="update-num" th:data-bookid="${book.bookid}">更新数量</button>
-            <button class="delete" th:data-bookid="${book.bookid}">删除</button>
-            <button class="buy" th:data-bookid="${book.bookid}" th:if="${book.available==1}">购买</button>
-            <button class="buy-unable" th:data-bookid="${book.bookid}" th:if="${book.available==0}" style="background: grey;color: red">停售！</button>
+            <button class="update-num" th:data-goodsid="${goods.goodsid}">更新数量</button>
+            <button class="delete" th:data-goodsid="${goods.goodsid}">删除</button>
+            <button class="buy" th:data-goodsid="${goods.goodsid}" th:if="${goods.available==1}">购买</button>
+            <button class="buy-unable" th:data-goodsid="${goods.goodsid}" th:if="${goods.available==0}" style="background: grey;color: red">停售！</button>
         </div>
 
     </section>

@@ -3,6 +3,7 @@ package com.mythovac.configtemplate.controller
 
 
 import com.mythovac.configtemplate.entity.*
+import com.mythovac.configtemplate.manager.AdManager
 import com.mythovac.configtemplate.service.UserService
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpSession
@@ -49,8 +50,10 @@ class PageController(private val userService: UserService) {
         }
 
         // 获取图书列表，从数据库
-        val books: List<Book> = userService.findAllAbleBook()
-        model.addAttribute("books",books)
+        val goods: List<Goods> = userService.findAllAbleGoods()
+        model.addAttribute("goodsList",goods)
+        model.addAttribute("AdEnable", AdManager.getEnable())
+        model.addAttribute("AdLocation", AdManager.getLocation())
 
         // 转发至html文件
         return "main_page.html"
@@ -77,8 +80,10 @@ class PageController(private val userService: UserService) {
         if(info == null) return "redirect:/page/main"
 
         // 根据参数查询书籍，从数据库
-        val books: List<Book> = userService.findBookByAttr(author = info, bookname = info, booktype = info)
-        model.addAttribute("books",books)
+        val goods: List<Goods> = userService.findGoodsByAttr(author = info, goodsname = info, goodstype = info)
+        model.addAttribute("goodsList",goods)
+        model.addAttribute("AdEnable", AdManager.getEnable())
+        model.addAttribute("AdLocation", AdManager.getLocation())
 
         // 转发至html文件
         return "main_page.html"
@@ -101,9 +106,11 @@ class PageController(private val userService: UserService) {
         }
 
         // 从参数获取图书编号，并且从数据库获取对应图书信息
-        val bookid: Long = request.getParameter("bookid")?.toLong() ?: return "redirect:/page/main"
-        val book: Book = userService.findBookByAttr(bookid = bookid).firstOrNull() ?: return "redirect:/page/main"
-        model.addAttribute("book",book)
+        val goodsid: Long = request.getParameter("goodsid")?.toLong() ?: return "redirect:/page/main"
+        val goods: Goods = userService.findGoodsByAttr(goodsid = goodsid).firstOrNull() ?: return "redirect:/page/main"
+        model.addAttribute("goods",goods)
+        model.addAttribute("AdEnable", AdManager.getEnable())
+        model.addAttribute("AdLocation", AdManager.getLocation())
 
         // 转发至html文件
         return "info_page.html"
@@ -123,8 +130,8 @@ class PageController(private val userService: UserService) {
         model.addAttribute("grade",grade)
 
         // 获取当前用户的购物车数据，从数据库中查询
-        val cartbooks: List<Cartbook> = userService.findCartbookByUid(uid)
-        model.addAttribute("cartbooks",cartbooks)
+        val cartgoods: List<Cartgoods> = userService.findCartgoodsByUid(uid)
+        model.addAttribute("cartgoodsList",cartgoods)
 
         // 转发至html文件
         return "cart_page.html"
@@ -146,8 +153,21 @@ class PageController(private val userService: UserService) {
         model.addAttribute("grade",grade)
 
         // 获取当前用户的订单/账单列表，从数据库
-        val bills: List<BillDetail> = userService.findBillAndOrderByUid(uid)
-        model.addAttribute("bills",bills)
+        val search: String = request.getParameter("search") ?: ""
+        if(search.isEmpty()){
+            val bills: List<BillDetail> = userService.findBillAndOrderByUid(uid)
+            model.addAttribute("bills",bills)
+        }
+        else{
+            var billid: Long = -1
+            try{
+                billid = search.toLong()
+            }catch(_: NumberFormatException){}
+            val bills: List<BillDetail> = userService.findBillAndOrderByAttr(uid=uid,billid = billid , goodsname = search)
+            model.addAttribute("bills",bills)
+        }
+
+
 
         // 转发至html文件
         return "bill_page.html"
@@ -168,6 +188,8 @@ class PageController(private val userService: UserService) {
             model.addAttribute("uid",uid)
             model.addAttribute("grade",grade)
         }
+        model.addAttribute("AdEnable", AdManager.getEnable())
+        model.addAttribute("AdLocation", AdManager.getLocation())
 
         // 转发至html文件
         return "classify_page.html"
@@ -205,12 +227,14 @@ class PageController(private val userService: UserService) {
         val session = request.getSession(false) ?: return "redirect:/page/sign-in"
         val uid: String = session.getAttribute("uid") as String
         val grade: String = session.getAttribute("grade") as String
-        if(grade!="admin"){ return "redirect:/" }
         model.addAttribute("uid",uid)
         model.addAttribute("grade",grade)
 
         // 获取目标个人信息界面
         val goal: String = request.getParameter("uid")
+        // 权限检查
+        if(grade!="admin" &&  uid!=goal){ return "redirect:/" }
+
         val userInfo = userService.findUserInfoByUid(goal)
         model.addAttribute("userInfo",userInfo)
 
@@ -273,9 +297,25 @@ class PageController(private val userService: UserService) {
         model.addAttribute("grade",grade)
         if(grade != "admin") return "redirect:/"
 
-        // 获取进行中的订单信息，从数据库
-        val orders: List<BillDetail>  = userService.findAllOrders()
-        model.addAttribute("orders",orders)
+
+        // 查询图书信息表，从数据库
+        val search = request.getParameter("search") ?: ""
+
+        // 查询图书信息表，从数据库
+        if(search==""){
+            val orders: List<BillDetail>  = userService.findAllOrders()
+            model.addAttribute("orders",orders)
+        }
+        else{
+            var tmpid: Long = -1
+            try{
+                tmpid = search.toLong()
+            }
+            catch(_: NumberFormatException){}
+            // 获取进行中的订单信息，从数据库
+            val orders: List<BillDetail>  = userService.findOrdersByAttr(uid = search, goodsid = tmpid, billid = tmpid)
+            model.addAttribute("orders",orders)
+        }
 
         // 转发至html文件
         return "orders_manage_page.html"
@@ -287,8 +327,8 @@ class PageController(private val userService: UserService) {
      * 修改图书信息
      * 必须登录并具有admin权限
      * */
-    @GetMapping("/manage-books")
-    fun manageBooksPage(request: HttpServletRequest, model: Model): String{
+    @GetMapping("/manage-goodsList")
+    fun manageGoodsPage(request: HttpServletRequest, model: Model): String{
         // 验证登录与权限
         val session = request.getSession(false) ?: return "redirect:/page/sign-in"
         val uid: String = session.getAttribute("uid") as String
@@ -298,11 +338,19 @@ class PageController(private val userService: UserService) {
         if(grade != "admin") return "redirect:/"
 
         // 查询图书信息表，从数据库
-        val books: List<Book>  = userService.findAllBook()
-        model.addAttribute("books",books)
+        val search = request.getParameter("search") ?: ""
+        var goodsid: Long = -1
+        try{
+            goodsid = search.toLong()
+        }
+        catch(_: NumberFormatException){}
+
+        val goods: List<Goods>  = userService.findGoodsByAttr(goodsid=goodsid,goodsname=search)
+        // val goodsList: List<Goods>  = userService.findAllGoods()
+        model.addAttribute("goodsList",goods)
 
         // 转发至html文件
-        return "books_manage_page.html"
+        return "goods_manage_page.html"
     }
 
     /**
@@ -321,10 +369,36 @@ class PageController(private val userService: UserService) {
         if(grade != "admin") return "redirect:/"
 
         // 查询用户信息，从数据库
-        val userInfos: List<UserInfo>  = userService.findAllUserInfos()
+        val search = request.getParameter("search") ?: ""
+        val userInfos: List<UserInfo>  = userService.findUserInfoByAttr(uid = search)
         model.addAttribute("userInfos",userInfos)
 
         // 转发至html文件
         return "users_manage_page.html"
     }
+
+
+    /**
+     * 管理员管理面板
+     * 广告管理界面
+     * 必须登录并具有admin权限
+     * */
+    @GetMapping("/manage-ad")
+    fun manageAdPage(request: HttpServletRequest, model: Model): String{
+        // 验证登录与权限
+        val session = request.getSession(false) ?: return "redirect:/page/sign-in"
+        val uid: String = session.getAttribute("uid") as String
+        val grade: String = session.getAttribute("grade") as String
+        model.addAttribute("uid",uid)
+        model.addAttribute("grade",grade)
+        if(grade != "admin") return "redirect:/"
+
+        model.addAttribute("AdEnable", AdManager.getEnable())
+        model.addAttribute("AdLocation", AdManager.getLocation())
+
+        // 转发至html文件
+        return "ad_manage_page.html"
+    }
+
+
 }

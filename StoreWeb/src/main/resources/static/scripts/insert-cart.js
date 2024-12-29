@@ -4,10 +4,10 @@ const buttons = document.querySelectorAll('.insert-to-cart');
 
 buttons.forEach(button => {
     button.addEventListener('click', function() {
-        // 获取当前按钮的 bookid
-        const bookid = this.getAttribute('data-bookid');
+        // 获取当前按钮的 goodsid
+        const goodsid = this.getAttribute('data-goodsid');
         const formData = new FormData();
-        formData.append("bookid", bookid);
+        formData.append("goodsid", goodsid);
 
         // 发送 POST 请求
         fetch('/data/insert-cart', {

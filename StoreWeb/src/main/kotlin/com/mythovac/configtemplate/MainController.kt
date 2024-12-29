@@ -1,6 +1,7 @@
 package com.mythovac.configtemplate
 
-import com.mythovac.configtemplate.entity.Book
+import com.mythovac.configtemplate.entity.Goods
+import com.mythovac.configtemplate.manager.AdManager
 import com.mythovac.configtemplate.service.UserService
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.stereotype.Controller
@@ -27,8 +28,11 @@ class MainController(private val userService: UserService) {
             model.addAttribute("grade",grade)
         }
 
-        val books: List<Book> = userService.findAllAbleBook()
-        model.addAttribute("books",books)
+        val goods: List<Goods> = userService.findAllAbleGoods()
+        model.addAttribute("goodsList", goods)
+        model.addAttribute("AdEnable", AdManager.getEnable())
+        model.addAttribute("AdLocation", AdManager.getLocation())
+
         return "main_page.html"
     }
 

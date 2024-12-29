@@ -2,22 +2,20 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>小小杂货铺-书籍详情</title>
-
+  <title>小小杂货铺-商品详情</title>
 
   <link href="/style/info_page.css" rel="stylesheet">
   <script src="/scripts/insert-cart.js" defer></script>
   <script src="/scripts/buy-button.js" defer></script>
 
+  <script th:if="${AdEnable!=null && AdEnable == true}" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/core.min.js"></script>
+  <script th:if="${AdEnable!=null && AdEnable == true}" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/enc-utf8.min.js"></script>
+  <script th:if="${AdEnable!=null && AdEnable == true}" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/enc-hex.min.js"></script>
+  <script th:if="${AdEnable!=null && AdEnable == true}" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/sha256.min.js"></script>
+  <script th:if="${AdEnable!=null && AdEnable == true}" src="/scripts/ad.js" defer></script>
+  <meta th:id="'AdLocation'" th:if="${AdEnable!=null && AdEnable == true}" th:content="${AdLocation}">
+  <meta id="goods_type" th:if="${AdEnable!=null && AdEnable == true}" th:content="${goods.goodstype}">
 
-  <!-- 核心库 -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/core.min.js"></script>
-  <!-- 编码支持 -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/enc-utf8.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/enc-hex.min.js"></script>
-  <!-- SHA-256 哈希算法 -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/sha256.min.js"></script>
-  <script src="/scripts/ad.js" defer></script>
 </head>
 <body>
 <header>
@@ -40,22 +38,22 @@
 </header>
 
 <main>
-  <section class="book-list">
+  <section class="goods-list">
     <h2>详细信息</h2>
 
-    <div class="book-info">
-      <img class="book-image" th:src="@{/images/book/{bookname}.png(bookname=${book.bookname})}" th:alt="${book.bookname}">
-      <div class="book-details">
-        <h3 th:text="${book.bookname}">Book Title</h3> <!-- Book Title -->
-        <p th:text="'简介: ' + ${book.profile}">Book Profile</p>
-        <p th:text="'作者/产商: ' + ${book.author}">Author Name</p>
-        <p class="price" th:text="'售价: ￥' + ${book.price/100} + '.' + ${book.price%100}">Price</p>
-        <p th:text="'库存: ' + ${book.stock}">Stock</p>
-        <p th:text="'销售量: ' + ${book.sales}">Sales</p>
-        <p th:if="${book.available==0}" style="color: darkred">停售</p>
-        <div class="book-actions">
-          <button class="buy" th:data-bookid="${book.bookid}">直接购买</button>
-          <button class="insert-to-cart"  th:data-bookid="${book.bookid}">加入购物车</button>
+    <div class="goods-info">
+      <img class="goods-image" th:src="@{/images/goods/{goodsname}.png(goodsname=${goods.goodsname})}" th:alt="${goods.goodsname}">
+      <div class="goods-details">
+        <h3 th:text="${goods.goodsname}">Goods Title</h3> <!-- Goods Title -->
+        <p th:text="'简介: ' + ${goods.profile}">Goods Profile</p>
+        <p th:text="'作者/产商: ' + ${goods.author}">Author Name</p>
+        <p class="price" th:text="'售价: ￥' + ${goods.price/100} + '.' + ${goods.price%100}">Price</p>
+        <p th:text="'库存: ' + ${goods.stock}">Stock</p>
+        <p th:text="'销售量: ' + ${goods.sales}">Sales</p>
+        <p th:if="${goods.available==0}" style="color: darkred">停售</p>
+        <div class="goods-actions">
+          <button class="buy" th:data-goodsid="${goods.goodsid}">直接购买</button>
+          <button class="insert-to-cart"  th:data-goodsid="${goods.goodsid}">加入购物车</button>
         </div>
       </div>
     </div>
@@ -67,6 +65,5 @@
   <p>&copy; 2024 小小杂货铺 | 仅供学习测试使用</p>
 </footer>
 
-<span id="goods_type" th:text="${book.booktype}" style="position: absolute; background-color: transparent; opacity: 0;"></span>
 </body>
 </html>

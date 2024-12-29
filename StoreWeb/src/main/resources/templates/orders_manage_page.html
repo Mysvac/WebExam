@@ -34,8 +34,9 @@
       <ul>
         <li id="bill-management-btn" class="sidebar-item"><a href="/page/management">账单查询</a></li>
         <li id="order-management-btn" class="sidebar-item"><a href="/page/manage-orders">订单处理</a></li>
-        <li id="book-management-btn" class="sidebar-item"><a href="/page/manage-books">商品管理</a></li>
+        <li id="goods-management-btn" class="sidebar-item"><a href="/page/manage-goodsList">商品管理</a></li>
         <li id="user-management-btn" class="sidebar-item"><a href="/page/manage-users">用户管理</a></li>
+        <li id="ad-management-btn" class="sidebar-item"><a href="/page/manage-ad">广告管理</a></li>
       </ul>
     </div>
 
@@ -53,8 +54,8 @@
       <div class="bill" th:each="bill : ${orders}">
         <div class="profile">
           <h5 th:text="'订单号：'+${bill.billid}">billid</h5>
-          <p th:text="'商品编号：'+${bill.bookid}">Book Title</p>
-          <p th:text="'商品名：'+${bill.bookname}"></p>
+          <p th:text="'商品编号：'+${bill.goodsid}">Goods Title</p>
+          <p th:text="'商品名：'+${bill.goodsname}"></p>
         </div>
 
         <div  class="money">

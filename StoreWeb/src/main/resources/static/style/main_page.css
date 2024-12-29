@@ -129,23 +129,23 @@ main {
     color: #555;             /* 中灰色文字 */
 }
 
-/* 设置图书列表标题的样式 */
-.book-list h2 {
+/* 设置商品列表标题的样式 */
+.goods-list h2 {
     font-size: 28px;         /* 字体大小为28px */
     color: #333;             /* 深灰色文字 */
     margin-bottom: 20px;     /* 下方外边距20px */
 }
 
-/* 设置书籍列表的排列方式 */
-.books {
-    display: flex;           /* 使用flex布局使书籍横向排列 */
+/* 设置商品列表的排列方式 */
+.goodsList {
+    display: flex;           /* 使用flex布局使商品横向排列 */
     flex-wrap: wrap;             /* 使内容超出时自动换行 */
-    gap: 20px;               /* 设置书籍之间的间隔为20px */
-    justify-content: center; /* 水平居中排列书籍 */
+    gap: 20px;               /* 设置商品之间的间隔为20px */
+    justify-content: center; /* 水平居中排列商品 */
 }
 
-/* 设置每本书的样式 */
-.book {
+/* 设置每本商品的样式 */
+.goods {
     background-color: #fff;  /* 白色背景 */
     padding: 15px;           /* 内边距15px */
     width: 200px;            /* 固定宽度为200px */
@@ -154,8 +154,8 @@ main {
     text-align: center;      /* 文字居中对齐 */
 }
 
-/* 设置书籍封面的样式 */
-.book img {
+/* 设置商品封面的样式 */
+.goods img {
     width: 170px;             /* 图片宽度为100%，填满父元素 */
     min-height: 170px;
     height: 170px;
@@ -163,20 +163,20 @@ main {
     border-radius: 4px;      /* 圆角效果 */
 }
 
-/* 设置书籍标题的样式 */
-.book h3 {
+/* 设置商品标题的样式 */
+.goods h3 {
     font-size: 20px;         /* 字体大小为20px */
     margin: 10px 0;          /* 上下外边距为10px */
     color: #333;             /* 深灰色文字 */
 }
 
-/* 设置书籍作者名称的样式 */
-.book p {
+/* 设置商品作者名称的样式 */
+.goods p {
     font-size: 14px;         /* 字体大小为14px */
     color: #666;             /* 中灰色文字 */
 }
 
-/* 设置书籍价格的样式 */
+/* 设置商品价格的样式 */
 .price {
     font-size: 18px;         /* 字体大小为18px */
     font-weight: bold;       /* 加粗字体 */

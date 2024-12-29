@@ -33,6 +33,9 @@ public class NewsDetailServlet extends HttpServlet {
 
                 // 如果获取到新闻信息，传递给 JSP 页面显示
                 if (news != null) {
+                    // 更新浏览量
+                    newsDAOImpl.incrementViewCount(newsId);
+
                     // 获取与新闻相关的评论
                     List<Comment> comments = commentDAOImpl.getCommentsByNewsId(newsId);
                     request.setAttribute("news", news);
@@ -46,7 +49,7 @@ public class NewsDetailServlet extends HttpServlet {
                 e.printStackTrace();
                 response.sendRedirect("error.jsp");
             } catch (SQLException e) {
-                //数据库连接错误
+                // 数据库连接错误
                 e.printStackTrace();
                 response.sendRedirect("error.jsp");
             }
@@ -105,6 +108,3 @@ public class NewsDetailServlet extends HttpServlet {
         }
     }
 }
-
-
-

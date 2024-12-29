@@ -14,4 +14,6 @@ public interface NewsDAO extends DAO{
     public List<News> getNewsByMonth(String month) throws SQLException;
     public List<News> getNewsByType(String type) throws SQLException;
 
+
+
 }

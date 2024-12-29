@@ -6,9 +6,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class NewsDAOImpl implements NewsDAO {
 
@@ -18,7 +16,7 @@ public class NewsDAOImpl implements NewsDAO {
     @Override
     public List<News> getAllNews() throws SQLException {
         List<News> newsList = new ArrayList<>();
-        String sql = "SELECT * FROM newsdetail ORDER BY id ASC "; // 按照 id 排序
+        String sql = "SELECT * FROM newsdetail ORDER BY id ASC"; // 按照 id 排序
 
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(sql);
@@ -26,12 +24,13 @@ public class NewsDAOImpl implements NewsDAO {
 
             while (rs.next()) {
                 News news = new News();
-                news.setId(rs.getInt("id"));  // 获取数据库中的 id
+                news.setId(rs.getInt("id"));
                 news.setTitle(rs.getString("title"));
                 news.setDate(rs.getString("date"));
                 news.setSummary(rs.getString("summary"));
                 news.setLink(rs.getString("link"));
                 news.setImageLink(rs.getString("image_link"));
+                news.setView_count(rs.getInt("view_count"));
 
                 String imagesJson = rs.getString("images");
                 if (imagesJson != null && !imagesJson.isEmpty()) {
@@ -51,25 +50,31 @@ public class NewsDAOImpl implements NewsDAO {
         return newsList;
     }
 
-    // 根据 ID 获取新闻详情
+    // 根据 ID 获取新闻详情并增加浏览量
     @Override
     public News getNewsById(int id) throws SQLException {
         String sql = "SELECT * FROM newsdetail WHERE id = ?";
+        String updateSql = "UPDATE newsdetail SET view_count = view_count + 1 WHERE id = ?";
         try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+             PreparedStatement selectStatement = connection.prepareStatement(sql);
+             PreparedStatement updateStatement = connection.prepareStatement(updateSql)) {
 
-            statement.setInt(1, id);
-            ResultSet rs = statement.executeQuery();
+            // 更新浏览量
+            updateStatement.setInt(1, id);
+            updateStatement.executeUpdate();
+
+            // 查询新闻详情
+            selectStatement.setInt(1, id);
+            ResultSet rs = selectStatement.executeQuery();
 
             if (rs.next()) {
                 News news = new News();
-                news.setId(rs.getInt("id"));  // 获取数据库中的 id
+                news.setId(rs.getInt("id"));
                 news.setTitle(rs.getString("title"));
                 news.setDate(rs.getString("date"));
                 news.setLink(rs.getString("link"));
                 news.setImageLink(rs.getString("image_link"));
 
-                // 解析 JSON 数据，将 JSON 字符串转换为 List<String>
                 String contentJson = rs.getString("content");
                 if (contentJson != null && !contentJson.isEmpty()) {
                     List<String> contentList = gson.fromJson(contentJson, new TypeToken<List<String>>(){}.getType());
@@ -88,22 +93,32 @@ public class NewsDAOImpl implements NewsDAO {
                     news.setAuthor(authorList);
                 }
                 news.setType(rs.getString("type"));
+                news.setView_count(rs.getInt("view_count")); // 返回最新浏览量
                 return news;
             }
         }
         return null;
     }
 
+    // 新增方法：更新新闻的浏览量
+
+    public void incrementViewCount(int newsId) throws SQLException {
+        String sql = "UPDATE newsdetail SET view_count = view_count + 1 WHERE id = ?";
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, newsId);
+            statement.executeUpdate();
+        }
+    }
+    @Override
     public List<News> getNewsByType(String type) throws SQLException {
         List<News> newsList = new ArrayList<>();
-
-        // SQL 查询：只根据类型筛选新闻
         String sql = "SELECT * FROM newsdetail WHERE type = ? ORDER BY date DESC"; // 根据 type 查询
 
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
-            statement.setString(1, type);  // 设置类型筛选条件
+            statement.setString(1, type);
 
             ResultSet rs = statement.executeQuery();
 
@@ -116,14 +131,12 @@ public class NewsDAOImpl implements NewsDAO {
                 news.setLink(rs.getString("link"));
                 news.setImageLink(rs.getString("image_link"));
 
-                // 解析 images 字段
                 String imagesJson = rs.getString("images");
                 if (imagesJson != null && !imagesJson.isEmpty()) {
                     List<String> imagesList = gson.fromJson(imagesJson, new TypeToken<List<String>>(){}.getType());
                     news.setImages(imagesList);
                 }
 
-                // 解析 author 字段
                 String authorJson = rs.getString("author");
                 if (authorJson != null && !authorJson.isEmpty()) {
                     List<String> authorList = gson.fromJson(authorJson, new TypeToken<List<String>>(){}.getType());
@@ -131,21 +144,22 @@ public class NewsDAOImpl implements NewsDAO {
                 }
 
                 news.setType(rs.getString("type"));
+                news.setView_count(rs.getInt("view_count")); // 加载 view_count
                 newsList.add(news);
             }
         }
         return newsList;
     }
 
-
+    @Override
     public List<News> getNewsByMonth(String month) throws SQLException {
         List<News> newsList = new ArrayList<>();
-        String sql = "SELECT * FROM newsdetail WHERE DATE_FORMAT(date, '%Y-%m') = ? ORDER BY date DESC";  // 按年月查询
+        String sql = "SELECT * FROM newsdetail WHERE DATE_FORMAT(date, '%Y-%m') = ? ORDER BY date DESC"; // 按年月查询
 
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
-            statement.setString(1, month);  // 设置月份条件，格式为 "YYYY-MM"
+            statement.setString(1, month); // 设置月份条件，格式为 "YYYY-MM"
             ResultSet rs = statement.executeQuery();
 
             while (rs.next()) {
@@ -159,16 +173,18 @@ public class NewsDAOImpl implements NewsDAO {
 
                 String imagesJson = rs.getString("images");
                 if (imagesJson != null && !imagesJson.isEmpty()) {
-                    List<String> imagesList = gson.fromJson(imagesJson, new TypeToken<List<String>>(){}.getType());
+                    List<String> imagesList = gson.fromJson(imagesJson, new TypeToken<List<String>>() {}.getType());
                     news.setImages(imagesList);
                 }
 
                 String authorJson = rs.getString("author");
                 if (authorJson != null && !authorJson.isEmpty()) {
-                    List<String> authorList = gson.fromJson(authorJson, new TypeToken<List<String>>(){}.getType());
+                    List<String> authorList = gson.fromJson(authorJson, new TypeToken<List<String>>() {}.getType());
                     news.setAuthor(authorList);
                 }
+
                 news.setType(rs.getString("type"));
+                news.setView_count(rs.getInt("view_count")); // 加载 view_count
                 newsList.add(news);
             }
         }
@@ -189,25 +205,23 @@ public class NewsDAOImpl implements NewsDAO {
             statement.setString(4, news.getLink());
             statement.setString(5, news.getImageLink());
 
-            // 将 List<String> 转换为 JSON 字符串
             statement.setString(6, gson.toJson(news.getContent()));
             statement.setString(7, gson.toJson(news.getImages()));
             statement.setString(8, gson.toJson(news.getAuthor()));
 
-            return statement.executeUpdate() > 0;  // 如果插入成功，则返回 true
+            return statement.executeUpdate() > 0;
         }
     }
 
     // 根据搜索关键词获取新闻
     public List<News> searchNews(String searchQuery) throws SQLException {
         List<News> newsList = new ArrayList<>();
-        String sql = "SELECT * FROM newsdetail WHERE title LIKE ? ORDER BY date DESC";  // 仅搜索标题
+        String sql = "SELECT * FROM newsdetail WHERE title LIKE ? ORDER BY date DESC";
 
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
-            String query = "%" + searchQuery + "%";  // 使用通配符 % 进行模糊查询
-            statement.setString(1, query);
+            statement.setString(1, "%" + searchQuery + "%");
 
             ResultSet rs = statement.executeQuery();
 
@@ -232,11 +246,11 @@ public class NewsDAOImpl implements NewsDAO {
                     news.setAuthor(authorList);
                 }
 
+                news.setType(rs.getString("type"));
+                news.setView_count(rs.getInt("view_count")); // 加载 view_count
                 newsList.add(news);
             }
         }
         return newsList;
     }
-
-
 }

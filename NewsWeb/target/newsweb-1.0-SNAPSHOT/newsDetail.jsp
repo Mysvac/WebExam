@@ -4,55 +4,46 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="comment.css">
     <link rel="stylesheet" type="text/css" href="style.css">
-  <script src="ad.js" defer></script>
-  <!-- 核心库 -->
- <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/core.min.js"></script>
- <!-- 编码支持 -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/enc-utf8.min.js"></script>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/enc-hex.min.js"></script>
-  <!-- SHA-256 哈希算法 -->
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/sha256.min.js"></script>
+    <script src="ad.js" defer></script>
+    <!-- 核心库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/core.min.js"></script>
+    <!-- 编码支持 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/enc-utf8.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/enc-hex.min.js"></script>
+    <!-- SHA-256 哈希算法 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/sha256.min.js"></script>
 
-  <title>${news.title}</title>
+    <title>${news.title}</title>
 
-    <script>
-        // 自动聚焦评论输入框
-        window.onload = function() {
-            var error = new URLSearchParams(window.location.search).get('error');
-            if (error) {
-                // 显示错误消息
-                document.getElementById("error-message").style.display = 'block';
-                // 聚焦到评论框
-                document.getElementById("commentText").focus();
-            }
-        };
-    </script>
 </head>
 <body>
 <div class="news-detail">
     <span><a href="newsservlet">返回新闻列表</a></span>
     <h2>${news.title}</h2>
-  <div class="detail-date">${news.date}</div>
+    <div class="detail-date">${news.date} &nbsp &nbsp浏览量：${news.view_count}
+    </div>
 
-  <div class="news-content">
-    <c:forEach var="contentItem" items="${news.content}">
-      <p class="indented">${contentItem}</p>
-    </c:forEach>
-  </div>
 
-  <c:if test="${not empty news.imageLink}">
-    <img src="${news.imageLink}" alt="新闻图片" />
-  </c:if>
 
-  <div class="news-author">
-    <c:forEach var="author" items="${news.author}">
-      <span>${author}</span>
-    </c:forEach>
-  </div>
+    <div class="news-content">
+        <c:forEach var="contentItem" items="${news.content}">
+            <p class="indented">${contentItem}</p>
+        </c:forEach>
+    </div>
+
+    <c:if test="${not empty news.imageLink}">
+        <img src="${news.imageLink}" alt="新闻图片" />
+    </c:if>
+
+    <div class="news-author">
+        <c:forEach var="author" items="${news.author}">
+            <span>${author}</span>
+        </c:forEach>
+    </div>
 
     <span id="goods_type">${news.type}</span>
 

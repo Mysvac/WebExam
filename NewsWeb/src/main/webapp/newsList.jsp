@@ -57,7 +57,7 @@
 <c:forEach var="news" items="${newsList}">
 <%--    预览卡片--%>
     <div class="news-preview">
-        <div class="news-date">${news.date}</div><br><br>
+        <div class="news-date">${news.date} &nbsp浏览量：${news.view_count}</div><br><br>
         <a href="news-detail?id=${news.id}" class="news-title">${news.title}</a>
         <br><br><br>
 

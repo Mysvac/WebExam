@@ -14,6 +14,16 @@ public class News {
     private List<String> author; // JSON
     private String type;
 
+    private int view_count;
+
+    public int getView_count() {
+        return view_count;
+    }
+
+    public void setView_count(int view_count) {
+        this.view_count = view_count;
+    }
+
     public String getType() {
         return type;
     }

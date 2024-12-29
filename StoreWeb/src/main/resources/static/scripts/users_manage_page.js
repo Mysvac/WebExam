@@ -10,7 +10,7 @@ gradeButtons.forEach(button => {
         const uid = this.getAttribute('data-uid');
         const userElement = this.closest('.a-userInfo');
 
-        // 在当前书籍容器中找到数量输入框 (input)
+        // 在当前商品容器中找到数量输入框 (input)
         const grade = userElement.querySelector('.grade-select').value;
 
         const formData = new FormData();

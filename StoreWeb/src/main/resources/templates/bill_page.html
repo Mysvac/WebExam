@@ -28,7 +28,7 @@
 </header>
 
 <main>
-    <section class="book-list">
+    <section class="goods-list">
         <div  class="search-div-out">
             <h2>个人订单中心</h2>
             <form class="search-div" method="get" action="/page/bill">
@@ -41,11 +41,11 @@
         <div th:if="${#lists.isEmpty(bills)}">
             <p>空</p>
         </div>
-        <div class="book" th:each="bill : ${bills}">
+        <div class="goods" th:each="bill : ${bills}">
 
-            <img class="book-image" th:src="@{/images/book/{bookname}.png(bookname=${bill.bookname})}" th:alt="${bill.bookname}">
+            <img class="goods-image" th:src="@{/images/goods/{goodsname}.png(goodsname=${bill.goodsname})}" th:alt="${bill.goodsname}">
             <div class="profile">
-                <h5 th:text="${bill.bookname}">Book Title</h5>
+                <h5 th:text="${bill.goodsname}">Goods Title</h5>
                 <p th:text="'订单号：'+${bill.billid}">billid</p>
             </div>
             <div  class="money">

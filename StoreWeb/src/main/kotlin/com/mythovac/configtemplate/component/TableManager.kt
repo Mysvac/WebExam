@@ -1,15 +1,16 @@
 package com.mythovac.configtemplate.component
 
-import com.mythovac.configtemplate.entity.Book
+import com.mythovac.configtemplate.entity.Goods
 import com.opencsv.CSVReader
 import jakarta.annotation.PreDestroy
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.CommandLineRunner
+import org.springframework.core.io.ClassPathResource
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
-import java.io.FileReader
 import java.io.IOException
+import java.io.InputStreamReader
 
 
 /**
@@ -36,16 +37,17 @@ class TableManager(private val jdbcTemplate: JdbcTemplate, private val passwordE
         // 创建数据表
         createTableUser()
         createTableUserProfile()
-        createTableBook()
+        createTableGoods()
         createTableCart()
         createTableOperation()
         createTableBill()
-        createTriggerTrgBill()
+        createTriggerTrgOrders()
+        createTriggerTrgUsers()
         // 获取数据信息，从excel表格中
-        insertBook()
+        insertGoods()
         // 插入管理员的数据
         insertAdmin()
-        insertAdminProfile()
+        // insertAdminProfile()
     }
 
     /**
@@ -55,11 +57,12 @@ class TableManager(private val jdbcTemplate: JdbcTemplate, private val passwordE
     @PreDestroy
     fun onShutdown() {
         if(dropTablesOnClose.toBoolean()){
-            dropTriggerTrgBill()
+            dropTriggerTrgUsers()
+            dropTriggerTrgOrders()
             dropTableBill()
             dropTableOperation()
             dropTableCart()
-            dropTableBook()
+            dropTableGoods()
             dropTableUserProfile()
             dropTableUser()
             println("已删除表。")
@@ -80,8 +83,8 @@ class TableManager(private val jdbcTemplate: JdbcTemplate, private val passwordE
     private fun createTableUserProfile(){ jdbcTemplate.execute(createTableUserProfileSQL) }
     private fun dropTableUserProfile() { jdbcTemplate.execute(dropTableUserProfileSQL) }
 
-    private fun createTableBook(){ jdbcTemplate.execute(createTableBookSQL) }
-    private fun dropTableBook() { jdbcTemplate.execute(dropTableBookSQL) }
+    private fun createTableGoods(){ jdbcTemplate.execute(createTableGoodsSQL) }
+    private fun dropTableGoods() { jdbcTemplate.execute(dropTableGoodsSQL) }
 
     private fun createTableCart(){ jdbcTemplate.execute(createTableCartSQL) }
     private fun dropTableCart() { jdbcTemplate.execute(dropTableCartSQL) }
@@ -92,8 +95,12 @@ class TableManager(private val jdbcTemplate: JdbcTemplate, private val passwordE
     private fun createTableBill(){ jdbcTemplate.execute(createTableBillSQL) }
     private fun dropTableBill() { jdbcTemplate.execute(dropTableBillSQL) }
 
-    private fun createTriggerTrgBill(){ jdbcTemplate.execute(createTriggerTrgBillSQL) }
-    private fun dropTriggerTrgBill(){ jdbcTemplate.execute(dropTriggerTrgBillSQL) }
+
+    private fun createTriggerTrgOrders(){ jdbcTemplate.execute(createTriggerTrgOrdersSQL) }
+    private fun dropTriggerTrgOrders(){ jdbcTemplate.execute(dropTriggerTrgOrdersSQL) }
+
+    private fun createTriggerTrgUsers() {jdbcTemplate.execute(createTriggerTrgUsersSQL)}
+    private fun dropTriggerTrgUsers() {jdbcTemplate.execute(dropTriggerTrgUsersSQL)}
 
     // 创建初始的管理员账号
     private fun insertAdmin(){
@@ -101,34 +108,40 @@ class TableManager(private val jdbcTemplate: JdbcTemplate, private val passwordE
         val insertAdminSQL = "INSERT INTO users (uid, password, grade) VALUES (?, ?, ?)"
         jdbcTemplate.update(insertAdminSQL, "admin", adminPwd,"admin")
     }
-    // 管理员账号的个性化数据
-    private fun insertAdminProfile(){
-        val insertAdminProfileSQL = "INSERT INTO userProfile (uid, gender) VALUES ('admin', 'secrecy')"
-        jdbcTemplate.update(insertAdminProfileSQL)
-    }
 
-    // 插入书籍信息
-    private fun insertBook(){
-        val insertBookSQL = "INSERT INTO book (bookname, booktype, stock, price, sales, author, profile, available) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
-        val csvFile: String = "src/main/resources/static/books.csv"
+
+    // 插入商品信息
+    private fun insertGoods(){
+        val insertGoodsSQL = "INSERT INTO goods (goodsname, goodstype, stock, price, sales, author, profile, available) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
         try{
-            val reader = CSVReader(FileReader(csvFile))
-            var line: Array<String>?
-            reader.readNext() // 跳过标题
-            while (reader.readNext().also { line = it } != null) {
-                if(line!!.size < 8) continue
-                val book = Book(
-                    bookid = 0,
-                    bookname = line[0],
-                    booktype = line[1],
-                    stock = line[2].toInt(),
-                    price = line[3].toInt(),
-                    sales = line[4].toInt(),
-                    author = line[5],
-                    profile = line[6],
-                    available = line[7].toInt())
-                jdbcTemplate.update(insertBookSQL, book.bookname, book.booktype, book.stock, book.price, book.sales, book.author, book.profile, book.available)
+            // 从静态资源的csv表中加载图书信息
+            val csvFile: String = "static/goods.csv"
+            val resource = ClassPathResource(csvFile)
+
+            resource.inputStream.use { inputStream ->
+                // 获取csv内容
+                val reader = CSVReader(InputStreamReader(inputStream))
+
+                // 插入数据库
+                var line: Array<String>?
+                reader.readNext() // 跳过标题
+                while (reader.readNext().also { line = it } != null) {
+                    if(line!!.size < 8) continue
+                    val goods = Goods(
+                        goodsid = 0,
+                        goodsname = line[0],
+                        goodstype = line[1],
+                        stock = line[2].toInt(),
+                        price = line[3].toInt(),
+                        sales = line[4].toInt(),
+                        author = line[5],
+                        profile = line[6],
+                        available = line[7].toInt())
+                    jdbcTemplate.update(insertGoodsSQL, goods.goodsname, goods.goodstype, goods.stock, goods.price, goods.sales, goods.author, goods.profile, goods.available)
+                }
+                // 处理CSV文件的逻辑
             }
+
         }
         catch (e: IOException){
             e.printStackTrace()
@@ -164,16 +177,16 @@ class TableManager(private val jdbcTemplate: JdbcTemplate, private val passwordE
     """
 
     // 书籍信息表
-    private val createTableBookSQL = """
-        CREATE TABLE IF NOT EXISTS book (
-        bookid BIGINT AUTO_INCREMENT PRIMARY KEY,
-        bookname CHAR(23) NOT NULL,
-        booktype CHAR(13) NOT NULL,
+    private val createTableGoodsSQL = """
+        CREATE TABLE IF NOT EXISTS goods (
+        goodsid BIGINT AUTO_INCREMENT PRIMARY KEY,
+        goodsname CHAR(23) NOT NULL,
+        goodstype CHAR(13) NOT NULL,
         stock INT NOT NULL CHECK( stock >= 0 ),
         price INT NOT NULL CHECK( price >= 0 ),
         sales INT NOT NULL CHECK( sales >= 0 ),
         author CHAR(23) NOT NULL,
-        profile CHAR(255),
+        profile CHAR(255) NOT NULL,
         available BOOL DEFAULT 0 CHECK ( available IN (0,1) )
         );
     """
@@ -182,13 +195,13 @@ class TableManager(private val jdbcTemplate: JdbcTemplate, private val passwordE
     private val createTableCartSQL = """
         CREATE TABLE IF NOT EXISTS cart (
         uid CHAR(23) NOT NULL,
-        bookid BIGINT NOT NULL,
+        goodsid BIGINT NOT NULL,
         amount INT NOT NULL CHECK( amount > 0 ),
-        PRIMARY KEY (uid, bookid),
+        PRIMARY KEY (uid, goodsid),
         CONSTRAINT KF_cart_account FOREIGN KEY (uid) REFERENCES users (uid)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
-        CONSTRAINT KF_cart_bid FOREIGN KEY (bookid) REFERENCES book (bookid)
+        CONSTRAINT KF_cart_gid FOREIGN KEY (goodsid) REFERENCES goods (goodsid)
         ON DELETE CASCADE
         ON UPDATE CASCADE
         );
@@ -199,17 +212,18 @@ class TableManager(private val jdbcTemplate: JdbcTemplate, private val passwordE
         CREATE TABLE IF NOT EXISTS orders (
         billid BIGINT AUTO_INCREMENT PRIMARY KEY,
         uid CHAR(23) NOT NULL,
-        bookid BIGINT NOT NULL,
+        goodsid BIGINT NOT NULL,
         amount INT NOT NULL CHECK( amount > 0 ),
         status CHAR(11) NOT NULL CHECK( status IN ('ongoing','finish','suspend') ),
         otime DATETIME NOT NULL, 
-        sumprice BIGINT NOT NULL,
+        sumprice BIGINT NOT NULL CHECK( sumprice >= 0 ),
         CONSTRAINT KF_operation_account FOREIGN KEY (uid) REFERENCES users (uid)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
-        CONSTRAINT KF_operation_bid FOREIGN KEY (bookid) REFERENCES book (bookid)
+        CONSTRAINT KF_operation_gid FOREIGN KEY (goodsid) REFERENCES goods (goodsid)
         ON DELETE CASCADE
-        ON UPDATE CASCADE
+        ON UPDATE CASCADE,
+        INDEX idx_status (status)
         );
     """
 
@@ -218,7 +232,7 @@ class TableManager(private val jdbcTemplate: JdbcTemplate, private val passwordE
         CREATE TABLE IF NOT EXISTS bill (
         billid BIGINT PRIMARY KEY,
         uid CHAR(23) NOT NULL,
-        bookid BIGINT NOT NULL,
+        goodsid BIGINT NOT NULL,
         amount INT NOT NULL CHECK( amount > 0 ),
         status CHAR(11) NOT NULL CHECK( status IN ('finish','suspend') ),
         otime DATETIME NOT NULL, 
@@ -226,23 +240,33 @@ class TableManager(private val jdbcTemplate: JdbcTemplate, private val passwordE
         CONSTRAINT KF_bill_account FOREIGN KEY (uid) REFERENCES users (uid) 
         ON DELETE CASCADE
         ON UPDATE CASCADE,
-        CONSTRAINT KF_bill_bid FOREIGN KEY (bookid) REFERENCES book (bookid)
+        CONSTRAINT KF_bill_gid FOREIGN KEY (goodsid) REFERENCES goods (goodsid)
         ON DELETE CASCADE
         ON UPDATE CASCADE
         );
     """
 
-    private val createTriggerTrgBillSQL = """
-        CREATE TRIGGER TRG_bill
+    private val createTriggerTrgOrdersSQL = """
+        CREATE TRIGGER TRG_orders
         AFTER UPDATE ON orders
         FOR EACH ROW
         BEGIN
             IF NEW.status IN ('finish', 'suspend') THEN
                 -- 将符合条件的记录插入到 bill 表
-                INSERT INTO bill (billid, uid, bookid, amount, status, otime, sumprice)
-                VALUES (NEW.billid, NEW.uid, NEW.bookid, NEW.amount, NEW.status, NEW.otime, NEW.sumprice);
+                INSERT INTO bill (billid, uid, goodsid, amount, status, otime, sumprice)
+                VALUES (NEW.billid, NEW.uid, NEW.goodsid, NEW.amount, NEW.status, NEW.otime, NEW.sumprice);
 
             END IF;
+        END;
+    """
+
+
+    private val createTriggerTrgUsersSQL = """
+        CREATE TRIGGER TRG_users
+        AFTER INSERT ON users
+        FOR EACH ROW
+        BEGIN
+            INSERT INTO userProfile (uid, gender) VALUES (NEW.uid, 'secrecy');
         END;
     """
 
@@ -253,7 +277,7 @@ class TableManager(private val jdbcTemplate: JdbcTemplate, private val passwordE
 
     private val dropTableUserProfileSQL = "DROP TABLE IF EXISTS userProfile;"
 
-    private val dropTableBookSQL = "DROP TABLE IF EXISTS book;"
+    private val dropTableGoodsSQL = "DROP TABLE IF EXISTS goods;"
 
     private val dropTableCartSQL = "DROP TABLE IF EXISTS cart;"
 
@@ -261,5 +285,8 @@ class TableManager(private val jdbcTemplate: JdbcTemplate, private val passwordE
 
     private val dropTableBillSQL = "DROP TABLE IF EXISTS bill;"
 
-    private val dropTriggerTrgBillSQL = "DROP TRIGGER IF EXISTS TRG_bill;"
+
+    private val dropTriggerTrgOrdersSQL = "DROP TRIGGER IF EXISTS TRG_orders;"
+
+    private val dropTriggerTrgUsersSQL = "DROP TRIGGER IF EXISTS TRG_users"
 }

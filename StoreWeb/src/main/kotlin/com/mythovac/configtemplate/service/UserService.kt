@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.security.crypto.password.PasswordEncoder
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -18,11 +19,11 @@ import java.time.format.DateTimeFormatter
 class UserService(private val jdbcTemplate: JdbcTemplate, private val passwordEncoder: PasswordEncoder) {
     private var userProfileImpl: UserProfileImpl = UserProfileImpl(jdbcTemplate)
     private var usersImpl: UsersImpl = UsersImpl(jdbcTemplate)
-    private var bookImpl: BookImpl = BookImpl(jdbcTemplate)
+    private var goodsImpl: GoodsImpl = GoodsImpl(jdbcTemplate)
     private var cartImpl: CartImpl = CartImpl(jdbcTemplate)
     private var ordersImpl: OrdersImpl = OrdersImpl(jdbcTemplate)
     private var billImpl: BillImpl = BillImpl(jdbcTemplate)
-    private var cartbookImpl: CartbookImpl = CartbookImpl(jdbcTemplate)
+    private var cartgoodsImpl: CartgoodsImpl = CartgoodsImpl(jdbcTemplate)
     private var userInfoImpl: UserInfoImpl = UserInfoImpl(jdbcTemplate)
 
     /**
@@ -33,7 +34,6 @@ class UserService(private val jdbcTemplate: JdbcTemplate, private val passwordEn
             // 密码加密存储
             val newPassword = passwordEncoder.encode(password)
             usersImpl.insert(Users(uid = uid, password = newPassword, grade = "vip"))
-            userProfileImpl.insert(UserProfile(uid=uid,gender="secrecy",address="",   "","",""))
             return true
         }
         return false
@@ -94,46 +94,47 @@ class UserService(private val jdbcTemplate: JdbcTemplate, private val passwordEn
         return usersImpl.findByUid(uid)
     }
 
+
     /**
-     * 查询全部用户具体信息
+     * 根据特征查询全部用户具体信息
      * */
-    fun findAllUserInfos(): List<UserInfo> {
-        return userInfoImpl.findAllUserIndo()
+    fun findUserInfoByAttr(uid: String = "屙蠺錒", username: String="屙蠺錒"): List<UserInfo>{
+        return userInfoImpl.findUserIndoByAttr(uid=uid,username=username)
     }
 
     /**
      * 查询购物车数据 按照uid
      * */
-    fun findCartbookByUid(uid: String): List<Cartbook> {
-        return cartbookImpl.findCartbookByUid(uid)
+    fun findCartgoodsByUid(uid: String): List<Cartgoods> {
+        return cartgoodsImpl.findCartgoodsByUid(uid)
     }
 
     /**
      * 查询全部图书
      * */
-    fun findAllBook(): List<Book> {
-        return bookImpl.findAll()
+    fun findAllGoods(): List<Goods> {
+        return goodsImpl.findAll()
     }
 
     /**
      * 查询全部正在售卖的图书信息
      * */
-    fun findAllAbleBook(): List<Book> {
-        return bookImpl.findAllAble ()
+    fun findAllAbleGoods(): List<Goods> {
+        return goodsImpl.findAllAble ()
     }
 
     /**
      * 根据特征查询图书
      * */
-    fun findBookByAttr(bookid: Long = -1, author: String = "鎿乸", booktype: String = "鎿乸", bookname: String = "鎿乸"): List<Book> {
-        return bookImpl.findByAttr(bookid, author, booktype, bookname)
+    fun findGoodsByAttr(goodsid: Long = -1, author: String = "鎿乸", goodstype: String = "鎿乸", goodsname: String = "鎿乸"): List<Goods> {
+        return goodsImpl.findByAttr(goodsid, author, goodstype, goodsname)
     }
 
     /**
      * 设置(修改)图书信息
      * */
-    fun setBookInfo(book: Book) {
-        bookImpl.update(book)
+    fun setGoodsInfo(goods: Goods) {
+        goodsImpl.update(goods)
     }
 
     /**
@@ -144,33 +145,78 @@ class UserService(private val jdbcTemplate: JdbcTemplate, private val passwordEn
         val orders = ordersImpl.findByAttr(uid=uid)
         if(orders.isNotEmpty()){
             for(order in orders){
-                val bookname = bookImpl.findByBookid(order.bookid)!!.bookname
+                val goodsname = goodsImpl.findByGoodsid(order.goodsid)!!.goodsname
                 res.add(BillDetail(
                     billid = order.billid,
                     uid = order.uid,
-                    bookid = order.bookid,
+                    goodsid = order.goodsid,
                     amount = order.amount,
                     status = order.status,
                     otime = order.otime,
                     sumprice = order.sumprice,
-                    bookname = bookname
+                    goodsname = goodsname
                 ))
             }
         }
         val bills = billImpl.findByAttr(uid=uid)
         if(bills.isNotEmpty()){
             for (bill in bills){
-                val bookname = bookImpl.findByBookid(bill.bookid)!!.bookname
+                val goodsname = goodsImpl.findByGoodsid(bill.goodsid)!!.goodsname
                 res.add(BillDetail(
                     billid = bill.billid,
                     uid = bill.uid,
-                    bookid = bill.bookid,
+                    goodsid = bill.goodsid,
                     amount = bill.amount,
                     status = bill.status,
                     otime = bill.otime,
                     sumprice = bill.sumprice,
-                    bookname = bookname
+                    goodsname = goodsname
                 ))
+            }
+        }
+        return res
+    }
+
+    /**
+     * 查询指定用户的订单和账单
+     * 根据特征
+     * */
+    fun findBillAndOrderByAttr(uid : String,billid: Long,goodsname: String): List<BillDetail>{
+        val res: MutableList<BillDetail> = mutableListOf()
+        val orders = ordersImpl.findByAttr(uid=uid)
+        if(orders.isNotEmpty()){
+            for(order in orders){
+                val tmpGoodsname = goodsImpl.findByGoodsid(order.goodsid)!!.goodsname
+                if(order.billid==billid || tmpGoodsname.contains(goodsname)){
+                    res.add(BillDetail(
+                        billid = order.billid,
+                        uid = order.uid,
+                        goodsid = order.goodsid,
+                        amount = order.amount,
+                        status = order.status,
+                        otime = order.otime,
+                        sumprice = order.sumprice,
+                        goodsname = tmpGoodsname
+                    ))
+                }
+            }
+        }
+        val bills = billImpl.findByAttr(uid=uid)
+        if(bills.isNotEmpty()){
+            for (bill in bills){
+                val tmpGoodsname = goodsImpl.findByGoodsid(bill.goodsid)!!.goodsname
+                if(bill.billid==billid || tmpGoodsname.contains(goodsname)){
+                    res.add(BillDetail(
+                        billid = bill.billid,
+                        uid = bill.uid,
+                        goodsid = bill.goodsid,
+                        amount = bill.amount,
+                        status = bill.status,
+                        otime = bill.otime,
+                        sumprice = bill.sumprice,
+                        goodsname = tmpGoodsname
+                    ))
+                }
             }
         }
         return res
@@ -191,16 +237,16 @@ class UserService(private val jdbcTemplate: JdbcTemplate, private val passwordEn
         val orders = ordersImpl.findAll()
         if(orders.isNotEmpty()){
             for(order in orders){
-                val bookname = bookImpl.findByBookid(order.bookid)!!.bookname
+                val goodsname = goodsImpl.findByGoodsid(order.goodsid)!!.goodsname
                 res.add(BillDetail(
                     billid = order.billid,
                     uid = order.uid,
-                    bookid = order.bookid,
+                    goodsid = order.goodsid,
                     amount = order.amount,
                     status = order.status,
                     otime = order.otime,
                     sumprice = order.sumprice,
-                    bookname = bookname
+                    goodsname = goodsname
                 ))
             }
         }
@@ -216,32 +262,56 @@ class UserService(private val jdbcTemplate: JdbcTemplate, private val passwordEn
         val orders = ordersImpl.findAll()
         if(orders.isNotEmpty()){
             for(order in orders){
-                val bookname = bookImpl.findByBookid(order.bookid)!!.bookname
+                val goodsname = goodsImpl.findByGoodsid(order.goodsid)!!.goodsname
                 res.add(BillDetail(
                     billid = order.billid,
                     uid = order.uid,
-                    bookid = order.bookid,
+                    goodsid = order.goodsid,
                     amount = order.amount,
                     status = order.status,
                     otime = order.otime,
                     sumprice = order.sumprice,
-                    bookname = bookname
+                    goodsname = goodsname
                 ))
             }
         }
         val bills = billImpl.findAll()
         if(bills.isNotEmpty()){
             for (bill in bills){
-                val bookname = bookImpl.findByBookid(bill.bookid)!!.bookname
+                val goodsname = goodsImpl.findByGoodsid(bill.goodsid)!!.goodsname
                 res.add(BillDetail(
                     billid = bill.billid,
                     uid = bill.uid,
-                    bookid = bill.bookid,
+                    goodsid = bill.goodsid,
                     amount = bill.amount,
                     status = bill.status,
                     otime = bill.otime,
                     sumprice = bill.sumprice,
-                    bookname = bookname
+                    goodsname = goodsname
+                ))
+            }
+        }
+        return res
+    }
+
+    /**
+     * 根据特征查询订单
+     * */
+    fun findOrdersByAttr(billid: Long=-1, uid: String="琺鑪覭", goodsid: Long=-1): List<BillDetail> {
+        val res: MutableList<BillDetail> = mutableListOf()
+        val orders = ordersImpl.findByAttr(uid = uid, goodsid = goodsid, billid = billid)
+        if(orders.isNotEmpty()){
+            for(order in orders){
+                val goodsname = goodsImpl.findByGoodsid(order.goodsid)!!.goodsname
+                res.add(BillDetail(
+                    billid = order.billid,
+                    uid = order.uid,
+                    goodsid = order.goodsid,
+                    amount = order.amount,
+                    status = order.status,
+                    otime = order.otime,
+                    sumprice = order.sumprice,
+                    goodsname = goodsname
                 ))
             }
         }
@@ -251,12 +321,12 @@ class UserService(private val jdbcTemplate: JdbcTemplate, private val passwordEn
     /**
      * 删除图书
      * */
-    fun deleteBook(bookid: Long): Boolean {
+    fun deleteGoods(goodsid: Long): Boolean {
         // 有订单，不能删除
-        if(billImpl.findByAttr(bookid=bookid).isNotEmpty() || ordersImpl.findByAttr(bookid=bookid).isNotEmpty()) {
+        if(billImpl.findByAttr(goodsid=goodsid).isNotEmpty() || ordersImpl.findByAttr(goodsid=goodsid).isNotEmpty()) {
             return false
         }
-        bookImpl.deleteByBookid(bookid)
+        goodsImpl.deleteByGoodsid(goodsid)
         return true
     }
 
@@ -275,63 +345,74 @@ class UserService(private val jdbcTemplate: JdbcTemplate, private val passwordEn
     /**
      * 删除单条购物车数据
      * */
-    fun deleteCart(uid: String,bookid: Long): Boolean {
-        cartImpl.deleteByUidAndBookid(uid,bookid)
+    fun deleteCart(uid: String,goodsid: Long): Boolean {
+        cartImpl.deleteByUidAndGoodsid(uid,goodsid)
         return true
     }
 
     /**
      * 删除指定用户的全部购物车数据
      * */
+    @Transactional
     fun deleteCartByUid(uid: String): Boolean {
         cartImpl.deleteByUid(uid)
         return true
     }
 
+
     /**
      * 加入购物车
      * */
-    fun insertCart(uid: String, bookid: Long, amount: Int = -1) {
-        val cart: Cart? = cartImpl.findByUidAndBookid(uid,bookid)
+    fun insertCart(uid: String, goodsid: Long, amount: Int = -1) {
+        val cart: Cart? = cartImpl.findByUidAndGoodsid(uid,goodsid)
         if(cart == null) {
-            cartImpl.insert(Cart(uid = uid, bookid = bookid, amount = 1))
+            cartImpl.insert(Cart(uid = uid, goodsid = goodsid, amount = 1))
             return
         }
         if(amount == -1){
-            cartImpl.update(Cart(uid = uid, bookid = bookid, amount = cart.amount+1))
+            cartImpl.update(Cart(uid = uid, goodsid = goodsid, amount = cart.amount+1))
         }
         if(amount == 0 || amount<-1){
-            deleteCart(uid,bookid)
+            deleteCart(uid,goodsid)
         }
         if(amount > 0){
-            cartImpl.update(Cart(uid = uid, bookid = bookid, amount = amount))
+            cartImpl.update(Cart(uid = uid, goodsid = goodsid, amount = amount))
         }
     }
 
     /**
      * 修改订单数据
      * */
+    @Transactional
     fun setOrders(orders: Orders) {
         ordersImpl.update(orders)
+        if(orders.status=="suspend"){
+            val goods = goodsImpl.findByGoodsid(orders.goodsid)
+            if(goods!=null){
+                goods.stock+=orders.amount
+                goodsImpl.update(goods)
+            }
+        }
     }
 
     /**
      * 插入一个新订单，同时减少库存数量
      * 去除购物车中同类项目（通过购物车购买时）
      * */
-    fun insertOrdersByAttr(uid: String, bookid: Long, amount: Int = -1): String {
+    @Transactional
+    fun insertOrdersByAttr(uid: String, goodsid: Long, amount: Int = -1): String {
         if(amount<=0) return "购买数量异常"  // 数量错误
-        val book = bookImpl.findByBookid(bookid) ?: return "书籍不存在" // 书籍不存在
-        if(book.stock < amount) return "书籍数量不足" // 数量不足
-        if(book.available == 0) return "书籍不可出售" // 书籍不可售
+        val goods = goodsImpl.findByGoodsid(goodsid) ?: return "商品不存在" // 商品不存在
+        if(goods.stock < amount) return "商品数量不足" // 数量不足
+        if(goods.available == 0) return "商品不可出售" // 商品不可售
 
-        book.stock -= amount
-        bookImpl.update(book)
-        val sumprice = book.price.toLong()*amount
+        goods.stock -= amount
+        goodsImpl.update(goods)
+        val sumprice = goods.price.toLong()*amount
         val time = getCurrentDateTime()
-        val order = Orders(billid=0,uid=uid,bookid=bookid,amount = amount,otime = time,sumprice = sumprice,status = "ongoing")
+        val order = Orders(billid=0,uid=uid,goodsid=goodsid,amount = amount,otime = time,sumprice = sumprice,status = "ongoing")
         ordersImpl.insert(order)
-        deleteCart(uid=uid,bookid=bookid)
+        deleteCart(uid=uid,goodsid=goodsid)
         return "购买成功"
     }
 
@@ -339,19 +420,46 @@ class UserService(private val jdbcTemplate: JdbcTemplate, private val passwordEn
      * 插入一个新订单，同时减少库存数量
      * 不修改购物车（直接下单，未通过购物车购买）
      * */
-    fun insertOneOrdersByAttr(uid: String, bookid: Long, amount: Int = -1): String {
+    @Transactional
+    fun insertOneOrdersByAttr(uid: String, goodsid: Long, amount: Int = -1): String {
         if(amount<=0) return "购买数量异常"  // 数量错误
-        val book = bookImpl.findByBookid(bookid) ?: return "书籍不存在" // 书籍不存在
-        if(book.stock < amount) return "数据数量不住" // 数量不足
-        if(book.available == 0) return "书籍不可出售" // 书籍不可售
+        val goods = goodsImpl.findByGoodsid(goodsid) ?: return "商品不存在" // 书籍不存在
+        if(goods.stock < amount) return "商品数量不足" // 数量不足
+        if(goods.available == 0) return "商品不可出售" // 书籍不可售
 
-        book.stock -= amount
-        bookImpl.update(book)
-        val sumprice = book.price.toLong()*amount
+        goods.stock -= amount
+        goodsImpl.update(goods)
+        val sumprice = goods.price.toLong()*amount
         val time = getCurrentDateTime()
-        val order = Orders(billid=0,uid=uid,bookid=bookid,amount = amount,otime = time,sumprice = sumprice,status = "ongoing")
+        val order = Orders(billid=0,uid=uid,goodsid=goodsid,amount = amount,otime = time,sumprice = sumprice,status = "ongoing")
         ordersImpl.insert(order)
         return "购买成功"
+    }
+
+    /**
+     * 批量购买图书
+     * */
+    @Transactional
+    fun buyAllGoods(cartgoodsList: List<Cartgoods>, uid: String){
+        for (cartgoods in cartgoodsList) {
+            insertOrdersByAttr(
+                uid = uid,
+                goodsid = cartgoods.goodsid,
+                amount = cartgoods.amount
+            )
+        }
+    }
+
+    /**
+     * 清空停售
+     * */
+    @Transactional
+    fun clearUnableGoods(cartgoodsList: List<Cartgoods>, uid: String) {
+        for (cartgoods in cartgoodsList) {
+            if (cartgoods.available != 1) {
+                deleteCart(uid = uid, goodsid = cartgoods.goodsid)
+            }
+        }
     }
 
     /**

@@ -29,7 +29,23 @@ function getDeviceInfo() {
 /*
     不断移动的广告界面
 */
-function move_ad(elem_div){
+function ad_location(elem_div){
+
+    let location_info = document.getElementById("AdLocation");
+    const AdLocation = location_info.getAttribute("content") || "move";
+
+    if(AdLocation === "left"){
+        elem_div.style.left = "0px";
+        elem_div.style.top = "35%";
+        return
+    }
+    if(AdLocation === "right"){
+        elem_div.style.right = "0px";
+        elem_div.style.top = "35%";
+        return
+    }
+    elem_div.style.left = "50px";
+    elem_div.style.top = "50px";
 
     // 初始化广告的运动参数
     let speedX = 2;  // 水平运动速度
@@ -102,8 +118,6 @@ function create_ad(data){
     let elem_div = document.createElement('div');
     // 设置 <div> 的样式，使其固定在页面最上层
     elem_div.style.position = 'fixed';  // 固定位置
-    elem_div.style.top = '0px';
-    elem_div.style.right = '0px';
     elem_div.style.zIndex = '9999';     // 设置较高的层级，确保它显示在最上层
     elem_div.style.width = '150px';
     elem_div.style.height = '150px';
@@ -151,9 +165,8 @@ function create_ad(data){
     // 将关闭按钮添加到广告 <div> 中
     elem_div.appendChild(closeButton);
 
-
     // 设置，让广告不断移动
-    move_ad(elem_div);
+    ad_location(elem_div);
 }
 
 
@@ -168,7 +181,7 @@ function generateDeviceIdentifier() {
 
 // 获取到网址类型
 let test = document.getElementById("goods_type");
-let tag = test ? test.textContent : "";
+let tag = test ? test.getAttribute("content") : "";
 let userIdentifier = generateDeviceIdentifier();
 
 /*
